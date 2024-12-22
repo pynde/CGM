@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/** Applied to Radix UI Select Content to align width with trigger button.  */
+.SelectContent {
+    width: var(--radix-select-trigger-width);
+}
+
+
+@layer base {
+    #root {
+        @apply dark:text-white dark:bg-darkbg text-darkbg;
+    }
+    h1 {
+        @apply text-4xl font-bold;
+    }
+    h2 {
+        @apply text-3xl font-semibold;
+    }
+    h3 {
+        @apply text-2xl font-medium;
+    }
+    button {
+        @apply rounded-md border-none border-0;
+    }
+    input {
+        @apply rounded-md dark:bg-darkbglighter dark:text-gray-200 border-2 border-white border-solid p-2 text-darkbg;
+    }
+}
+
+@layer components {
+    .flex-center {
+        @apply flex justify-center items-center;
+    }
+
+}

@@ -1,0 +1,25 @@
+<mxfile host="65bd71144e">
+    <diagram id="odgVCu9sUW3s7TN320f5" name="Page-1">
+        <mxGraphModel dx="1033" dy="589" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="5" value="User draws a card" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry y="40" width="810" height="370" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="Actor" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="5">
+                    <mxGeometry x="40" y="80" width="40" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="Uses etiher ACTION&lt;br&gt;of EFFECT" style="shape=step;perimeter=stepPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="5">
+                    <mxGeometry x="120" y="80" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="Trigger TRANSFER_CARD" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="5">
+                    <mxGeometry x="250" y="80" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="DIRECTION_OF_FLOW_ENUM.DRAW,&lt;br&gt;DIRECTION_OF_FLOW.TRANSFER" style="shape=partialRectangle;whiteSpace=wrap;html=1;left=0;right=0;fillColor=none;" vertex="1" parent="5">
+                    <mxGeometry x="225" y="170" width="225" height="180" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
