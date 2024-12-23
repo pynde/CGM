@@ -40,5 +40,10 @@ html, body, #root {
     .flex-center {
         @apply flex justify-center items-center;
     }
-
+    .flex-center-row {
+        @apply flex justify-center items-center flex-row;
+    }
+    .flex-center-col {
+        @apply flex justify-center items-center flex-col;
+    }
 }

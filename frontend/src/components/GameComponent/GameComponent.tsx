@@ -4,8 +4,6 @@ import { GameComponentType } from '@shared/types/types';
 
 const GameComponent: React.FC<GameComponentType> = (props: GameComponentType) => {
 
-    
-
     props
     return (
         <div className="gamecomponent" style={{ width: props.style.width, height: props.style.height, background: props.style.background }}>

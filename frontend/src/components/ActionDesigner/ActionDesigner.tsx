@@ -13,6 +13,7 @@ import ComBox from '../UI/ComBox';
 import { PlusCircleIcon } from '@heroicons/react/20/solid'; 
 import AddNode from './AddNode';
 import AndOrButton from './AndOrNode';
+import clsx from 'clsx';
 
 
 type ActionDesignerProps = React.HTMLAttributes<HTMLDivElement> & {
@@ -104,78 +105,77 @@ const ActionDesigner: React.FC<ActionDesignerProps> = ({ selectedAction, ...prop
             onWheel={zoomContainer} 
             {...props}
         >
-            { 
-            (historyState.actionPipe.length > 0) 
-            ? 
-            historyState.actionPipe.map((item, index) => {
-                return (
-                <div className='flex-center flex-col-reverse'>
-                    <ActionNode 
-                        index={index} 
-                        onDeleteActionFromPipe={(index) => setDeletedNodeIndex(index)} 
-                        onAnimationEnd={() => handleAnimationEnd(index)}
-                        animateIn={newNodeIndex === index}
-                        animateOut={deletedNodeIndex === index}
-                        active={selectedNode === index}
-                        onClick={() => setSelectedNode(prev => prev === index ? null : index)}
-                        {...item}
-                    >
-                        <AddNode 
-                            options={actionNames} 
-                            onNameSelect={name => addActionToPipe(name, index+1)}
-                            className='absolute right-0 flex-center w-0 h-0 outline-none'
-                        />
-                        <AddNode 
-                            options={actionNames}
-                            onNameSelect={name => addActionToGroup(name, item, index+1)}
-                            className='absolute -top-4 flex-center w-0 outline-none'
-                            addIcon={<AndOrButton type='or'/>}
-                        />
-                        </ActionNode>
-                    { 
-                    item.group && item.group.map((subAction, subIndex) => {
-                        return (
-                            <ActionNode 
-                                index={subIndex} 
-                                onDeleteActionFromPipe={(subIndex) => setDeletedNodeIndex(subIndex)} 
-                                onAnimationEnd={() => handleAnimationEnd(subIndex)}
-                                animateIn={newNodeIndex === subIndex}
-                                animateOut={deletedNodeIndex === subIndex}
-                                active={selectedNode === subIndex}
-                                onClick={() => setSelectedNode(prev => prev === subIndex ? null : subIndex)}
-                                {...subAction}
-                            >
-                                <AddNode 
-                                    options={actionNames} 
-                                    onNameSelect={name => addActionToPipe(name, subIndex+1)}
-                                    className='absolute right-0 flex-center w-0 outline-none'
-                                />
-                                <AddNode 
-                                    options={actionNames}
-                                    onNameSelect={(name) =>  addActionToGroup(name, subAction, subIndex+1)}
-                                    className='absolute -top-4 flex-center w-0 outline-none'
-                                />
+            <div className='flex items-center justify-start'>
+                { 
+                (historyState.actionPipe.length > 0) 
+                ? 
+                historyState.actionPipe.map((item, index) => {
+                    return (
+                    <div className={clsx(item.group ? 'bg-cyan-900' : 'bg-darkbg',`rounded-md p-4 flex-center flex-col-reverse`)}>
+                        {item.group && <span className='m-2'>Any of these actions</span>}
+                        <ActionNode 
+                            index={index} 
+                            onDeleteActionFromPipe={(index) => setDeletedNodeIndex(index)} 
+                            onAnimationEnd={() => handleAnimationEnd(index)}
+                            animateIn={newNodeIndex === index}
+                            animateOut={deletedNodeIndex === index}
+                            active={selectedNode === index}
+                            {...item}
+                        >
+                            <AddNode 
+                                options={actionNames} 
+                                onNameSelect={name => addActionToPipe(name, index+1)}
+                                className='absolute right-0 flex-center w-0 h-0 outline-none'
+                            />
+                            <AddNode 
+                                options={actionNames}
+                                onNameSelect={name => addActionToGroup(name, item, index+1)}
+                                className='absolute -top-4 flex-center w-0 outline-none'
+                            />
                             </ActionNode>
+                        { 
+                        item.group && item.group.map((subAction, subIndex) => {
+                            return (
+                                <ActionNode 
+                                    index={subIndex} 
+                                    onDeleteActionFromPipe={(subIndex) => setDeletedNodeIndex(subIndex)} 
+                                    onAnimationEnd={() => handleAnimationEnd(subIndex)}
+                                    animateIn={newNodeIndex === subIndex}
+                                    animateOut={deletedNodeIndex === subIndex}
+                                    active={selectedNode === subIndex}
+                                    {...subAction}
+                                >
+                                    <AddNode 
+                                        options={actionNames} 
+                                        onNameSelect={name => addActionToPipe(name, subIndex+1)}
+                                        className='absolute right-0 flex-center w-0 outline-none'
+                                    />
+                                    <AddNode 
+                                        options={actionNames}
+                                        onNameSelect={(name) =>  addActionToGroup(name, subAction, subIndex+1)}
+                                        className='absolute -top-4 flex-center w-0 outline-none'
+                                    />
+                                </ActionNode>
+                            )
+                        }
                         )
                     }
+                    </div>
                     )
                 }
-                </div>
-                )
-            }
 
-            ) 
-            : 
-            <div>
-                <AddNode 
-                    options={actionNames}
-                    onNameSelect={addActionToPipe}
-                    placeholder='Insert action in the flow' 
-                />
+                ) 
+                : 
+                <div>
+                    <AddNode 
+                        options={actionNames}
+                        onNameSelect={addActionToPipe}
+                        placeholder='Insert action in the flow' 
+                    />
+                </div>
+                
+                }
             </div>
-            
-            }
-            
         </div>
     );
 };

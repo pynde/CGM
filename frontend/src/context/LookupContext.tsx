@@ -47,6 +47,7 @@ export const LookupProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     const lookup = useMemo(() : LookupContextType => {
         const gameComponentTypes = blueprint.gameComponents.map(([key, value]) => value.type);
+        const gameComponentNames = blueprint.gameComponents.map(([key, value]) => value.name);
         const resourceTypes = blueprint.resources.map(([key, value]) => value.type);
         const actionTypes = blueprint.actions.map(([key, value]) => value.type);
         const actionTypeNames = blueprint.actions.map(([key, value]) => value.name);

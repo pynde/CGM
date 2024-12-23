@@ -1,6 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { ActionType } from '@shared/types/types';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { ActionType, Owner } from '@shared/types/types';
+import { Root, Toggle } from '@radix-ui/react-toggle';
+import { CheckIcon } from '@heroicons/react/20/solid';
 import clsx from 'clsx';
+import TargetNode from './TargetNode';
+import { LookupContext } from '@root/src/context/LookupContext';
 
 
 type ActionNodeProps = ActionType & React.HTMLAttributes<HTMLDivElement> & {
@@ -12,7 +16,7 @@ type ActionNodeProps = ActionType & React.HTMLAttributes<HTMLDivElement> & {
 }
 
 export const ActionNode: React.FC<ActionNodeProps> = ({ 
-    style = { width: 200, height: 60, maxHeight: 120, maxWidth: 300 },
+    style = { width: 200, minHeight: 100 },
     onDeleteActionFromPipe, 
     index,
     active,
@@ -22,20 +26,21 @@ export const ActionNode: React.FC<ActionNodeProps> = ({
     ...props
 }) => {
 
-    const [selectedNode, setSelectedNode] = useState<boolean>(false);
-    const handleClick = () => {
-        setSelectedNode(!selectedNode);
-    };
-
     const styleWithVariable = () => {
         return {
             ...style,
-            '--fullWidth': `${style.width}px`,
+            '--minWidth': `${style.width}px`,
+            '--minHeight': `${style.minHeight}px`,
         }
+    }
+
+    const selectTarget = () => {
+
     }
 
     return (
         <div 
+        
             style={styleWithVariable()}
             className={
                 clsx(
@@ -43,18 +48,24 @@ export const ActionNode: React.FC<ActionNodeProps> = ({
                     !active && 'm-0',
                     animateIn && 'animate-wide-out-jump-out',
                     animateOut && 'animate-wide-out jump-out',
-                    `transition-[transform,margin,opacity] scale-100 animate-fill-forwards action-node flex flex-row dark:bg-darkbglighter text-center flex-center relative`
+                    `min-h-[var(--minHeight)] h-fit max-h-[600px] transition-[transform,margin,opacity] scale-100 animate-fill-forwards action-node flex flex-col dark:bg-darkbglighter text-center flex-center relative`
                 )
             }
             {...props}
         >   
-            <span onClick={handleClick} className='min-w-[var(--fullWidth)] overflow-hidden'>{props.name}</span>
+            
+            <span onClick={e => (e)} className='min-w-[var(--minWidth)] overflow-hidden p-2'>{props.name}</span>
+            <div className='flex-center-row'>
+                <span className='m-2'>You <i>may...</i></span>
+                <Toggle aria-label="Toggle italic" className='group p-1 bg-darkbg rounded-sm h-4 w-4'>
+                    <CheckIcon className='group-data-[state=off]:hidden group-data-[state=on]:inherit '/>
+                </Toggle>
+            </div>
             {/* If there's a target, show it */}
-            {props.target && (
-                <span className="action-target">
-                    {'Target: ' + props.target.id}
-                </span>
-            )}
+            {props.target && 
+                <TargetNode onTargetChange={() => {  }} />
+            }
+ 
             <button onClick={() => onDeleteActionFromPipe(index)} className='m-2 p-2 absolute top-0 right-0 bg-red-400'>X</button>
             { children }
         </div>

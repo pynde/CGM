@@ -42,6 +42,7 @@ export type ActionType = BaseType & {
     automatic: boolean,
     id: string,
     actionPipe: (ActionType & Partial<GroupType<ActionType>>)[],
+    optional?: boolean,
     style?: Partial<VisualType>
     ownerId: string,
     target?: Owner<unknown>

@@ -9,7 +9,7 @@ import { socket } from '../App';
 // Define the context type
 export type GameStateContextType = {
     gameState: GameState | undefined;
-    updateGS: (type: Partial<GameState> | ActionType<unknown>) => void;
+    updateGS: (type: Partial<GameState> | ActionType) => void;
 };
 
 
@@ -17,9 +17,8 @@ export const GameStateProvider: React.FC<{ children: ReactNode }> = ({ children 
     const { actionReducer } = useActions();
 	
     const [gameState, updateGameStateReact] = useReducer<ActionReducer>(actionReducer, undefined);
-	const [testi, setTesti] = useState({ activePlayer: '' });
 	
-	const updateGS = (type: Partial<GameState> | ActionType<unknown>)  => {
+	const updateGS = (type: Partial<GameState> | ActionType)  => {
 		if(isTypeOf<ActionType>(type, ACTION_TYPE_ENUM)) {
 			updateGameStateReact(type);
 		}
