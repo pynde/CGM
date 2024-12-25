@@ -21,9 +21,9 @@ the environment.
 
 Time is measured in generations, and each
 generation starts with a Turn Order phase, followed by a
-Research phase, in which players access new cards. In the
+Research phase, in which players access new cards. `In the
 Action phase, players take turns doing 1 or 2 actions, going
-around the table until everyone has passed. Then, in the
+around the table until everyone has passed.` Then, in the
 Production phase, all players produce resources according to
 their production parameters on the player boards, and gain
 income from their TR.
