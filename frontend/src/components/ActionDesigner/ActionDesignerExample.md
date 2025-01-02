@@ -66,8 +66,8 @@ their goal, the game ends after that generation (after the
 production phase).
 
 `ActionType: increaseTrack; E.g. Oxygen is increased by 1 IF < max`
-`actionPipe: increaseTrack; E.g. Terraform rating is increased the amount of parent Action`
-`actionPipe: Finish`
+`SubActionType: increaseTrack; E.g. Terraform rating is increased the amount of parent Action`
+`SubActionType: Finish`
 
 ### Game board
 

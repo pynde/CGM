@@ -1,10 +1,9 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ActionType, Owner } from '@shared/types/types';
-import { Root, Toggle } from '@radix-ui/react-toggle';
+import { Toggle } from '@radix-ui/react-toggle';
 import { CheckIcon } from '@heroicons/react/20/solid';
 import clsx from 'clsx';
 import TargetNode from './TargetNode';
-import { LookupContext } from '@root/src/context/LookupContext';
 
 
 type ActionNodeProps = ActionType & React.HTMLAttributes<HTMLDivElement> & {
