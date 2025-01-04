@@ -143,7 +143,15 @@ Example: If you place a city tile adjacent to 2 different
 ocean tiles you get 4 M€ as placement bonus
 
 `Spaces for Ocean (type SpaceType) are set to { reservedFor: GameComponentType['type'], occupiedBy: { component: GameComponentType } } `
-`Ocean tile triggers effect (type EffectType) when it is played`
+`Ocean tile (type GameComponentType) triggers effect (type EffectType) when PlayComponent or PlayDefaultAction`
+
+
+
+
+
+
+
+
 
 
 
