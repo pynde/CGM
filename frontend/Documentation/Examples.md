@@ -2,7 +2,7 @@
 
 ## Terraforming Mars
 
-### Game overview
+### GAME OVERVIEW
 
 In Terraforming Mars, you control a corporation,
 and you buy and play cards describing different projects.
@@ -28,7 +28,7 @@ Production phase, all players produce resources according to
 their production parameters on the player boards, and gain
 income from their TR.
 
-`Turns (type Turn) are set to "max 2" when GameState { mode = GAME_STATE_MODE }`
+`Turns (type TurnType) are set to { turnAmount: { min: 1, max: 2 } } when GameState { mode = GAME_STATE_MODE }`
 
 The central game board has tracks for temperature,
 oxygen level, terraform rating, and generations. There is
@@ -51,7 +51,7 @@ claimed milestones, and VPs on cards you have
 played.
 
 
-### Global parameters
+### GLOBAL PARAMETERS
 
 Temperature, oxygen, and ocean are called global
 parameters. Whenever you raise one of them, your
@@ -69,39 +69,39 @@ production phase).
 `SubActionType: increaseTrack; E.g. Terraform rating is increased the amount of parent Action`
 `SubActionType: Finish`
 
-### Game board
+### GAME BOARD
 
 1. Terraform rating (TR) track: All players start at 20. This is your basic income (see pages 6 and 8) and VPs. You increase it every time you terraform.
 
-`Terraform rating (type Track) value (20) is set as a default value for when GameState { mode } is set to any GAME_STATE_MODE enum.`
+`Terraform rating (type TrackType) value (20) is set as a default value for when GameState { mode } is set to any GAME_STATE_MODE enum.`
 
 2. Generation track: The generation marker measures time (rounds) and starts at 1, moving up on the TR track.
 
-`Generation track (type Track) value (1) is set as a default value when GameState { mode = GAME_STATE_MODE }.`
+`Generation track (type TrackType) value (1) is set as a default value when GameState { mode = GAME_STATE_MODE }.`
 
 3. Solo games: Solo games start with a TR of 14, and end after generation 14.
 
-`Terraform rating (type Track) value (14) is set as a default value when GameState { mode = GAME_STATE_MODE.SOLO }.`
+`Terraform rating (type TrackType) value (14) is set as a default value when GameState { mode = GAME_STATE_MODE.SOLO }.`
 
 4. Oxygen: This global parameter starts at 0%. This percentage compares to Earth’s 21% oxygen.
 
-`Oxygen (type Track) value is set as a default value when GameState { mode = GAME_STATE_MODE }.`
+`Oxygen (type TrackType) value is set as a default value when GameState { mode = GAME_STATE_MODE }.`
 
 5. Ocean tiles: This global parameter starts with 9 tiles in a stack here, to be placed on the board during the game.
 
-`Ocean tiles (type Stack) value (9) is set as a default value when GameState { mode = GAME_STATE_MODE }.`
+`Ocean tiles (type StackType) value (9) is set as a default value when GameState { mode = GAME_STATE_MODE }.`
 
 6. Temperature: This global parameter (mean temperature at the equator) starts at -30 ˚C.
 
-`Temperature (type Track) value (-30) is set as a default value when GameState { mode = GAME_STATE_MODE }.`
+`Temperature (type TrackType) value (-30) is set as a default value when GameState { mode = GAME_STATE_MODE }.`
 
 7. Bonus steps: If you raise the parameter to this point, you also get the attached bonus.
 
-`Bonus steps (type Track) value is set as a default value when GameState { mode = GAME_STATE_MODE }.`
+`Bonus steps (type TrackType) value is set as a default value when GameState { mode = GAME_STATE_MODE }.`
 
 8. Standard Projects: May be used by any player regardless of what cards you have. See page 10.
 
-`Standard Projects (type Space) value is set to the predefined standard project options when GameState { mode = GAME_STATE_MODE }.`
+`Standard Projects (type SpaceType) value is set to the predefined standard project options when GameState { mode = GAME_STATE_MODE }.`
 
 9. Milestones / Awards: Can be a good source of extra VPs. See pages 10 and 11.
 
@@ -113,8 +113,39 @@ production phase).
 
 11. Ocean-reserved areas: Blue areas are reserved for ocean tiles; ocean tiles may only be placed here, and no other tile may be placed here.
 
-`Ocean-reserved areas (type Space) value is set to the predefined areas (type Space) where only ocean tiles can be placed when GameState { mode = GAME_STATE_MODE }.`
+`Ocean-reserved areas (type SpaceType) value is set to the predefined areas (type SpaceType) where only ocean tiles can be placed when GameState { mode = GAME_STATE_MODE }.`
 
 12. Special reserved areas: 3 areas are reserved for specific cities. No other tiles may be placed there.
 
-`Special reserved areas (type Space) value is set to the predefined city-specific reserved areas (type Space) when GameState { mode = GAME_STATE_MODE }.`
+`Special reserved areas (type SpaceType) values are set to { acceptedComponents: Array<GameComponentType> } when GameState { mode = GAME_STATE_MODE }.`
+
+### TILES
+
+The game board has a map where tiles may be
+placed. When placing a tile, you must first check to see if
+there are any placement restrictions. `There are areas reserved
+for ocean and specific cities, where no other tiles may be
+placed.` Furthermore, each tile may have specific restrictions
+printed on the respective card or in the summaries below.
+When you place the tile, you receive the placement
+bonus printed on that area (if any). You also get a bonus for
+placing tiles next to ocean tiles (see below).
+
+`Special reserved areas (type SpaceType) property { acceptedComponents: Array<GameComponentType> } is set when GameState { mode = GAME_STATE_MODE }.`
+
+`Ocean tile: Ocean tiles may only be placed on
+areas reserved for ocean (see map).``Placing an
+ocean tile increases your TR 1 step.` Ocean tiles are
+not owned by any player. `Each ocean tile on the
+board provides a 2 M€ placement bonus for any
+player later placing a tile, even another ocean, next to it.`
+Example: If you place a city tile adjacent to 2 different
+ocean tiles you get 4 M€ as placement bonus
+
+`Spaces for Ocean (type SpaceType) are set to { reservedFor: GameComponentType['type'], occupiedBy: { component: GameComponentType } } `
+`Ocean tile triggers effect (type EffectType) when it is played`
+
+
+
+
+

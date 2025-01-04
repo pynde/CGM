@@ -21,6 +21,7 @@ module.exports = {
           },
           {
             test: /\.(png|jp(e*)g|gif)$/,
+            exclude: /node_modules/,
             type: "asset/resource",
           },      {
             test: /\.svg$/i,
@@ -35,6 +36,7 @@ module.exports = {
           },
           {
             test: /\.css$/i,
+            exclude: /node_modules/,
             include: path.resolve(__dirname, 'src'),
             use: ['style-loader', 'css-loader', 'postcss-loader'],
           },

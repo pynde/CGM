@@ -1,4 +1,4 @@
-import {  DIRECTION_OF_FLOW_ENUM, FACE_VISIBLE_ENUM, GAME_COMPONENT_ENUM, RESOURCE_ENUM, MODE_ENUM, TURN_MODE_ENUM, ACTION_TYPE_ENUM, GAME_STATE_ENUM, ERROR_CODE_ENUM, OWNER_TYPE_ENUM, SELECTION_TYPE_ENUM, SPACE_TYPE_ENUM, GAME_COMPONENT_STATE_ENUM } from "@shared/enums/enums"
+import {  DIRECTION_OF_FLOW_ENUM, FACE_VISIBLE_ENUM, GAME_COMPONENT_ENUM, RESOURCE_ENUM, MODE_ENUM, TURN_MODE_ENUM, ACTION_TYPE_ENUM, GAME_STATE_ENUM, ERROR_CODE_ENUM, OWNER_TYPE_ENUM, SELECTION_TYPE_ENUM, SPACE_TYPE_ENUM, GAME_COMPONENT_STATE_ENUM, TRACK_TYPE_ENUM, EFFECT_TYPE_ENUM, SYMBOL_TYPE_ENUM } from "../enums/enums"
 
 // BASE TYPE
 
@@ -74,10 +74,12 @@ export type MeepleType = GameComponentType<{
 export type GameComponentType<T = {}> = BaseType & {
     type: GAME_COMPONENT_ENUM,
     id: string,
-    style: VisualType
+    style: VisualType,
     actions: ActionType[],
     price: ResourceType[],
     ownerId: string,
+    symbols?: SymbolType[],
+    effects?: EffectType[],
     state?: GAME_COMPONENT_STATE_ENUM,
     twoSided?: boolean,
 } & T;
@@ -96,6 +98,33 @@ export type Money = {
 
 export type CustomResource = {
     [key: string]: string | number
+}
+
+// TRACK
+
+export type TrackType = {
+    type: TRACK_TYPE_ENUM.TRACK,
+    name: string,
+    id: string,
+    effects: EffectType[]
+}
+
+// EFFECT
+
+export type EffectType = {
+    type: EFFECT_TYPE_ENUM.EFFECT
+    name: string,
+    id: string, 
+    payload?: unknown,
+}
+
+// SYMBOL
+
+export type SymbolType = {
+    type: SYMBOL_TYPE_ENUM.SYMBOL,
+    name: string,
+    id: string,
+    payload?: unknown,
 }
 
 // OWNERS
@@ -140,7 +169,7 @@ export type ErrorType = {
     message: string
 }
 
-// CONNECTOR
+// CONNECTORS
 
 export type GroupType<T> = T & { 
     group: T[]
