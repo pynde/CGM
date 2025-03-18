@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack serve --mode development",
+    "start": "webpack-dev-server --mode development",
     "build": "webpack --mode production"
   },
   "author": "",
@@ -13,6 +13,7 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@radix-ui/react-accordion": "^1.2.1",
+    "@radix-ui/react-context-menu": "^2.2.6",
     "@radix-ui/react-navigation-menu": "^1.2.1",
     "@radix-ui/react-popover": "^1.1.2",
     "@radix-ui/react-select": "^2.1.2",
@@ -21,8 +22,10 @@
     "animejs": "^3.2.2",
     "clsx": "^2.1.1",
     "generate-react-cli": "^8.4.8",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "konva": "^9.3.18",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-konva": "^19.0.3",
     "rete-connection-plugin": "^2.0.5",
     "rete-render-utils": "^2.0.3",
     "socket.io-client": "^4.8.1",

@@ -145,6 +145,134 @@ ocean tiles you get 4 M€ as placement bonus
 `Spaces for Ocean (type SpaceType) are set to { reservedFor: GameComponentType['type'], occupiedBy: { component: GameComponentType } } `
 `Ocean tile (type GameComponentType) triggers effect (type EffectType) when PlayComponent or PlayDefaultAction`
 
+Greenery tile: `If possible, greenery tiles must
+be placed next to another tile that you own. If
+you have no available area next to your tiles, or if
+you have no tile at all, you may place the greenery tile on any available area.` Place a player marker on it to
+mark your ownership. `When placing a greenery tile, you
+increase the oxygen level, if possible, and also your TR. If
+you can't raise the oxygen level you don't get the increase
+in TR either.``Greenery tiles are worth 1 VP at the end of the
+game, and also provide 1 VP to any adjacent city (see below).`
+
+`Greenery tile (type GameComponent) is initally set to { availableSpaces: SpaceType[] }`
+`Greenery tile (type GameComponent) is initally set to { effect: EffectType }`
+`Oxygen level (type Track) is increased when Greenery tile is played and oxygen level =< MAX oxygen level`
+`Greenery tile (type GameComponent) points are set when tile is placed on a suitable spaces (type SpaceType)`
+
+### MARKERS
+
+Resource cubes: Resources are collected on the player board
+or on specific cards. There are many types of resources (see
+page 14), but they are all marked by these cubes:
+BRONZE = 1
+SILVER = 5
+GOLD = 10
+
+`Resource cubes (type ResourceType) are set initially { value: MultipleValue }`
+
+Player markers: Each player uses his own color
+to mark TR, ownership of tiles, production
+(see page 6), and to indicate used blue card
+actions (see page 11).
+
+`Player markers (type GameComponentType) are set initially set to { amount: number }`
+
+Temperature, oxygen, and generation
+markers: Start at the beginning of the
+respective track (see page 4).
+First player marker: Shifts clockwise each
+generation.
+
+`Temperature, oxygen and generation markers are not set; respective tracks (type TrackType) are set { indicator: Image | GameComponent }`
+
+### PLAYER BOARDS
+
+The player board keeps track of your current resources
+and production. Resource cubes are placed in their respective
+boxes, and player markers are used on the production tracks.
+In the game, resource icons refer to resource cubes, while
+resource icons inside brown boxes refer to production of
+that resource (see the project card below).
+1. Production tracks: If you gain production of a resource,
+mark the new production level with your player marker.
+Production is not limited to 10. Example: If you play a card
+that increases your heat production 3 steps from 19 to 22 you
+mark this by having 2 player markers on ’10’ and 1 marker on ’2’
+on the production track above the heat box. Impressive!
+During the production phase you add resource cubes equal to
+your production.
+2. MegaCredits (M€) : Are used to pay for cards and other
+things. Note: Your M€ income is the sum of your M€ produc-
+tion and your TR. M€ production is the only production that
+can be negative, but it may never be lowered below -5.
+3. Steel: Is only used to pay for cards with a building tag and
+is worth 2 M€/cube. You may pay with both M€ and steel, but
+you get no refund for ’overpaying’ with steel.
+4. Titanium: Is only used to pay for cards with a space tag and
+is worth 3 M€/cube, similar to steel.
+5. Plants: May be converted into greenery tiles by using the
+depicted action (see pages 5 and 11).
+6. Energy: Is used by many cards. All leftover energy is con-
+verted into heat at the beginning of the production phase.
+7. Heat: May be spent to raise temperature 1 step by using the
+depicted action (see page 11).
+
+`Resources are set initially.`
+
+### CARDS
+
+Each player starts the game with a corporation card. During the game,
+players buy and play many project cards to get benefits of different kinds. The cards
+are divided into active cards (blue frame, see example), automated cards (green) and
+event cards (red), read more on page 10.
+
+`At game start players (type PlayerType) are set with a corporation card (type GameComponentType) { gameComponents: GameComponentType[] }`
+
+1. Tag: Places the card in certain categories, which can affect or be affected by other
+cards, or by the player board (e.g. you can pay with steel when playing a building tag).
+
+`Tag (type SymbolType) is set for the corporation card (type GameComponentType) {  }`
+
+2. Starting conditions: This tells you how much money (M€) you start with, as well
+as other starting resources and production. Some corporations also have a fixed first
+action described here (see example card).
+
+`Corporate card (type GameComponentType) provides initial resources for the player (type PlayerType) { resources: ResourceType[] }`
+`Corporate card (type GameComponentType) sets initial action when selected (type ActionType) as an action (type ActionType) for player (type PlayerType) { actions: ActionType[] }`
+
+3. Effect / action: Boxes marked by a blue ribbon show an ongoing effect or action
+that may be used during the game. Actions may be used only once per generation,
+while effects are always active.
+
+`Corporate card (type GameComponentType) adds to available actions for player (type PlayerType) when selected { actions: ActionType[] }`
+
+4. Flavor text: Gives you some background information and feeling for the card.
+
+`Flavor text is initially set to the cards (type GameComponentType) { decorator: Text | Image | SVG }`
+
+5. Cost: This is what you pay to play the card from your hand. (To get cards into your
+hand, you must first buy them during the research phase, see page 8).
+
+`Costs are initially set to the cards (type GameComponentType) { cost: Resource[] }`
+
+6. Requirement: Any requirement must be met in order to play the card. Some cards
+require a global parameter to have reached a certain level, while others can only be
+played while the parameter is still low (see example card). Some cards require that
+you have certain tags or production. (Note: In order to play the card you must also be
+able to perform the effects of the card, see page 9.) Note also that the requirement only
+needs to be fulfilled when playing the card, not when you use it later.
+
+`Requirements are initially set to the cards (type GameComponentType) { (requirement: SymbolType | ResourceTyp | GameComponentType | ActionType)[] }`
+
+7. Immediate effects: Most cards affect your (or your opponent’s) resources or
+production. You may also get tiles to place, or other effects.
+8. VPs: Some cards give you victory points at the end of the game.
+If you are uncertain of how a card works, read the text in parenthesis.
+
+
+
+
 
 
 

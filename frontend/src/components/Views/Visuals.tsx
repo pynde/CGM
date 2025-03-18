@@ -13,6 +13,7 @@ const Visuals: React.FC<VisualsProps> = ({ item, onUpdate }) => {
     const [imgUrls, setImgUrls] = useState<string[]>(item.imgUrls || []);
     const [width, setWidth] = useState(item.width || 0);
     const [height, setHeight] = useState(item.height || 0);
+    const [opened, setOpened] = useState(false);
 
     useEffect(() => {
         setImgUrls(item.imgUrls || []);
@@ -41,9 +42,12 @@ const Visuals: React.FC<VisualsProps> = ({ item, onUpdate }) => {
     };
 
     return (
-        <Collapsible.Root>
+        <Collapsible.Root
+            open={opened}
+            onOpenChange={setOpened}
+            >
             <Collapsible.Trigger className="py-2">
-            {open() ? 'Hide Visuals' : 'Show Visuals'}
+            {opened ? 'Hide Visuals' : 'Show Visuals'}
             </Collapsible.Trigger>
             <Collapsible.Content className="text-gray-200">
             <div className="flex flex-col space-y-4">

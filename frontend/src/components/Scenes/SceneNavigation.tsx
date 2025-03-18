@@ -10,6 +10,7 @@ import { ACTION_TYPE_ENUM, SOCKET_RESPONSE } from '@shared/enums/enums';
 import { LookupContext } from '@root/src/context/LookupContext';
 import { BlueprintContext } from '@root/src/context/BlueprintContext';
 import ActionScene from './ActionScene';
+import GridSelection from '../UI/GridSelection';
 
 type TabContent = {
 	tabName: string,
@@ -21,7 +22,7 @@ interface SceneNavigationProps {
 }
 
 const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps) => {
-	const INITIAL_TAB = 'Actions';
+	const INITIAL_TAB = 'GridTest';
 	const [selectedTab, setSelectedTab] = useState(INITIAL_TAB);
 	const [selectedAction, setSelectedAction] = useState<ActionType>()
 	const { selected, updateSelected } = useContext(LookupContext);
@@ -35,12 +36,15 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 		}
 	}
 
+	const tabContent = 'tabContent'
+
 	const sceneList: TabContent[] = [
-		{tabName: 'Overview', tabContent: <GameStateProvider><Overview key={'tabContent'+0}/></GameStateProvider>}, 
-		{tabName: 'Cards', tabContent: <CardScene key={'tabContent'+1}/>}, 
-		{tabName: 'Game board', tabContent: <div key={'tabContent'+2}>Game Board placeholder</div>},
-		{tabName: 'Component builder', tabContent: <ComponentBuilder key={'tabContent'+3}/> },
-		{tabName: 'Actions', tabContent: <ActionScene key={'tabContent'+4}/>},
+		{tabName: 'Overview', tabContent: <GameStateProvider><Overview key={tabContent+0}/></GameStateProvider>}, 
+		{tabName: 'Cards', tabContent: <CardScene key={tabContent+1}/>}, 
+		{tabName: 'GameBoard', tabContent: <div key={tabContent+2}>Game Board placeholder</div>},
+		{tabName: 'ComponentBuilder', tabContent: <ComponentBuilder/> },
+		{tabName: 'Actions', tabContent: <ActionScene key={tabContent+4}/>},
+		{tabName: 'GridTest', tabContent: <GridSelection key={tabContent+5}/>},
 	];
 
 	useEffect(() => {
@@ -72,7 +76,7 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 	return (
 	<Tabs.Root 
 		className={'h-full flex flex-col grow'} 
-		defaultValue={sceneList[4].tabName} 
+		defaultValue={sceneList[5].tabName} 
 		onValueChange={handleTabChange} 
 		value={selectedTab}
 	>

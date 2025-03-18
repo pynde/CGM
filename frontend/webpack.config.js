@@ -7,6 +7,7 @@ module.exports = {
       filename: 'bundle.js',
       path: path.resolve(__dirname, 'dist')
     },
+    devtool: 'inline-source-map',
     module: {
         rules: [
           {
@@ -51,7 +52,10 @@ module.exports = {
     devServer: {
         hot: true,
         open: false,
-        liveReload: true
+        liveReload: true,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
     },
     resolve: {
         extensions: ['.ts', '.js', '.jsx', '.tsx', '...'],
