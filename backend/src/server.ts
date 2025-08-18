@@ -1,11 +1,9 @@
 import express, { Request, Response } from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
-import { ActionType, BankType, BlueprintType, CardType, GameComponentType, GameState, MeepleType, Owner, OwnerArray, PlayerType, ResourceType, SelectedArray } from '@shared/types/types'
-import { ACTION_TYPE_ENUM, GAME_COMPONENT_ENUM, GAME_STATE_ENUM, LOCALHOST_PORT, MODE_ENUM, OWNER_TYPE_ENUM, RESOURCE_ENUM, SOCKET_RESPONSE, SPACE_TYPE_ENUM, TURN_MODE_ENUM } from '@shared/enums/enums'
+import { BlueprintType, GameState, OwnerArray,  } from '@shared/types/types'
+import { GAME_STATE_ENUM, LOCALHOST_PORT, SOCKET_RESPONSE,} from '@shared/enums/enums'
 import { ClientToServerEvents, ServerToClientEvents, SocketData } from '@shared/interfaces/socketEvents';
-import { generateId } from '@shared/logic/generateId';
-import { log } from 'console';
 import { players, owners, blueprint } from './testdata';
 // Initialize Express app and HTTP server
 const app = express();

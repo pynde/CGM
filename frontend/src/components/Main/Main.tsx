@@ -5,6 +5,7 @@ import { BlueprintContext as BPC, BlueprintContextType } from '@root/src/context
 import { BlueprintType } from '@shared/types/types';
 import { socket } from '@root/src/App';
 import { LookupContext, LookupProvider } from '@root/src/context/LookupContext';
+import { useBlueprint } from '@root/src/zustand/BlueprintStore';
 
 
 interface MainProps {
@@ -14,14 +15,9 @@ interface MainProps {
 const BlueprintContext = BPC;
 
 const Main : FC<MainProps> = ({ children }) => {
-  const [blueprint, updateBP] = useState<BlueprintType>({  
-    gameComponents: [],
-    resources: [],
-    actions: [],
-  });
+  const blueprint = useBlueprint();
   useEffect(() => {
     const update = (bp: BlueprintType) => { updateBlueprint(bp) };
-    
     socket.on('blueprint', update);
     return () => {
         socket.off('blueprint', update);
@@ -29,11 +25,10 @@ const Main : FC<MainProps> = ({ children }) => {
 }, []);
 
 const updateBlueprint = (bp: Partial<BlueprintType>) => {
-    updateBP({ ...blueprint, ...bp });  
+    blueprint.setBlueprint({ ...blueprint, ...bp });
 };
 
   return (
-    
     <div className='w-full h-full'>
       <BlueprintContext.Provider value={{ blueprint: blueprint, updateBlueprint: updateBlueprint }}>
         <LookupProvider>

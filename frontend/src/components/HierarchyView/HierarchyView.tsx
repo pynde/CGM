@@ -19,6 +19,7 @@ const HierarchyView : FC<HierarchyViewProps> = () => {
   const [active, setActive] = useState(false);
 
   const setSelected = (value: any) => {
+    console.log('value', value);
     if(isTypeOf<GameComponentType>(value, GAME_COMPONENT_ENUM)) {
       const gcMap = new Map(blueprint.gameComponents);
       const item = gcMap.get(value.id);
@@ -27,19 +28,21 @@ const HierarchyView : FC<HierarchyViewProps> = () => {
     if(isTypeOf<ResourceType>(value, RESOURCE_ENUM)) {
       const rMap = new Map(blueprint.resources);
       const item = rMap.get(value.id);
-      if(item) updateSelected({ ...selected, selectedComponent: item })
+      if(item) updateSelected({ ...selected, selectedResource: item });
     }
   }
-
-  useEffect(() => {
-
-  }, [selected]);
 
   const getItemDetailsByType = useCallback((items: any[], type: string) => {
     return items.map(([key, value], index) => {
       if(value.type == type) return (
-        <ItemDetails className={clsx(index%2==0 && 'bg-white/20 p-2')} onClick={() => setSelected(value)} key={key + index} item={value} includeKeys={['name']} />
-    )
+        <ItemDetails 
+          className={clsx(index%2==0 && 'bg-white/20 p-2')}  
+          onClick={() => setSelected(value)} 
+          key={key + index} 
+          item={value} 
+          includeKeys={['name']}
+        />
+      )
       else return null;
     })
   }, [blueprint, selected]);
@@ -58,7 +61,7 @@ const HierarchyView : FC<HierarchyViewProps> = () => {
             <Accordion.Content>
               {gameComponentTypes.map(item => (
           <CollapsibleList key={item} label={item}>
-            {getItemDetailsByType(blueprint.gameComponents, item)}
+            { getItemDetailsByType(blueprint.gameComponents, item) }
           </CollapsibleList>
               ))}
             </Accordion.Content>

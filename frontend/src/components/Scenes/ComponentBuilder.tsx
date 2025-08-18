@@ -1,7 +1,7 @@
 import { BlueprintContext } from '@root/src/context/BlueprintContext';
 import { ACTION_TYPE_ENUM, GAME_COMPONENT_ENUM, RESOURCE_ENUM, SOCKET_RESPONSE } from '@shared/enums/enums';
-import { ActionType, CardType, GameComponentType, isTypeOf, MeepleType, ResourceType, VisualType } from '@shared/types/types';
-import React, { useState, useEffect, useContext } from 'react';
+import { ActionType, BaseType, CardType, GameComponentType, isTypeOf, MeepleType, ResourceType, VisualType } from '@shared/types/types';
+import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react';
 import { Card } from '../Card/Card';
 import { Meeple } from '../Meeple/Meeple';
 import Carousel from '../UI/Carousel';
@@ -9,6 +9,11 @@ import Visuals from '../Views/Visuals';
 import { LookupContext } from '@root/src/context/LookupContext';
 import Resource from '../Resource/Resource';
 import { Action } from '../Actions/Action';
+import { useBlueprint, useSetBlueprint } from '@root/src/zustand/BlueprintStore';
+import GameComponent from '../GameComponent/GameComponent';
+import { useGetViews } from '@root/src/zustand/GameViewStore';
+import { Layer, Stage } from 'react-konva';
+import { centerElement } from '@root/src/util/dimensions';
 
 
 // Props interface for the ComponentBuilder
@@ -16,10 +21,17 @@ interface ComponentBuilderProps {
 
 }
 
+
+// TODO Change BlueprintContext to use Zustand store
 export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
 
-    const [componentToEdit, setComponentToEdit] = useState<string | null>(null);
-
+    const stageDimensions = {
+        width: 800,
+        height: 600
+    }
+    const [itemIndex, setItemIndex] = useState<number>(0);
+    const setBlueprint = useSetBlueprint(); 
+    const bpStore = useBlueprint();
     const { blueprint, updateBlueprint } = useContext(BlueprintContext);
     const { selected, updateSelected } = useContext(LookupContext);
 
@@ -29,40 +41,38 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
     }, [blueprint])
 
 
-const getSelectedItem = () => {
-        if(!selected) return <div>Select an item from the <code>Hierarchy view</code></div>;
-        if(isTypeOf<GameComponentType>(selected, GAME_COMPONENT_ENUM)) {
-            if(isTypeOf<CardType>(selected, GAME_COMPONENT_ENUM.CARD)) {
-                return <Card {...selected} />;
-            }
-            if(isTypeOf<MeepleType>(selected, GAME_COMPONENT_ENUM.MEEPLE)) {
-                    return <Meeple {...selected} />;
-            }
-        }
-        if(isTypeOf<ResourceType>(selected, RESOURCE_ENUM)) {
-                return <Resource {...selected}/>;
-        }
-        if(isTypeOf<ActionType>(selected, ACTION_TYPE_ENUM)) {
-            return <Action { ...selected}/>
-        }
-        return <div>Select an item from the <code>Hierarchy view</code></div>;
+const setSelectedComponent = (index: number) => {
+    if (bpStore.gameComponents[index]) {
+        updateSelected({ ...selected, selectedComponent: bpStore.gameComponents[index][1] });
+    }
 }
 
-
-    const getGameComponents = () => { 
-        return blueprint.gameComponents.map(([, item], index) => {
-            if(isTypeOf<CardType>(item, GAME_COMPONENT_ENUM.CARD)) {
-                return <Card {...item} key={index} />
+const getItemsAsJSX = useCallback(() => {
+        const items: JSX.Element[] = [];
+        bpStore.gameComponents.forEach(([key, value]) => {
+            if(isTypeOf<GameComponentType>(value, GAME_COMPONENT_ENUM)) {
+                items.push(<GameComponent 
+                    {...value} 
+                    showTitle={true} 
+                    renderAs='konva' 
+                    style={{
+                        ...value.style, 
+                        ...centerElement(stageDimensions.width, stageDimensions.height, value.style?.width || 0, value.style?.height || 0) }}  
+                    />);
             }
-            if(isTypeOf<MeepleType>(item, GAME_COMPONENT_ENUM.MEEPLE)) {
-                return <Meeple {...item} key={index} />
-            }
-            else return null
-        })
-     };
+        });
+        // bpStore.resources.forEach(([key, value]) => {
+        //     if(isTypeOf<ResourceType>(value, RESOURCE_ENUM)) {
+        //         items.push(<Resource {...value}/>);
+        //     }
+        // });
+        console.log('items', items);
+        return items;
+    }, [bpStore.gameComponents]);
 
     const updateVisuals = (updatedItem: Partial<VisualType>) => {
         if(isTypeOf<GameComponentType>(selected, GAME_COMPONENT_ENUM)) {
+            if(!selected.style) return;
             const updatedComponent = {
             ...selected,
             style: {
@@ -72,7 +82,10 @@ const getSelectedItem = () => {
             };
             const gcMap = new Map(blueprint.gameComponents);
             gcMap.set(selected.id, updatedComponent);
-            
+            setBlueprint({
+                ...blueprint,
+                gameComponents: Array.from(gcMap.entries())
+            });
             updateBlueprint({
             ...blueprint,
             gameComponents: Array.from(gcMap.entries())
@@ -118,8 +131,24 @@ const getSelectedItem = () => {
 
     return (
             <div className="component-builder flex flex-row mx-auto h-full space-x-2">
-                <Carousel className='h-full' items={[getSelectedItem()]}/>
-                {selected?.selectedComponent?.style && <Visuals item={selected.selectedComponent?.style} onUpdate={updateVisuals} />}
+                <Carousel title={selected.selectedComponent?.name} className='h-full' arrayLength={getItemsAsJSX().length} setIndex={(index) => setSelectedComponent(index)}>
+                    <Stage width={800} height={600}>
+                        <Layer>
+                        { selected.selectedComponent && isTypeOf<GameComponentType>(selected.selectedComponent, GAME_COMPONENT_ENUM) &&
+                            <GameComponent
+                                {...selected.selectedComponent}
+                                showTitle={true}
+                                style={{
+                                    ...selected.selectedComponent.style,
+                                    ...centerElement(stageDimensions.width, stageDimensions.height, selected.selectedComponent.style?.width || 0, selected.selectedComponent.style?.height || 0)
+                                }}
+                                renderAs='konva'
+                            />
+                      }
+                        </Layer>
+                    </Stage>
+                </Carousel>
+                {selected?.selectedComponent?.style && <Visuals item={selected.selectedComponent.style} onUpdate={updateVisuals} />}
             </div>
     );
 };

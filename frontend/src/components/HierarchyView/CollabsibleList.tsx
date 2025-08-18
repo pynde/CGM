@@ -2,7 +2,9 @@ import * as Accordion from "@radix-ui/react-accordion";
 import React, { useCallback, useContext, useEffect } from "react";
 import ItemDetails from "../UI/ItemDetails";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
-import { LookupContext } from "@root/src/context/LookupContext";
+import { LookupContext, LookupContextType } from "@root/src/context/LookupContext";
+import { BlueprintContextType } from "@root/src/context/BlueprintContext";
+import { BlueprintType } from "@shared/types/types";
 
 
 /**
@@ -12,7 +14,7 @@ import { LookupContext } from "@root/src/context/LookupContext";
  * @property {ReactNode} [children] - The content to be shown/hidden inside the disclosure panel
  */
 interface CollapsibleListProps {
-    label: string | React.ReactNode
+    label: string | React.ReactNode,
     children?: React.ReactNode
 }
 
@@ -27,10 +29,7 @@ interface CollapsibleListProps {
  * @returns A disclosure component with a button that toggles visibility of children content
  */
 const CollapsibleList: React.FC<CollapsibleListProps> = (props: CollapsibleListProps) => {    
-    const { selected } = useContext(LookupContext);
-    useEffect(() => { 
-
-    }, [selected])
+    const { updateSelected } = useContext(LookupContext);
 
     return (
         <Accordion.Root type="single" collapsible>

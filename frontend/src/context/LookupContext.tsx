@@ -8,7 +8,7 @@ export type LookupContextType = {
     actionTypes: ActionType['type'][];
     actionNames: ActionType['name'][];
     selected: {
-        selectedComponent: GameComponentType<unknown> | ResourceType | ActionType | PlayerType | null;
+        selectedComponent: GameComponentType<unknown> | null;
         selectedAction: ActionType | null;
         selectedResource: ResourceType | null;
         selectedOwner: Owner<unknown> | null;

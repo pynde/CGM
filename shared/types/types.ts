@@ -74,12 +74,12 @@ export type MeepleType = GameComponentType<{
 export type GameComponentType<T = {}> = BaseType & {
     type: GAME_COMPONENT_ENUM,
     id: string,
-    style: VisualType,
     actions: ActionType[],
     price: ResourceType[],
     ownerId: string,
     symbols?: SymbolType[],
     effects?: EffectType[],
+    style?: VisualType,
     state?: GAME_COMPONENT_STATE_ENUM,
     twoSided?: boolean,
 } & T;
@@ -179,11 +179,15 @@ export type GroupType<T> = T & {
 
 export type VisualType<T = {}> = T & {
     imgUrls?: string[],
-    width: number,
-    height: number,
+    width?: number,
+    height?: number,
     maxHeight?: number,
     maxWidth?: number,
-    background?: string
+    background?: string,
+    zIndex?: number,
+    x?: number,
+    y?: number,
+    fill?: string
 }
 
 // ARRAYS AND MAPS
@@ -205,13 +209,14 @@ export type TailwindCSS = string;
 
 // TYPE GUARDS
 
-export const isTypeOf = <T>(x: any, type: string | object): x is T => {
+export const isTypeOf = <T>(objectToTest: any, type: string | object): objectToTest is T => {
+    if(objectToTest === null || typeof objectToTest !== 'object') return false;
     if(typeof type === 'string') {
-        if(x.type === type) return true;
+        if(objectToTest.type === type) return true;
         else return false;
     }
     else {
-        return Object.values(type).includes(x.type);
+        return Object.values(type).includes(objectToTest.type);
     }
 }
 

@@ -7,10 +7,7 @@ type ResourceProps = ResourceType & {
 
 const Resource : FC<ResourceProps> = ({ amount = 0, resource, ...props}: ResourceProps) => {
   return (
-    <>
-    { props.style?.imgUrls ? <div style={{backgroundImage: 'url('+props.style.imgUrls[0]+')'}} className={"flex w-full h-full justify-center items-center bg-stone-900/25"}>{amount}</div> : <></>}
-    </>
-    
+    <div style={{ backgroundImage: props.style?.imgUrls ? `url(${props.style.imgUrls[0]})` : 'none', backgroundColor: props.style?.fill, width: props.style?.width, height: props.style?.height}}>{amount}</div>
   );
 };
 

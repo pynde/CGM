@@ -8,6 +8,7 @@ export const backPic = "https://picsum.photos/id/203/200/300";
 const playerId = 'testi-id';
 const card_id = generateId();
 const meeple_id = generateId();
+const board_id = generateId();
 const resourceId = generateId();
 const actionId_0 = generateId();
 const actionId_1 = generateId();
@@ -15,7 +16,7 @@ const actionId_2 = generateId();
 const actionId_3 = generateId();
 
 const bank: Owner<BankType> = { type: OWNER_TYPE_ENUM.BANK, id: '', gameComponents: [], resources: [], name: 'Bank' };
-const resource: ResourceType = { type: RESOURCE_ENUM.MONEY, resource: { value: 1 }, amount: 10, id: generateId(), name: 'Money' }
+const resource: ResourceType = { type: RESOURCE_ENUM.MONEY, resource: { value: 1 }, amount: 10, id: resourceId, style: { fill: 'yellow', width: 200, height: 200 }, name: 'Money' }
 /** HUOM NÄMÄ ACTIONIEN OWNER ID PITÄNEE POISTAA. RISTIRIIDASSA BLUEPRINTIN KANSSA. KÄYTTÄJÄN PITÄÄ PYSTYÄ LUOMAAN OMISTAMATON ACTION */
 const finish_action: ActionType = { type: ACTION_TYPE_ENUM.FINISH_ACTION, automatic: false, id: actionId_0, ownerId: card_id, name: 'Finish', actionPipe: [] }
 const transfer_action: ActionType = { type: ACTION_TYPE_ENUM.TRANSFER_ACTION, automatic: false, id: actionId_1, ownerId: card_id, name: 'Transfer resources', actionPipe: [] }
@@ -56,7 +57,7 @@ export const players: PlayerType[] = [{
     type: OWNER_TYPE_ENUM.PLAYER
 }];
 
-export const components : GameComponentType<CardType | MeepleType>[] = [
+export const components : GameComponentType[] = [
   { 
       type: GAME_COMPONENT_ENUM.CARD, 
       name: 'TESTIKORTTI', 
@@ -65,23 +66,44 @@ export const components : GameComponentType<CardType | MeepleType>[] = [
       actions: [card_action],
       ownerId: players[0].id,
       style: {
+        x: 200,
+        y: 300,
         width: 200,
-        height: 300,
-        imgUrls: [frontPic, backPic]
+        height: 200,
+        fill: 'green'
       }
     },
     { 
       type: GAME_COMPONENT_ENUM.MEEPLE,
-      name: 'TEST_MEEPLE',
+      name: 'TESTIMEEPLE',
       id: meeple_id,
       price: [],
       actions: [meeple_action],
       ownerId: players[0].id,
-      inUse: false,
       style: {
-        width: 80,
-        height: 80
+        x: 300,
+        y: 100,
+        width: 100,
+        height: 100,
+        fill: 'blue'
       }
+
+    },
+      { 
+      type: GAME_COMPONENT_ENUM.BOARD,
+      name: 'TESTILAUTA',
+      id: board_id,
+      price: [],
+      actions: [meeple_action],
+      ownerId: players[0].id,
+      style: {
+        x: 100,
+        y: 100,
+        width: 600,
+        height: 250, 
+        fill: 'magenta'
+      }
+      
     }
 ];
 
@@ -94,7 +116,7 @@ export const owners: OwnerArray<PlayerType> = [
 // ]
 
 export const blueprint: BlueprintType = {
-    gameComponents: [[components[0].id, components[0]], [components[1].id, components[1]]],
+    gameComponents: components.map(c => [c.id, c]),
     resources: [[resource.id, resource]],
     actions: [
         [card_action.id, card_action], [meeple_action.id, meeple_action], [finish_action.id, finish_action], [transfer_action.id, transfer_action],

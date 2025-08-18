@@ -1,27 +1,43 @@
 import React from 'react';
 import { GameComponentType } from '@shared/types/types';
+import { Group, Image, Rect, Text } from 'react-konva';
 
+export type GameComponentRenderProps = {
+    draggable?: boolean;
+    renderAs: 'konva' | 'html';
+    showTitle?: boolean;
+}
 
-const GameComponent: React.FC<GameComponentType> = (props: GameComponentType) => {
+type GameComponentProps = GameComponentRenderProps & GameComponentType;
 
-    props
-    return (
-        <div className="gamecomponent" style={{ width: props.style.width, height: props.style.height, background: props.style.background }}>
-            {props.style.imgUrls && props.style.imgUrls.map((url, index) => (
-                <img key={index} src={url} alt={`Component ${props.id}`} style={{ maxWidth: props.style.maxWidth, maxHeight: props.style.maxHeight }} />
-            ))}
-            <div className="props-details">
-                <h3>{props.type}</h3>
-                <p>ID: {props.id}</p>
-                <p>Owner ID: {props.ownerId}</p>
-                {props.price && props.price.map((resource, index) => (
-                    <div key={index}>
-                        <p>Resource Type: {resource.type}</p>
-                        <p>Amount: {resource.amount}</p>
-                    </div>
-                ))}
+const GameComponent: React.FC<GameComponentProps> = (props: GameComponentProps) => {
+
+    const buildKonvaComponent = () => {
+        if(props.renderAs !== 'konva') return null;
+        return (
+        <Group draggable={props.draggable} id={props.id}>
+            <Image {...props.style} image={undefined} />
+            {props.showTitle &&
+            <Text {...props.style} fontFamily='Futura' align='center' fill={'black'} text={props.name}/>
+            }
+        </Group>
+        )
+    }
+
+    const buildHtmlComponent = () => {
+        if(props.renderAs !== 'html') return null;
+        return (
+            <div style={{ left: props.style?.x, top: props.style?.y, width: props.style?.width, height: props.style?.height, backgroundColor: props.style?.fill }} className='game-component'>
+                { 
+                props.showTitle &&
+                    <span className='text-lg font-bold text-center'>{props.name}</span>
+                }
             </div>
-        </div>
+        );
+    }
+
+    return (
+        buildKonvaComponent() || buildHtmlComponent()
     );
 };
 
