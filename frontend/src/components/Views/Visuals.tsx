@@ -13,7 +13,7 @@ const Visuals: React.FC<VisualsProps> = ({ item, onUpdate }) => {
     const [imgUrls, setImgUrls] = useState<string[]>(item.imgUrls || []);
     const [width, setWidth] = useState(item.width || 0);
     const [height, setHeight] = useState(item.height || 0);
-    const [opened, setOpened] = useState(false);
+    const [opened, setOpened] = useState(true);
 
     useEffect(() => {
         setImgUrls(item.imgUrls || []);
