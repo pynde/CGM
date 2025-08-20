@@ -58,5 +58,5 @@ export const useBlueprintActions = () => {
 };
 
 export const useSetBlueprint = (partial: Partial<BlueprintStoreType>) => {
-    return useBlueprintStore((state) => state.setBlueprint(partial));
+    return useBlueprintStore.getState().setBlueprint(partial);
 };

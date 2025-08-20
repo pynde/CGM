@@ -4,7 +4,7 @@ import CardScene from './CardScene';
 import Overview from './Overview';
 import ComponentBuilder from './ComponentBuilder';
 import { GameStateProvider } from '@root/src/context/GameStateContext';
-import { ActionType, isTypeOf } from '@shared/types/types';
+import { ActionType, BlueprintType, isTypeOf } from '@shared/types/types';
 import { socket } from '@root/src/App';
 import { ACTION_TYPE_ENUM, SOCKET_RESPONSE } from '@shared/enums/enums';
 import { LookupContext } from '@root/src/context/LookupContext';
@@ -22,7 +22,9 @@ interface SceneNavigationProps {
 
 }
 
-
+const updateBp = (partialBp: Partial<BlueprintType>) => {
+	useSetBlueprint(partialBp);
+}
 
 const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps) => {
 	const INITIAL_TAB = 'ComponentBuilder';	
@@ -33,15 +35,16 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 	const [contentSize, setContentSize] = useState<{ width: number, height: number }>({ width: 400, height: 400 });
 	const { selected, updateSelected } = useContext(LookupContext);
 	const bpStore = useBlueprint();
-	const setBlueprint = useSetBlueprint;
+
+
 
 	const sceneList: TabContent[] = [
 		{tabName: 'Overview', tabContent: <GameStateProvider><Overview key={tabContent+0}/></GameStateProvider>}, 
 		{tabName: 'Cards', tabContent: <CardScene key={tabContent+1}/>}, 
 		{tabName: 'GameBoard', tabContent: <div key={tabContent+2}>Game Board placeholder</div>},
-		{tabName: 'ComponentBuilder', tabContent: <ComponentBuilder/> },
+		{tabName: 'ComponentBuilder', tabContent: <ComponentBuilder key={tabContent+3}/> },
 		{tabName: 'Actions', tabContent: <ActionScene key={tabContent+4}/>},
-		{tabName: 'GameView', tabContent: <GameView blueprint={bpStore}/>},
+		{tabName: 'GameView', tabContent: <GameView key={tabContent+5} blueprint={bpStore}/>},
 	];
 
 
@@ -52,12 +55,11 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 		}
 	}
 
-
 	useEffect(() => {
 		if(bpStore) {
 			socket.emit('getBlueprint', (bp, status) => {
 				if(status == SOCKET_RESPONSE.OK) {
-					setBlueprint(bp);
+					updateBp(bp);
 				} 
 			});
 		}
