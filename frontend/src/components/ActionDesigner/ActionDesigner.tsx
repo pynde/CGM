@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { ActionType, SubActionType } from '@shared/types/types';
 import { LookupContext } from '@root/src/context/LookupContext';
-import { BlueprintContext } from '@root/src/context/BlueprintContext';
 import ActionNode from './ActionNode';
 import useHistory, { OperationType } from '@root/src/hooks/HistoryHooks';
 import AddNode from './AddNode';
 import clsx from 'clsx';
+import { useBlueprint, useSetBlueprint } from '@root/src/zustand/BlueprintStore';
 
 
 type ActionDesignerProps = React.HTMLAttributes<HTMLDivElement> & {
@@ -14,7 +14,7 @@ type ActionDesignerProps = React.HTMLAttributes<HTMLDivElement> & {
 
 const ActionDesigner: React.FC<ActionDesignerProps> = ({ selectedAction, ...props }) => {
     const { actionNames } = useContext(LookupContext);
-    const { blueprint, updateBlueprint } = useContext(BlueprintContext)
+    const bpStore = useBlueprint();
     const { historyState, setHistory, useHistoryKeyboard, clearHistory } = useHistory<ActionType>(selectedAction);
     const [newNodeIndex, setNewNodeIndex] = useState<number | null>(null);
     const [deletedNodeIndex, setDeletedNodeIndex] = useState<number | null>(null);
@@ -35,7 +35,7 @@ const ActionDesigner: React.FC<ActionDesignerProps> = ({ selectedAction, ...prop
 
     const addActionToPipe = (newActionName: string, index: number = 0) => {
         const actionpipe = [...historyState.actionPipe];
-        const bpAction = blueprint.actions.find(([,action]) => action.name === newActionName);
+        const bpAction = bpStore.actions.find(([,action]) => action.name === newActionName);
         if(!bpAction) return;
         const newAction: SubActionType = { ...bpAction[1] };
         actionpipe.splice(index, 0, newAction);
@@ -45,12 +45,12 @@ const ActionDesigner: React.FC<ActionDesignerProps> = ({ selectedAction, ...prop
 
     const addActionToGroup = (newActionName: string, subAction: SubActionType, index: number = 0) => {
         if(subAction.group) {
-            const bpAction = blueprint.actions.find(([,action]) => action.name === newActionName);
+            const bpAction = bpStore.actions.find(([,action]) => action.name === newActionName);
             if(!bpAction) return;
             subAction.group.push(bpAction[1]);
         }
         else {
-            const bpAction = blueprint.actions.find(([,action]) => action.name === newActionName);
+            const bpAction = bpStore.actions.find(([,action]) => action.name === newActionName);
             if(!bpAction) return;
             subAction.group = [bpAction[1]];
         }
@@ -67,8 +67,8 @@ const ActionDesigner: React.FC<ActionDesignerProps> = ({ selectedAction, ...prop
     };
 
     const addActionToBlueprint = (actionToAdd: ActionType) => {
-        const newActions = blueprint.actions.splice(-1, 0, [actionToAdd.id, actionToAdd])
-        updateBlueprint({ ...blueprint, actions: newActions })
+        const newActions = bpStore.actions.splice(-1, 0, [actionToAdd.id, actionToAdd])
+        useSetBlueprint({ ...bpStore, actions: newActions })
     }
 
     const zoomContainer = (e: React.WheelEvent<HTMLDivElement>) => {

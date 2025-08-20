@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import { GameComponentType, ResourceType, ActionType, PlayerType, Owner } from '@shared/types/types';
-import { BlueprintContext } from './BlueprintContext';
+import { useBlueprint } from '../zustand/BlueprintStore';
 
 export type LookupContextType = {
     gameComponentTypes: GameComponentType['type'][];
@@ -32,7 +32,7 @@ export const LookupContext = createContext<LookupContextType & SelectedUpdate>({
 });
 
 export const LookupProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { blueprint } = useContext(BlueprintContext);
+    const bpStore = useBlueprint();
 
     const [selectedState, setSelected] = useState<LookupContextType['selected']>({
         selectedComponent: null,
@@ -46,13 +46,13 @@ export const LookupProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     };
 
     const lookup = useMemo(() : LookupContextType => {
-        const gameComponentTypes = blueprint.gameComponents.map(([key, value]) => value.type);
-        const gameComponentNames = blueprint.gameComponents.map(([key, value]) => value.name);
-        const resourceTypes = blueprint.resources.map(([key, value]) => value.type);
-        const actionTypes = blueprint.actions.map(([key, value]) => value.type);
-        const actionTypeNames = blueprint.actions.map(([key, value]) => value.name);
+        const gameComponentTypes = bpStore.gameComponents.map(([key, value]) => value.type);
+        const gameComponentNames = bpStore.gameComponents.map(([key, value]) => value.name);
+        const resourceTypes = bpStore.resources.map(([key, value]) => value.type);
+        const actionTypes = bpStore.actions.map(([key, value]) => value.type);
+        const actionTypeNames = bpStore.actions.map(([key, value]) => value.name);
         return { gameComponentTypes, resourceTypes, actionTypes, selected: selectedState, actionNames: actionTypeNames };
-    }, [blueprint]);
+    }, [bpStore]);
 
     return (
         <LookupContext.Provider 

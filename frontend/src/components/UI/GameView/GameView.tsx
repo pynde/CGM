@@ -2,7 +2,7 @@ import * as ContextMenu from '@radix-ui/react-context-menu';
 import { useAddToView, useGetViews, useResetGameViews } from '@root/src/zustand/GameViewStore';
 import React, { useEffect } from 'react';
 import { Stage, Layer, Rect, Text, Group } from 'react-konva';
-import ActionEffectMenu from '../../ContextMenu/ActionEffectMenu';
+import ActionEffectMenu from '../../ContextMenu/BlueprintMenu';
 import GridSelection from '../GridSelection/GridSelection';
 import { BlueprintType } from '@shared/types/types';
 import GameComponent from '../../GameComponent/GameComponent';

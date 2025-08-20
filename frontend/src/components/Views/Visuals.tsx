@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as Collapsible from "@radix-ui/react-collapsible";
-import { ActionType, GameComponentType, ResourceType, VisualType } from '@shared/types/types';
+import { VisualType } from '@shared/types/types';
 
 
 

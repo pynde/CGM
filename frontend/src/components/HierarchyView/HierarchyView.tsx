@@ -1,4 +1,3 @@
-import { BlueprintContext } from '@root/src/context/BlueprintContext';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import ItemDetails from '../UI/ItemDetails';
 import { LookupContext } from '@root/src/context/LookupContext';
@@ -8,25 +7,26 @@ import clsx from 'clsx';
 import CollapsibleList from './CollabsibleList';
 import { ActionType, GameComponentType, isTypeOf, ResourceType } from '@shared/types/types';
 import { GAME_COMPONENT_ENUM, RESOURCE_ENUM } from '@shared/enums/enums';
+import { useBlueprint } from '@root/src/zustand/BlueprintStore';
 
 interface HierarchyViewProps {
 
 }
 
 const HierarchyView : FC<HierarchyViewProps> = () => {
-  const { blueprint } = useContext(BlueprintContext);
+  const bpStore = useBlueprint();
   const {gameComponentTypes, resourceTypes, actionTypes, selected, updateSelected} = useContext(LookupContext);
   const [active, setActive] = useState(false);
 
   const setSelected = (value: any) => {
     console.log('value', value);
     if(isTypeOf<GameComponentType>(value, GAME_COMPONENT_ENUM)) {
-      const gcMap = new Map(blueprint.gameComponents);
+      const gcMap = new Map(bpStore.gameComponents);
       const item = gcMap.get(value.id);
       if(item) updateSelected({ ...selected, selectedComponent: item })
     }
     if(isTypeOf<ResourceType>(value, RESOURCE_ENUM)) {
-      const rMap = new Map(blueprint.resources);
+      const rMap = new Map(bpStore.resources);
       const item = rMap.get(value.id);
       if(item) updateSelected({ ...selected, selectedResource: item });
     }
@@ -45,7 +45,7 @@ const HierarchyView : FC<HierarchyViewProps> = () => {
       )
       else return null;
     })
-  }, [blueprint, selected]);
+  }, [bpStore, selected]);
   
 
   return (
@@ -61,7 +61,7 @@ const HierarchyView : FC<HierarchyViewProps> = () => {
             <Accordion.Content>
               {gameComponentTypes.map(item => (
           <CollapsibleList key={item} label={item}>
-            { getItemDetailsByType(blueprint.gameComponents, item) }
+            { getItemDetailsByType(bpStore.gameComponents, item) }
           </CollapsibleList>
               ))}
             </Accordion.Content>

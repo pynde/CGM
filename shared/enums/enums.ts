@@ -30,6 +30,7 @@ export enum CARD_MIXTURE_ENUM {
 }
 
 export enum GAME_COMPONENT_ENUM {
+    GAME_COMPONENT = "GAME_COMPONENT",
     CARD = 'CARD',
     MEEPLE = 'MEEPLE',
     BOARD = 'BOARD',

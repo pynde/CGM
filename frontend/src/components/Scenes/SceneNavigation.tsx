@@ -8,10 +8,10 @@ import { ActionType, isTypeOf } from '@shared/types/types';
 import { socket } from '@root/src/App';
 import { ACTION_TYPE_ENUM, SOCKET_RESPONSE } from '@shared/enums/enums';
 import { LookupContext } from '@root/src/context/LookupContext';
-import { BlueprintContext } from '@root/src/context/BlueprintContext';
 import ActionScene from './ActionScene';
 import GridSelection from '../UI/GridSelection/GridSelection';
 import GameView from '../UI/GameView/GameView';
+import { useBlueprint, useSetBlueprint } from '@root/src/zustand/BlueprintStore';
 
 type TabContent = {
 	tabName: string,
@@ -32,8 +32,8 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 	const [selectedAction, setSelectedAction] = useState<ActionType>();
 	const [contentSize, setContentSize] = useState<{ width: number, height: number }>({ width: 400, height: 400 });
 	const { selected, updateSelected } = useContext(LookupContext);
-	const { blueprint, updateBlueprint } = useContext(BlueprintContext);
-	
+	const bpStore = useBlueprint();
+	const setBlueprint = useSetBlueprint;
 
 	const sceneList: TabContent[] = [
 		{tabName: 'Overview', tabContent: <GameStateProvider><Overview key={tabContent+0}/></GameStateProvider>}, 
@@ -41,7 +41,7 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 		{tabName: 'GameBoard', tabContent: <div key={tabContent+2}>Game Board placeholder</div>},
 		{tabName: 'ComponentBuilder', tabContent: <ComponentBuilder/> },
 		{tabName: 'Actions', tabContent: <ActionScene key={tabContent+4}/>},
-		{tabName: 'GameView', tabContent: <GameView blueprint={blueprint}/>},
+		{tabName: 'GameView', tabContent: <GameView blueprint={bpStore}/>},
 	];
 
 
@@ -54,10 +54,10 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 
 
 	useEffect(() => {
-		if(blueprint) {
+		if(bpStore) {
 			socket.emit('getBlueprint', (bp, status) => {
 				if(status == SOCKET_RESPONSE.OK) {
-					updateBlueprint(bp);
+					setBlueprint(bp);
 				} 
 			});
 		}
@@ -75,10 +75,10 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 
 	  
 	  useEffect(() => {
-		if(blueprint.gameComponents[0]) {
-			updateSelected({ ...selected, selectedComponent: blueprint.gameComponents[0][1]});
+		if(bpStore.gameComponents[0]) {
+			updateSelected({ ...selected, selectedComponent: bpStore.gameComponents[0][1]});
 		}
-	  }, [blueprint])
+	  }, [bpStore])
 
 	  useEffect(() => {
 		setAction()

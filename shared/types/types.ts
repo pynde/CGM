@@ -32,6 +32,7 @@ export type BlueprintType = {
     gameComponents: Array<[GameComponentType['id'], GameComponentType]>,
     resources: Array<[ResourceType['id'], ResourceType]>,
     actions: Array<[ActionType['id'], ActionType]>
+    effects: Array<[EffectType['id'], EffectType]>,
 }
 
 // ACTIONS
@@ -90,7 +91,7 @@ export type GameComponentType<T = {}> = BaseType & {
 export type ResourceType = & BaseType & (
     | { type: RESOURCE_ENUM.MONEY; resource: Money }
     | { type: RESOURCE_ENUM.CUSTOM; resource: CustomResource }
-) & { id: string, amount: number, allowNegativeAmount?: boolean, style?: VisualType }
+) & { amount: number, allowNegativeAmount?: boolean, style?: VisualType }
 
 export type Money = {
     value: MultipleValues | FixedValue;

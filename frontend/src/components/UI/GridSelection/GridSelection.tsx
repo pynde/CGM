@@ -1,13 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import { Layer, Rect, } from "react-konva";
 
-interface SelectionBox {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
 type GridSelectionProps = {
   width: number;
   height: number;
@@ -19,10 +12,6 @@ const GridSelection: React.FC<GridSelectionProps> = (props: GridSelectionProps) 
   const ROWS = 9 * MULTIPLIER;
   const CELL_SIZE = Math.min(40, Math.min(props.width / COLUMNS, props.height / ROWS));
 
-
-  useEffect(() => {
-    console.log('width and height', props.width, props.height);
-  }, [props.width]);
 
   const memoizedCells = useMemo(() => {
           const array = [...Array(COLUMNS * ROWS)].map((_, index) => {

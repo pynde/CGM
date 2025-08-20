@@ -1,19 +1,16 @@
-import { BlueprintContext } from '@root/src/context/BlueprintContext';
-import { ACTION_TYPE_ENUM, GAME_COMPONENT_ENUM, RESOURCE_ENUM, SOCKET_RESPONSE } from '@shared/enums/enums';
-import { ActionType, BaseType, CardType, GameComponentType, isTypeOf, MeepleType, ResourceType, VisualType } from '@shared/types/types';
-import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react';
-import { Card } from '../Card/Card';
-import { Meeple } from '../Meeple/Meeple';
+import { ACTION_TYPE_ENUM, GAME_COMPONENT_ENUM, RESOURCE_ENUM } from '@shared/enums/enums';
+import { ActionType, GameComponentType, isTypeOf, ResourceType, VisualType } from '@shared/types/types';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import Carousel from '../UI/Carousel';
 import Visuals from '../Views/Visuals';
 import { LookupContext } from '@root/src/context/LookupContext';
-import Resource from '../Resource/Resource';
-import { Action } from '../Actions/Action';
 import { useBlueprint, useSetBlueprint } from '@root/src/zustand/BlueprintStore';
 import GameComponent from '../GameComponent/GameComponent';
-import { useGetViews } from '@root/src/zustand/GameViewStore';
 import { Layer, Stage } from 'react-konva';
 import { centerElement } from '@root/src/util/dimensions';
+import * as ContextMenu from '@radix-ui/react-context-menu';
+import ActionEffectMenu from '../ContextMenu/BlueprintMenu';
+import BlueprintMenu from '../ContextMenu/BlueprintMenu';
 
 
 // Props interface for the ComponentBuilder
@@ -30,15 +27,14 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
         height: 600
     }
     const [itemIndex, setItemIndex] = useState<number>(0);
-    const setBlueprint = useSetBlueprint(); 
+    const setBlueprint = useSetBlueprint; 
     const bpStore = useBlueprint();
-    const { blueprint, updateBlueprint } = useContext(BlueprintContext);
     const { selected, updateSelected } = useContext(LookupContext);
 
 
     useEffect(() => {
-        if(blueprint.gameComponents[0]) updateSelected({ ...selected, selectedComponent: blueprint.gameComponents[0][1] });
-    }, [blueprint])
+        if(bpStore.gameComponents[0]) updateSelected({ ...selected, selectedComponent: bpStore.gameComponents[0][1] });
+    }, [bpStore])
 
 
 const setSelectedComponent = (index: number) => {
@@ -80,15 +76,11 @@ const getItemsAsJSX = useCallback(() => {
                 ...updatedItem
             }
             };
-            const gcMap = new Map(blueprint.gameComponents);
+            const gcMap = new Map(bpStore.gameComponents);
             gcMap.set(selected.id, updatedComponent);
             setBlueprint({
-                ...blueprint,
+                ...bpStore,
                 gameComponents: Array.from(gcMap.entries())
-            });
-            updateBlueprint({
-            ...blueprint,
-            gameComponents: Array.from(gcMap.entries())
             });
         }
         if(isTypeOf<ResourceType>(selected, RESOURCE_ENUM)) {
@@ -100,11 +92,11 @@ const getItemsAsJSX = useCallback(() => {
                 ...updatedItem
                 }
                 };
-                const rMap = new Map(blueprint.resources);
+                const rMap = new Map(bpStore.resources);
                 rMap.set(selected.id, updatedResource);
                 
-                updateBlueprint({
-                ...blueprint,
+                setBlueprint({
+                ...bpStore,
                 resources: Array.from(rMap.entries())
                 });
             }
@@ -117,11 +109,11 @@ const getItemsAsJSX = useCallback(() => {
                 ...updatedItem
                 }
                 };
-                const aMap = new Map(blueprint.actions);
+                const aMap = new Map(bpStore.actions);
                 aMap.set(selected.id, updatedAction);
                 
-                updateBlueprint({
-                ...blueprint,
+                setBlueprint({
+                ...bpStore,
                 actions: Array.from(aMap.entries())
                 });
             }
@@ -132,21 +124,28 @@ const getItemsAsJSX = useCallback(() => {
     return (
             <div className="component-builder flex flex-row mx-auto h-full space-x-2">
                 <Carousel title={selected.selectedComponent?.name} className='h-full' arrayLength={getItemsAsJSX().length} setIndex={(index) => setSelectedComponent(index)}>
-                    <Stage width={800} height={600}>
-                        <Layer>
-                        { selected.selectedComponent && isTypeOf<GameComponentType>(selected.selectedComponent, GAME_COMPONENT_ENUM) &&
-                            <GameComponent
-                                {...selected.selectedComponent}
-                                showTitle={true}
-                                style={{
-                                    ...selected.selectedComponent.style,
-                                    ...centerElement(stageDimensions.width, stageDimensions.height, selected.selectedComponent.style?.width || 0, selected.selectedComponent.style?.height || 0)
-                                }}
-                                renderAs='konva'
-                            />
-                      }
-                        </Layer>
-                    </Stage>
+                    <ContextMenu.Root modal={true}>
+                    <ContextMenu.Trigger>
+                        <Stage width={800} height={600}>
+                            <Layer>
+                            { selected.selectedComponent && isTypeOf<GameComponentType>(selected.selectedComponent, GAME_COMPONENT_ENUM) &&
+                                <GameComponent
+                                    {...selected.selectedComponent}
+                                    showTitle={true}
+                                    style={{
+                                        ...selected.selectedComponent.style,
+                                        ...centerElement(stageDimensions.width, stageDimensions.height, selected.selectedComponent.style?.width || 0, selected.selectedComponent.style?.height || 0)
+                                    }}
+                                    renderAs='konva'
+                                />
+                        }
+                            </Layer>
+                        </Stage>
+                        </ContextMenu.Trigger>
+                        <BlueprintMenu 
+                            gameComponents={bpStore.gameComponents}
+                        />
+                    </ContextMenu.Root>
                 </Carousel>
                 {selected?.selectedComponent?.style && <Visuals item={selected.selectedComponent.style} onUpdate={updateVisuals} />}
             </div>

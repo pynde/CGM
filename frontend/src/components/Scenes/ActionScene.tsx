@@ -3,9 +3,9 @@ import { ActionType, GameComponentType, isTypeOf } from '@shared/types/types';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Action from '../Actions/Action';
 import { LookupContext } from '@root/src/context/LookupContext';
-import { BlueprintContext } from '@root/src/context/BlueprintContext';
 import ActionDesigner from '../ActionDesigner/ActionDesigner';
 import ComBox from '../UI/ComBox';
+import { useBlueprint } from '@root/src/zustand/BlueprintStore';
 
 
 interface ActionSceneProps {
@@ -14,7 +14,7 @@ interface ActionSceneProps {
 
 const ActionScene: React.FC<ActionSceneProps> = () => {
     const { selected, updateSelected, actionTypes } = useContext(LookupContext);
-    const { blueprint } = useContext(BlueprintContext);
+    const bpStore = useBlueprint();
 
     const getSelectedAction = () => {
         if(selected.selectedAction) {
@@ -24,7 +24,7 @@ const ActionScene: React.FC<ActionSceneProps> = () => {
     }
 
     const changeSelected = (name: string | null) => {
-        const newSelected = blueprint.actions.find(([,value]) => value.name === name);
+        const newSelected = bpStore.actions.find(([,value]) => value.name === name);
         if(newSelected) updateSelected({ ...selected, selectedAction: newSelected[1] });
     }
 
@@ -38,7 +38,7 @@ const ActionScene: React.FC<ActionSceneProps> = () => {
                     defaultValue={getSelectedAction()?.name}
                     placeholder='Select action...'
                     options={
-                        blueprint.actions.map(([,action]) => action.name)
+                        bpStore.actions.map(([,action]) => action.name)
                     }
                 />
                 { 

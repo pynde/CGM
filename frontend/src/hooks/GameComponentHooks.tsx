@@ -4,15 +4,15 @@ import { ACTION_TYPE_ENUM, GAME_COMPONENT_ENUM, SOCKET_RESPONSE } from '@shared/
 import { ActionType, MeepleType, CardType } from '@shared/types/types'
 import { GameStateContext } from '../context/GameStateContext';
 import { socket } from '../App';
-import { BlueprintContext } from '../context/BlueprintContext';
 import Action from '../components/Actions/Action';
+import { useBlueprint } from '../zustand/BlueprintStore';
 
 
 
 // Custom hook for using a Game Component
 const useGameComponent = (component: GameComponentType) => {
   const { gameState, updateGS } = useContext(GameStateContext);
-  const { blueprint } = useContext(BlueprintContext);
+  const bpStore = useBlueprint();
   const [selectedState, setSelectedState] = useState(false);
   const getGCStyle : TailwindCSS = selectedState ? ' outline outline-4 outline-white ' : '';
 
@@ -65,7 +65,7 @@ const useGameComponent = (component: GameComponentType) => {
         }
       });
     }
-    if(blueprint) {
+    if(bpStore) {
       setSelectedState(!selectedState);
     }
   };
