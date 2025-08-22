@@ -49,6 +49,10 @@ export const useBlueprintGameComponents = () => {
     return useBlueprintStore((state) => state.gameComponents);
 };
 
+export const useUpdateBlueprintGameComponents = (gameComponents: [string, GameComponentType][]) => {
+    return useBlueprintStore.getState().setGameComponents(gameComponents);
+}
+
 export const useBlueprintResources = () => {
     return useBlueprintStore((state) => state.resources);
 };

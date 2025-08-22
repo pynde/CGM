@@ -15,19 +15,16 @@ interface CarouselProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Carousel: React.FC<CarouselProps> = (props) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    console.log('length', props.arrayLength);
 
     const nextSlide = () => {
         const i = props.arrayLength-1 === currentIndex ? 0 : currentIndex + 1;
         setCurrentIndex(i);
-        console.log('nextSlide', currentIndex);
         props.setIndex && props.setIndex(i);
     };
 
     const previousSlide = () => {
         const i = currentIndex === 0 ? props.arrayLength - 1 : currentIndex - 1;
         setCurrentIndex(i);
-        console.log('previousSlide', currentIndex);
         props.setIndex && props.setIndex(i);
     };
 

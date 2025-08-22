@@ -6,11 +6,13 @@ import Visuals from '../Views/Visuals';
 import { LookupContext } from '@root/src/context/LookupContext';
 import { useBlueprint, useSetBlueprint } from '@root/src/zustand/BlueprintStore';
 import GameComponent from '../GameComponent/GameComponent';
-import { Layer, Stage } from 'react-konva';
-import { centerElement } from '@root/src/util/dimensions';
+import { Layer, Stage, Transformer } from 'react-konva';
 import * as ContextMenu from '@radix-ui/react-context-menu';
-import ActionEffectMenu from '../ContextMenu/BlueprintMenu';
 import BlueprintMenu from '../ContextMenu/BlueprintMenu';
+import { BoxSelection } from '../UI/BoxSelection';
+import { KonvaEventObject, NodeConfig } from 'konva/lib/Node';
+import Konva from 'konva';
+
 
 
 // Props interface for the ComponentBuilder
@@ -29,42 +31,54 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
     const [itemIndex, setItemIndex] = useState<number>(0);
     const setBlueprint = useSetBlueprint; 
     const bpStore = useBlueprint();
-    const { selected, updateSelected } = useContext(LookupContext);
+    const { selected, setSelected } = useContext(LookupContext);
+    const [selectionRectStyle,setSelectionRectStyle] = useState<NodeConfig | undefined>(undefined);
+    const startingPoint = React.useRef<{ x: number; y: number } | null>(null);
+    const konvaRef = React.useRef<Konva.Group>(null);
+    const transformerRef = React.useRef<Konva.Transformer>(null);
+
+        const handleStageMouseDown = (event: KonvaEventObject<MouseEvent>) => {
+            const relativePointerPosition = event.currentTarget.getRelativePointerPosition();
+            // Logic to start box selection
+             if(!startingPoint.current && relativePointerPosition) {
+                startingPoint.current = relativePointerPosition
+             }
+        };
+    
+        const handleStageMouseMove = (event: KonvaEventObject<MouseEvent>) => {
+            const relativePointerPosition = event.currentTarget.getRelativePointerPosition();
+            if (!startingPoint.current || !relativePointerPosition) return;
+            const { startX, startY } = { startX: startingPoint.current.x, startY: startingPoint.current.y };
+            const { minX, minY } = { 
+                minX: Math.min(relativePointerPosition.x, startX), 
+                minY: Math.min(relativePointerPosition.y, startY),
+            };
+            setSelectionRectStyle((prevStyle) => ({
+                ...prevStyle,
+                x: minX,
+                y: minY,
+                width: Math.abs(relativePointerPosition.x - startX),
+                height: Math.abs(relativePointerPosition.y - startY),
+            }));
+            
+        }
+    
+        const handleStageMouseUp = (event: KonvaEventObject<MouseEvent>) => {
+            startingPoint.current = null;
+            setSelectionRectStyle(undefined);
+        };
 
 
     useEffect(() => {
-        if(bpStore.gameComponents[0]) updateSelected({ ...selected, selectedComponent: bpStore.gameComponents[0][1] });
+        if(bpStore.gameComponents[0]) setSelected({ ...selected, selectedComponent: bpStore.gameComponents[0][1] });
     }, [bpStore])
 
 
 const setSelectedComponent = (index: number) => {
     if (bpStore.gameComponents[index]) {
-        updateSelected({ ...selected, selectedComponent: bpStore.gameComponents[index][1] });
+        setSelected({ ...selected, selectedComponent: bpStore.gameComponents[index][1] });
     }
 }
-
-const getItemsAsJSX = useCallback(() => {
-        const items: JSX.Element[] = [];
-        bpStore.gameComponents.forEach(([key, value]) => {
-            if(isTypeOf<GameComponentType>(value, GAME_COMPONENT_ENUM)) {
-                items.push(<GameComponent 
-                    {...value} 
-                    showTitle={true} 
-                    renderAs='konva' 
-                    style={{
-                        ...value.style, 
-                        ...centerElement(stageDimensions.width, stageDimensions.height, value.style?.width || 0, value.style?.height || 0) }}  
-                    />);
-            }
-        });
-        // bpStore.resources.forEach(([key, value]) => {
-        //     if(isTypeOf<ResourceType>(value, RESOURCE_ENUM)) {
-        //         items.push(<Resource {...value}/>);
-        //     }
-        // });
-        console.log('items', items);
-        return items;
-    }, [bpStore.gameComponents]);
 
     const updateVisuals = (updatedItem: Partial<VisualType>) => {
         if(isTypeOf<GameComponentType>(selected, GAME_COMPONENT_ENUM)) {
@@ -120,31 +134,60 @@ const getItemsAsJSX = useCallback(() => {
         }
     }
 
+    
+    const updateSelectedComponent = () => {
+        if(!selected.selectedComponent) return;
+        bpStore.gameComponents
+    }
+
 
     return (
             <div className="component-builder flex flex-row mx-auto h-full space-x-2">
-                <Carousel title={selected.selectedComponent?.name} className='h-full' arrayLength={getItemsAsJSX().length} setIndex={(index) => setSelectedComponent(index)}>
+                <Carousel title={selected.selectedComponent?.name} className='h-full' arrayLength={bpStore.gameComponents.length} setIndex={(index) => setSelectedComponent(index)}>
                     <ContextMenu.Root modal={true}>
                     <ContextMenu.Trigger>
-                        <Stage width={800} height={600}>
+                        <Stage 
+                            style={{backgroundColor: 'chocolate'}}
+                            width={selected.selectedComponent?.style?.width} height={selected.selectedComponent?.style?.height} 
+                            onMouseDown={handleStageMouseDown} 
+                            onMouseMove={handleStageMouseMove} 
+                            onMouseUp={handleStageMouseUp}
+                            
+                            >
+                            
                             <Layer>
                             { selected.selectedComponent && isTypeOf<GameComponentType>(selected.selectedComponent, GAME_COMPONENT_ENUM) &&
                                 <GameComponent
                                     {...selected.selectedComponent}
                                     showTitle={true}
+                                    konvaRef={konvaRef}
                                     style={{
                                         ...selected.selectedComponent.style,
-                                        ...centerElement(stageDimensions.width, stageDimensions.height, selected.selectedComponent.style?.width || 0, selected.selectedComponent.style?.height || 0)
+                                        width: selected.selectedComponent.style?.width,
+                                        height: selected.selectedComponent.style?.height,
+                                        x: 0,
+                                        y: 0
                                     }}
                                     renderAs='konva'
                                 />
-                        }
+                            }
+                            <BoxSelection
+                                renderAs='konva'
+                                useBoxSelection={true}
+                                rectStyle={
+                                    {
+                                        ...selectionRectStyle
+                                    }
+                                }
+                                
+                            />
+                            <Transformer/>
                             </Layer>
-                        </Stage>
-                        </ContextMenu.Trigger>
+                        </Stage>                        
                         <BlueprintMenu 
                             gameComponents={bpStore.gameComponents}
                         />
+                        </ContextMenu.Trigger>
                     </ContextMenu.Root>
                 </Carousel>
                 {selected?.selectedComponent?.style && <Visuals item={selected.selectedComponent.style} onUpdate={updateVisuals} />}

@@ -130,4 +130,5 @@ export const blueprint: BlueprintType = {
         [defend_component_action.id, defend_component_action], [build_component_action.id, build_component_action], [destroy_component_action.id, destroy_component_action],
         [trade_component_action.id, trade_component_action], [explore_component_action.id, explore_component_action], [research_component_action.id, research_component_action]
     ],
+    effects:[]
 };

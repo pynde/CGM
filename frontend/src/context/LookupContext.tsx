@@ -15,7 +15,7 @@ export type LookupContextType = {
     };
 };
 
-type SelectedUpdate = { updateSelected: (selected: LookupContextType['selected']) => void } ;
+type SelectedUpdate = { setSelected: (selected: LookupContextType['selected']) => void } ;
 
 export const LookupContext = createContext<LookupContextType & SelectedUpdate>({ 
     gameComponentTypes: [], 
@@ -28,7 +28,7 @@ export const LookupContext = createContext<LookupContextType & SelectedUpdate>({
         selectedOwner: null, 
         selectedResource: null 
     }, 
-    updateSelected: () => {} 
+    setSelected: () => {} 
 });
 
 export const LookupProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -56,7 +56,7 @@ export const LookupProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     return (
         <LookupContext.Provider 
-            value={{ ...lookup, selected: selectedState, updateSelected: _updateSelected }}>
+            value={{ ...lookup, selected: selectedState, setSelected: _updateSelected }}>
             {children}
         </LookupContext.Provider>
         
