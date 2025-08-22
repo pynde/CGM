@@ -33,7 +33,7 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 	const [selectedTab, setSelectedTab] = useState(INITIAL_TAB);
 	const [selectedAction, setSelectedAction] = useState<ActionType>();
 	const [contentSize, setContentSize] = useState<{ width: number, height: number }>({ width: 400, height: 400 });
-	const { selected, updateSelected } = useContext(LookupContext);
+	const { selected, setSelected } = useContext(LookupContext);
 	const bpStore = useBlueprint();
 
 
@@ -78,7 +78,7 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 	  
 	  useEffect(() => {
 		if(bpStore.gameComponents[0]) {
-			updateSelected({ ...selected, selectedComponent: bpStore.gameComponents[0][1]});
+			setSelected({ ...selected, selectedComponent: bpStore.gameComponents[0][1]});
 		}
 	  }, [bpStore])
 
