@@ -42,7 +42,7 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 		{tabName: 'Overview', tabContent: <GameStateProvider><Overview key={tabContent+0}/></GameStateProvider>}, 
 		{tabName: 'Cards', tabContent: <CardScene key={tabContent+1}/>}, 
 		{tabName: 'GameBoard', tabContent: <div key={tabContent+2}>Game Board placeholder</div>},
-		{tabName: 'ComponentBuilder', tabContent: <ComponentBuilder key={tabContent+3}/> },
+		{tabName: 'ComponentBuilder', tabContent: <ComponentBuilder defaultComponent={selected.selectedComponent} key={tabContent+3}/> },
 		{tabName: 'Actions', tabContent: <ActionScene key={tabContent+4}/>},
 		{tabName: 'GameView', tabContent: <GameView key={tabContent+5} blueprint={bpStore}/>},
 	];
@@ -60,12 +60,19 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 			socket.emit('getBlueprint', (bp, status) => {
 				if(status == SOCKET_RESPONSE.OK) {
 					updateBp(bp);
+					setSelected({ ...selected, selectedComponent: bp.gameComponents[0]?.[1] });
 				} 
 			});
 		}
-		console.log('contentRef', contentRef.current);
+		
+		
 
 	  }, []);
+
+	  useEffect(() => {
+		
+		console.log('bpStore', bpStore.gameComponents[0]?.[1]);
+	  }, [])
 
 	  useLayoutEffect(() => {
 		const width_ = contentRef.current?.offsetWidth || 0;
@@ -75,12 +82,6 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 		setContentSize(newSize);
 	  }, [])
 
-	  
-	  useEffect(() => {
-		if(bpStore.gameComponents[0]) {
-			setSelected({ ...selected, selectedComponent: bpStore.gameComponents[0][1]});
-		}
-	  }, [bpStore])
 
 	  useEffect(() => {
 		setAction()

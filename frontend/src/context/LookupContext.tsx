@@ -8,10 +8,10 @@ export type LookupContextType = {
     actionTypes: ActionType['type'][];
     actionNames: ActionType['name'][];
     selected: {
-        selectedComponent: GameComponentType<unknown> | null;
-        selectedAction: ActionType | null;
-        selectedResource: ResourceType | null;
-        selectedOwner: Owner<unknown> | null;
+        selectedComponent?: GameComponentType;
+        selectedAction?: ActionType;
+        selectedResource?: ResourceType;
+        selectedOwner?: Owner<unknown>;
     };
 };
 
@@ -23,10 +23,10 @@ export const LookupContext = createContext<LookupContextType & SelectedUpdate>({
     actionTypes: [], 
     actionNames: [],
     selected: { 
-        selectedComponent: null, 
-        selectedAction: null, 
-        selectedOwner: null, 
-        selectedResource: null 
+        selectedComponent: undefined, 
+        selectedAction: undefined, 
+        selectedOwner: undefined, 
+        selectedResource: undefined 
     }, 
     setSelected: () => {} 
 });
@@ -35,10 +35,10 @@ export const LookupProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const bpStore = useBlueprint();
 
     const [selectedState, setSelected] = useState<LookupContextType['selected']>({
-        selectedComponent: null,
-        selectedAction: null,
-        selectedResource: null,
-        selectedOwner: null
+        selectedComponent: undefined,
+        selectedAction: undefined,
+        selectedResource: undefined,
+        selectedOwner: undefined
     });
 
     const _updateSelected = (selected_: LookupContextType['selected']) => {
