@@ -39,6 +39,8 @@ const GameView: React.FC<GameViewProps> = ({ width= widthBySixteen, height=heigh
                     <GridSelection width={width} height={height}/>
                     {items.map((item, idx) => (
                         <GameComponent 
+                            draggable
+                            key={item.id + idx}
                             type={item.type}
                             id={item.id + idx}
                             name={item.name}

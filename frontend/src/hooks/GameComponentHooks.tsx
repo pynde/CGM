@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { ActionArray, GameComponentType, GameState, isTypeOf, TailwindCSS } from '@shared/types/types'
-import { ACTION_TYPE_ENUM, GAME_COMPONENT_ENUM, SOCKET_RESPONSE } from '@shared/enums/enums';
+import { ACTION_TYPE_ENUM, TYPE_ENUM, SOCKET_RESPONSE } from '@shared/enums/enums';
 import { ActionType, MeepleType, CardType } from '@shared/types/types'
 import { GameStateContext } from '../context/GameStateContext';
 import { socket } from '../App';
@@ -29,8 +29,8 @@ const useGameComponent = (component: GameComponentType) => {
 
   const getComponentByType = (component: GameComponentType) => {
       switch(true) {
-        case isTypeOf<CardType>(component, GAME_COMPONENT_ENUM.CARD): return component;
-        case isTypeOf<MeepleType>(component, GAME_COMPONENT_ENUM.MEEPLE): return component;
+        case isTypeOf<CardType>(component, TYPE_ENUM.GAME_COMPONENT): return component;
+        case isTypeOf<MeepleType>(component, TYPE_ENUM.GAME_COMPONENT): return component;
         default: return null
       }
     }

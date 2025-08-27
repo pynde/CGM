@@ -1,4 +1,4 @@
-import {  DIRECTION_OF_FLOW_ENUM, FACE_VISIBLE_ENUM, GAME_COMPONENT_ENUM, RESOURCE_ENUM, MODE_ENUM, TURN_MODE_ENUM, ACTION_TYPE_ENUM, GAME_STATE_ENUM, ERROR_CODE_ENUM, OWNER_TYPE_ENUM, SELECTION_TYPE_ENUM, SPACE_TYPE_ENUM, GAME_COMPONENT_STATE_ENUM, TRACK_TYPE_ENUM, EFFECT_TYPE_ENUM, SYMBOL_TYPE_ENUM } from "../enums/enums"
+import {  DIRECTION_OF_FLOW_ENUM, FACE_VISIBLE_ENUM, RESOURCE_ENUM, MODE_ENUM, TURN_MODE_ENUM, ACTION_TYPE_ENUM, GAME_STATE_ENUM, ERROR_CODE_ENUM, OWNER_TYPE_ENUM, SELECTION_TYPE_ENUM, SPACE_TYPE_ENUM, GAME_COMPONENT_STATE_ENUM, TRACK_TYPE_ENUM, EFFECT_TYPE_ENUM, SYMBOL_TYPE_ENUM, TYPE_ENUM } from "../enums/enums"
 
 // BASE TYPE
 
@@ -60,20 +60,16 @@ export type DeckType = BaseType & {
 }
 
 export type CardType = GameComponentType<{
-    type: GAME_COMPONENT_ENUM.CARD,
-    name: string,
     visibleSide?: FACE_VISIBLE_ENUM.FRONT | FACE_VISIBLE_ENUM.BACK,
     requirement?: unknown,
 }>;
 
 export type MeepleType = GameComponentType<{
-    type: GAME_COMPONENT_ENUM.MEEPLE
-    name: string,
     inUse: boolean
 }>;
 
 export type GameComponentType<T = {}> = BaseType & {
-    type: GAME_COMPONENT_ENUM,
+    type: TYPE_ENUM.GAME_COMPONENT,
     id: string,
     actions: ActionType[],
     price: ResourceType[],

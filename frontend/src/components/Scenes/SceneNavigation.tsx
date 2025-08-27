@@ -1,17 +1,17 @@
-import React, { FC, ReactNode, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { FC, ReactNode, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import  * as Tabs from '@radix-ui/react-tabs'
 import CardScene from './CardScene';
 import Overview from './Overview';
 import ComponentBuilder from './ComponentBuilder';
 import { GameStateProvider } from '@root/src/context/GameStateContext';
-import { ActionType, BlueprintType, isTypeOf } from '@shared/types/types';
+import { ActionType, BlueprintType, GameComponentType, isTypeOf } from '@shared/types/types';
 import { socket } from '@root/src/App';
 import { ACTION_TYPE_ENUM, SOCKET_RESPONSE } from '@shared/enums/enums';
-import { LookupContext } from '@root/src/context/LookupContext';
 import ActionScene from './ActionScene';
-import GridSelection from '../UI/GridSelection/GridSelection';
 import GameView from '../UI/GameView/GameView';
-import { useBlueprint, useSetBlueprint } from '@root/src/zustand/BlueprintStore';
+import { useSetBlueprint, useShallowBlueprint } from '@root/src/zustand/BlueprintStore';
+import Warning from '../UI/Warning';
+import { useSelection, setSelectionStore } from '@root/src/zustand/SelectionStore';
 
 type TabContent = {
 	tabName: string,
@@ -33,8 +33,8 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 	const [selectedTab, setSelectedTab] = useState(INITIAL_TAB);
 	const [selectedAction, setSelectedAction] = useState<ActionType>();
 	const [contentSize, setContentSize] = useState<{ width: number, height: number }>({ width: 400, height: 400 });
-	const { selected, setSelected } = useContext(LookupContext);
-	const bpStore = useBlueprint();
+	const selected = useSelection();
+	const bpStore = useShallowBlueprint();
 
 
 
@@ -42,37 +42,22 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 		{tabName: 'Overview', tabContent: <GameStateProvider><Overview key={tabContent+0}/></GameStateProvider>}, 
 		{tabName: 'Cards', tabContent: <CardScene key={tabContent+1}/>}, 
 		{tabName: 'GameBoard', tabContent: <div key={tabContent+2}>Game Board placeholder</div>},
-		{tabName: 'ComponentBuilder', tabContent: <ComponentBuilder defaultComponent={selected.selectedComponent} key={tabContent+3}/> },
+		{tabName: 'ComponentBuilder', tabContent: <ComponentBuilder key={tabContent+3}/> },
 		{tabName: 'Actions', tabContent: <ActionScene key={tabContent+4}/>},
 		{tabName: 'GameView', tabContent: <GameView key={tabContent+5} blueprint={bpStore}/>},
 	];
-
-
-	const setAction = () => {
-		if (!selected) return;
-		if(isTypeOf<ActionType>(selected, ACTION_TYPE_ENUM)) {
-			setSelectedAction(selected)
-		}
-	}
 
 	useEffect(() => {
 		if(bpStore) {
 			socket.emit('getBlueprint', (bp, status) => {
 				if(status == SOCKET_RESPONSE.OK) {
 					updateBp(bp);
-					setSelected({ ...selected, selectedComponent: bp.gameComponents[0]?.[1] });
+					setSelectionStore(bp.gameComponents[0]?.[1]);
 				} 
 			});
 		}
-		
-		
-
 	  }, []);
 
-	  useEffect(() => {
-		
-		console.log('bpStore', bpStore.gameComponents[0]?.[1]);
-	  }, [])
 
 	  useLayoutEffect(() => {
 		const width_ = contentRef.current?.offsetWidth || 0;
@@ -81,12 +66,6 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 		console.log('width_', width_, 'height_', height_);
 		setContentSize(newSize);
 	  }, [])
-
-
-	  useEffect(() => {
-		setAction()
-	  }, [selected]);
-
 
 	const handleTabChange = (tabName: string) => {
 	  setSelectedTab(tabName);
@@ -115,6 +94,7 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 				ref={contentRef}
 			>
 				{scene.tabContent}
+				<Warning open={false}/>
 			</Tabs.Content>
 		))}
 	</Tabs.Root>

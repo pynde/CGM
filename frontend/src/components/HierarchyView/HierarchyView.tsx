@@ -1,13 +1,13 @@
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import ItemDetails from '../UI/ItemDetails';
-import { LookupContext } from '@root/src/context/LookupContext';
 import * as Accordion from '@radix-ui/react-accordion';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import clsx from 'clsx';
 import CollapsibleList from './CollabsibleList';
 import { ActionType, GameComponentType, isTypeOf, ResourceType } from '@shared/types/types';
-import { GAME_COMPONENT_ENUM, RESOURCE_ENUM } from '@shared/enums/enums';
+import { TYPE_ENUM, RESOURCE_ENUM } from '@shared/enums/enums';
 import { useBlueprint } from '@root/src/zustand/BlueprintStore';
+import {   useSelection, setSelectionStore } from '@root/src/zustand/SelectionStore';
 
 interface HierarchyViewProps {
 
@@ -15,20 +15,21 @@ interface HierarchyViewProps {
 
 const HierarchyView : FC<HierarchyViewProps> = () => {
   const bpStore = useBlueprint();
-  const {gameComponentTypes, resourceTypes, actionTypes, selected, updateSelected} = useContext(LookupContext);
+  const selected = useSelection();
+
   const [active, setActive] = useState(false);
 
-  const setSelected = (value: any) => {
+  const updateSelected = (value: any) => {
     console.log('value', value);
-    if(isTypeOf<GameComponentType>(value, GAME_COMPONENT_ENUM)) {
+    if(isTypeOf<GameComponentType>(value, TYPE_ENUM.GAME_COMPONENT)) {
       const gcMap = new Map(bpStore.gameComponents);
       const item = gcMap.get(value.id);
-      if(item) updateSelected({ ...selected, selectedComponent: item })
+      if(item) setSelectionStore(value)
     }
-    if(isTypeOf<ResourceType>(value, RESOURCE_ENUM)) {
+    if(isTypeOf<ResourceType>(value, TYPE_ENUM.RESOURCE)) {
       const rMap = new Map(bpStore.resources);
       const item = rMap.get(value.id);
-      if(item) updateSelected({ ...selected, selectedResource: item });
+      if(item) setSelectionStore(value);
     }
   }
 
@@ -36,8 +37,8 @@ const HierarchyView : FC<HierarchyViewProps> = () => {
     return items.map(([key, value], index) => {
       if(value.type == type) return (
         <ItemDetails 
-          className={clsx(index%2==0 && 'bg-white/20 p-2')}  
-          onClick={() => setSelected(value)} 
+          className={clsx(selected?.id === value.id && 'text-actioncolor' ,'p-2')}  
+          onClick={() => updateSelected(value)} 
           key={key + index} 
           item={value} 
           includeKeys={['name']}
@@ -55,15 +56,23 @@ const HierarchyView : FC<HierarchyViewProps> = () => {
           <Accordion.Item value="gameComponents" className="p-1 px-4 w-full bg-gray-500/50 rounded-md transition-all">
             <Accordion.Header>
               <Accordion.Trigger className="group flex flex-row justify-between items-center w-full h-10">
-          Game Components<ChevronRightIcon className="w-6 group-data-[state=open]:rotate-90" />
+              Game Components<ChevronRightIcon className="w-6 group-data-[state=open]:rotate-90" />
               </Accordion.Trigger>
             </Accordion.Header>
             <Accordion.Content>
-              {gameComponentTypes.map(item => (
-          <CollapsibleList key={item} label={item}>
-            { getItemDetailsByType(bpStore.gameComponents, item) }
-          </CollapsibleList>
-              ))}
+            <CollapsibleList label={'Game Components'}>
+              { bpStore.gameComponents.map(([key, item], index) =>
+                 <ItemDetails 
+                  key={item.name+index} 
+                  item={item} 
+                  includeKeys={['name']} 
+                  onClick={() => updateSelected(item)}
+                  className={clsx(selected?.id === item.id && 'text-actioncolor' ,'p-2')}  
+                />
+                ) 
+              }
+            </CollapsibleList>
+            
             </Accordion.Content>
           </Accordion.Item>
         </Accordion.Root>

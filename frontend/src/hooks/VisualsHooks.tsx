@@ -1,5 +1,4 @@
 import { VisualType } from '@shared/types/types';
-import { useCallback, useState } from 'react';
 
 
 export const useVisuals = (visuals: Partial<VisualType>) => {
@@ -18,3 +17,5 @@ export const useVisuals = (visuals: Partial<VisualType>) => {
         resize
     };
 };
+
+

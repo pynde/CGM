@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 
-export interface TemplateName {}
+export interface CardProps {}
 
-export const TemplateName : FC<TemplateName> = () => {
+export const TemplateName : FC<CardProps> = () => {
   return (
     <div className={"flex w-full h-full justify-center items-center bg-stone-900/25"}>
       TemplateName

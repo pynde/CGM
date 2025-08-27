@@ -46,4 +46,7 @@ html, body, #root {
     .flex-center-col {
         @apply flex justify-center items-center flex-col;
     }
+    .interactivebutton {
+        @apply flex-center w-[100px] h-[60px] bg-darkbglighter hover:bg-actioncolor;
+    }
 }

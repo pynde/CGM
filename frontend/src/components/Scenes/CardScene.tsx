@@ -1,9 +1,6 @@
 import React, { FC, ReactNode, useState } from 'react';
-import { Card } from '../Card/Card';
 import * as Select from '@radix-ui/react-select';
 import Deck, { DeckProps }  from '../Deck/Deck';
-import { GAME_COMPONENT_ENUM } from '@shared/enums/enums';
-
 
 
 interface CardSceneProps extends React.HTMLProps<HTMLDivElement> {}
@@ -40,16 +37,6 @@ const CardScene : FC<CardSceneProps> = (props: CardSceneProps) => {
               </Select.Content>
             </Select.Root>
       <Deck name={selectedDeck.name} numberOfCards={selectedDeck.numberOfCards} />
-      <Card 
-        ownerId={''} name='TESTIKORTTI_123' 
-        id={''} actions={[]} 
-        price={[]} 
-        type={GAME_COMPONENT_ENUM.CARD} 
-        style={{
-        imgUrls: [],
-        width: 200,
-        height: 300
-      }}/>
     </div>
   );
 };

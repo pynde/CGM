@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 interface CarouselProps extends React.HTMLAttributes<HTMLDivElement> {
     title?: string
     arrayLength: number;
-    setIndex?: (index: number) => void;
+    onNextOrPrevious?: (index: number) => void;
 }
 /**
  * Carousel component that displays its children one at a time with navigation buttons.
@@ -19,13 +19,13 @@ const Carousel: React.FC<CarouselProps> = (props) => {
     const nextSlide = () => {
         const i = props.arrayLength-1 === currentIndex ? 0 : currentIndex + 1;
         setCurrentIndex(i);
-        props.setIndex && props.setIndex(i);
+        props.onNextOrPrevious && props.onNextOrPrevious(i);
     };
 
     const previousSlide = () => {
         const i = currentIndex === 0 ? props.arrayLength - 1 : currentIndex - 1;
         setCurrentIndex(i);
-        props.setIndex && props.setIndex(i);
+        props.onNextOrPrevious && props.onNextOrPrevious(i);
     };
 
     if (React.Children.count(props.children) === 0) {
@@ -33,7 +33,7 @@ const Carousel: React.FC<CarouselProps> = (props) => {
     }
 
     return (
-        <div className={ clsx('relative flex flex-col items-center justify-center', props.className && props.className)}>
+        <div className={ clsx('relative flex flex-col items-center', props.className && props.className)}>
             <div className="flex items-center p-2 justify-center w-full gap-2">                
                 <button 
                     onClick={previousSlide}

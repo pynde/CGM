@@ -1,10 +1,9 @@
-import { ACTION_TYPE_ENUM, GAME_COMPONENT_ENUM, RESOURCE_ENUM } from '@shared/enums/enums';
-import { ActionType, GameComponentType, isTypeOf, ResourceType, VisualType } from '@shared/types/types';
+import { ACTION_TYPE_ENUM, RESOURCE_ENUM, TYPE_ENUM } from '@shared/enums/enums';
+import { ActionType, BaseType, GameComponentType, isTypeOf, ResourceType, SelectionType, VisualType } from '@shared/types/types';
 import React, { useState, useEffect, useContext, RefObject } from 'react';
 import Carousel from '../UI/Carousel';
 import Visuals from '../Views/Visuals';
-import { LookupContext } from '@root/src/context/LookupContext';
-import { useBlueprint, useSetBlueprint, useUpdateBlueprintGameComponents } from '@root/src/zustand/BlueprintStore';
+import { useSetBlueprint, useShallowBlueprint, useUpdateBlueprintGameComponents } from '@root/src/zustand/BlueprintStore';
 import GameComponent from '../GameComponent/GameComponent';
 import { Layer, Stage, Transformer } from 'react-konva';
 import * as ContextMenu from '@radix-ui/react-context-menu';
@@ -12,11 +11,12 @@ import BlueprintMenu from '../ContextMenu/BlueprintMenu';
 import { BoxSelection } from '../UI/BoxSelection';
 import { KonvaEventObject, NodeConfig } from 'konva/lib/Node';
 import Konva from 'konva';
-
+import SaveButton from '../UI/SaveButton';
+import { SelectionItem, setSelectionStore, useSelection } from '@root/src/zustand/SelectionStore';
 
 // Props interface for the ComponentBuilder
 interface ComponentBuilderProps {
-    defaultComponent?: GameComponentType;
+    
 }
 
 
@@ -30,18 +30,19 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
     const [itemIndex, setItemIndex] = useState<number>(0);
     const setBlueprint = useSetBlueprint; 
     const setGameComponent = useUpdateBlueprintGameComponents
-    const bpStore = useBlueprint();
-    const { selected, setSelected } = useContext(LookupContext);
+    const bpStore = useShallowBlueprint();
+    const selected = useSelection();
     const [selectionRectStyle,setSelectionRectStyle] = useState<NodeConfig | undefined>(undefined);
     const startingPoint = React.useRef<{ x: number; y: number } | null>(null);
     const konvaRef = React.useRef<Konva.Group>(null);
     const divRef = React.useRef<HTMLDivElement>(null);
-    const transformerRef = React.useRef<Konva.Transformer>(null);    
+    const transformerRef = React.useRef<Konva.Transformer>(null);
     
+    // Ensure the transformer is attached to the selected node
     useEffect(() => {
         const node = konvaRef.current;
         node && transformerRef.current?.nodes([node]);
-    }, [selected.selectedComponent])
+    }, [selected])
 
     const handleStageMouseDown = (event: KonvaEventObject<MouseEvent>) => {
         const relativePointerPosition = event.currentTarget.getRelativePointerPosition();
@@ -77,12 +78,12 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
 
     const setSelectedComponent = (index: number) => {
         if (bpStore.gameComponents[index]) {
-            setSelected({ ...selected, selectedComponent: bpStore.gameComponents[index][1] });
+            setSelectionStore(bpStore.gameComponents[index][1]);
         }
     }
 
     const updateVisuals = (updatedItem: Partial<VisualType>) => {
-        if(isTypeOf<GameComponentType>(selected, GAME_COMPONENT_ENUM)) {
+        if(isTypeOf<GameComponentType>(selected, TYPE_ENUM.GAME_COMPONENT)) {
             if(!selected.style) return;
             const updatedComponent = {
             ...selected,
@@ -136,32 +137,33 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
         }
 }
 
-    // TODO: MIKSI EI PÄIVITY TRANSFORMIN JÄLKEEN
-    const updateSelectedComponent = (updatedComponent: GameComponentType) => {
-        if(!selected.selectedComponent) return;
+    const updateSelectedComponent = (updatedComponent: SelectionItem) => {
+        setSelectionStore(updatedComponent);
+    }
+
+    const saveUpdate = () => {
+        if(!selected) return;
         const newGCArray = bpStore.gameComponents.map(([key, value]) => {
-            if(value.id === updatedComponent.id) {
-                console.log('key', key, 'value', value, 'updatedComponent', updatedComponent);
-                return [key, updatedComponent] as [string, GameComponentType];
+            if(value.id === selected?.id) {
+                return [key, selected] as [string, GameComponentType];
             }
             return [key, value] as [string, GameComponentType];
         });
-        console.log('newGCArray', newGCArray);
         setGameComponent(newGCArray);
-        setSelected({ ...selected, selectedComponent: updatedComponent });
     }
 
     const handleTransformEnd = (e: Konva.KonvaEventObject<Event>) => {
-        if(!konvaRef || !konvaRef.current || !selected.selectedComponent) return;
+        if(!konvaRef || !konvaRef.current || !selected) return;
         const node = konvaRef.current;
         const scaleX = node.scaleX();
         const scaleY = node.scaleY();
         node.scaleX(1);
         node.scaleY(1);
+
         updateSelectedComponent({
-            ...selected.selectedComponent,
+            ...selected,
             style: {
-                ...selected.selectedComponent.style,
+                ...selected.style,
                 x: node.x(),
                 y: node.y(),
                 width: Math.max(5, node.width() * scaleX),
@@ -173,30 +175,33 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
 
     return (
             <div className="component-builder flex flex-row mx-auto h-full space-x-2">
-                <Carousel title={selected.selectedComponent?.name} className='h-full' arrayLength={bpStore.gameComponents.length} setIndex={(index) => setSelectedComponent(index)}>
+                <Carousel 
+                    title={selected?.name} 
+                    className='h-full' 
+                    arrayLength={bpStore.gameComponents.length} 
+                    onNextOrPrevious={(index) => setSelectedComponent(index)}>
                     <ContextMenu.Root modal={true}>
-                    <ContextMenu.Trigger>
-                                              
+                    <ContextMenu.Trigger>                    
                         <Stage 
                             style={{backgroundColor: 'chocolate'}}
-                            width={(selected.selectedComponent?.style?.width || 0) + 10} height={(selected.selectedComponent?.style?.height || 0) + 10} 
+                            width={(selected?.style?.width || 0) + 10} height={(selected?.style?.height || 0) + 10} 
                             onMouseDown={handleStageMouseDown} 
                             onMouseMove={handleStageMouseMove} 
                             onMouseUp={handleStageMouseUp}
                             >
                             <Layer>
                             
-                            { selected.selectedComponent && isTypeOf<GameComponentType>(selected.selectedComponent, GAME_COMPONENT_ENUM) &&
+                            { selected && isTypeOf<GameComponentType>(selected, TYPE_ENUM.GAME_COMPONENT) &&
                                 <GameComponent
-                                    {...selected.selectedComponent}
+                                    {...selected}
                                     showTitle={true}
                                     renderAs='konva'
                                     ref={konvaRef}
                                     handleTransformEnd={handleTransformEnd}
                                     style={{
-                                        ...selected.selectedComponent.style,
-                                        width: selected.selectedComponent.style?.width,
-                                        height: selected.selectedComponent.style?.height,
+                                        ...selected.style,
+                                        width: selected.style?.width,
+                                        height: selected.style?.height,
                                         x: 0,
                                         y: 0
                                     }}
@@ -223,7 +228,8 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
                         </ContextMenu.Trigger>
                     </ContextMenu.Root>
                 </Carousel>
-                {selected?.selectedComponent?.style && <Visuals item={selected.selectedComponent.style} onUpdate={updateVisuals} />}
+                {selected?.style && <Visuals item={selected.style} onUpdate={updateVisuals} />}
+                <SaveButton onClick={saveUpdate}/>
             </div>
     );
 };

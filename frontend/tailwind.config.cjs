@@ -3,7 +3,7 @@ const { transform } = require('typescript');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/**/*.{jsx,tsx,js,ts}', './public/index.html'],
-  theme: {
+  theme: {      
     extend: {
       boxShadow: {
         'intense': '0 0 0.4rem 0.01rem rgba(0,0,0,0.5)',
@@ -31,6 +31,7 @@ module.exports = {
             width: 'var(--fullWidth)', },
         }
       },
+
       animation: {
         scalehundredten: 'scalehundredten 0.2s ease-out',
         /** Requires var(--fullWidth) to be set in the element style */ 
@@ -38,7 +39,9 @@ module.exports = {
         'wide-out-jump-out': 'widein 0.2s reverse, jump-out 0.2s'
       },
     },
+
   },
+  
   plugins: [require('tailwindcss-animated')],
 }
 

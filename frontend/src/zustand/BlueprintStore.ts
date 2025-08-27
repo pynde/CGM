@@ -1,5 +1,6 @@
 import { ActionType, BlueprintType, EffectType, GameComponentType, ResourceType } from "@shared/types/types";
 import { create } from "zustand";
+import { useShallow } from "zustand/shallow";
 
 // Define the store type
 type BlueprintStoreType = {
@@ -44,6 +45,10 @@ const useBlueprintStore = create<BlueprintStoreType>((set) => ({
 export const useBlueprint = () => {
     return useBlueprintStore((state) => state);
 };
+
+export const useShallowBlueprint = () => {
+    return useBlueprintStore(useShallow((state) => state));
+}
 
 export const useBlueprintGameComponents = () => {
     return useBlueprintStore((state) => state.gameComponents);

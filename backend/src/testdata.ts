@@ -1,6 +1,7 @@
 import { Owner, BankType, ResourceType, ActionType, GameComponentType, CardType, MeepleType, PlayerType, OwnerArray, BlueprintType } from '@shared/types/types';
-import { OWNER_TYPE_ENUM, RESOURCE_ENUM, ACTION_TYPE_ENUM, GAME_COMPONENT_ENUM } from '@shared/enums/enums';
+import { OWNER_TYPE_ENUM, RESOURCE_ENUM, ACTION_TYPE_ENUM, TYPE_ENUM } from '@shared/enums/enums';
 import { generateId } from '@shared/logic/generateId';
+import { CARD_TEMPLATE, GAMEBOARD_TEMPLATE, MEEPLE_TEMPLATE } from '@shared/templates/StyleTemplates';
 
 export const frontPic = "https://picsum.photos/id/202/200/300";
 export const backPic = "https://picsum.photos/id/203/200/300";
@@ -59,50 +60,32 @@ export const players: PlayerType[] = [{
 
 export const components : GameComponentType[] = [
   { 
-      type: GAME_COMPONENT_ENUM.CARD, 
+      type: TYPE_ENUM.GAME_COMPONENT, 
       name: 'TESTIKORTTI', 
       id: card_id, 
       price: [resource], 
       actions: [card_action],
       ownerId: players[0].id,
-      style: {
-        x: 200,
-        y: 300,
-        width: 200,
-        height: 200,
-        fill: 'green'
-      }
+      style: CARD_TEMPLATE
     },
     { 
-      type: GAME_COMPONENT_ENUM.MEEPLE,
+      type: TYPE_ENUM.GAME_COMPONENT,
       name: 'TESTIMEEPLE',
       id: meeple_id,
       price: [],
       actions: [meeple_action],
       ownerId: players[0].id,
-      style: {
-        x: 300,
-        y: 100,
-        width: 100,
-        height: 100,
-        fill: 'blue'
-      }
+      style: MEEPLE_TEMPLATE
 
     },
       { 
-      type: GAME_COMPONENT_ENUM.BOARD,
+      type: TYPE_ENUM.GAME_COMPONENT,
       name: 'TESTILAUTA',
       id: board_id,
       price: [],
       actions: [meeple_action],
       ownerId: players[0].id,
-      style: {
-        x: 100,
-        y: 100,
-        width: 600,
-        height: 250, 
-        fill: 'magenta'
-      }
+      style: GAMEBOARD_TEMPLATE
       
     }
 ];

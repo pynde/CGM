@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { Card } from '../Card/Card';
-import { CARD_MIXTURE_ENUM, FACE_VISIBLE_ENUM, GAME_COMPONENT_ENUM } from '@shared/enums/enums';
+import { CARD_MIXTURE_ENUM, FACE_VISIBLE_ENUM, TYPE_ENUM } from '@shared/enums/enums';
+import GameComponent from '../GameComponent/GameComponent';
 
 export interface DeckProps {
   name: string,
@@ -17,16 +17,18 @@ const Deck : FC<DeckProps> = (props: DeckProps) => {
       { "DECK: " + props.name }
      { props.face === FACE_VISIBLE_ENUM.FRONT 
      ? 
-     <Card ownerId={''} id='' name={"testi" + FACE_VISIBLE_ENUM.FRONT} actions={[]} price={[]} type={GAME_COMPONENT_ENUM.CARD} style={{
+     <GameComponent ownerId={''} id='' name={"testi" + FACE_VISIBLE_ENUM.FRONT} actions={[]} price={[]} type={TYPE_ENUM.GAME_COMPONENT} renderAs= 'html' style={{
           imgUrls: [],
           width: 200,
-          height: 300
+          height: 300, 
+          
         }}/> 
      : 
-     <Card ownerId={''} visibleSide={FACE_VISIBLE_ENUM.BACK} name={"testi" + FACE_VISIBLE_ENUM.BACK} id={''} actions={[]} price={[]} type={GAME_COMPONENT_ENUM.CARD} style={{
+     <GameComponent ownerId={''} id='' name={"testi" + FACE_VISIBLE_ENUM.BACK} actions={[]} price={[]} type={TYPE_ENUM.GAME_COMPONENT} renderAs= 'html' style={{
           imgUrls: [],
           width: 200,
-          height: 300
+          height: 300, 
+          
         }}/>}
      <h2 style={{color: 'red', fontWeight: 'bold'}}>KORTIT OVAT VÄÄRILLÄ PROPEILLA</h2>
     </div>
