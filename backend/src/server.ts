@@ -50,7 +50,7 @@ io.on('connection', (socket) => {
     callback(blueprint, SOCKET_RESPONSE.OK);
   });
 
-  socket.on('getOwners', (callback: <T>(ownerArray: OwnerArray<T>, status: string) => void) => { 
+  socket.on('getOwners', (callback: <T>(ownerArray: OwnerArray, status: string) => void) => { 
     console.log('getOwners from socket', gameState['owners'])
     callback(gameState['owners'], SOCKET_RESPONSE.OK);
   })

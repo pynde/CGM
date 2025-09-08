@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import { Layer, Rect, } from "react-konva";
+
 
 type GridSelectionProps = {
   width: number;
@@ -19,15 +19,6 @@ const GridSelection: React.FC<GridSelectionProps> = (props: GridSelectionProps) 
           const row = Math.floor((index * CELL_SIZE) / (COLUMNS * CELL_SIZE)) 
           return (
             <>
-              <Rect
-                x={col * CELL_SIZE}
-                y={row * CELL_SIZE}
-                width={CELL_SIZE}
-                height={CELL_SIZE}
-                stroke={`rgb(150, 180, 200)`}
-                strokeWidth={0.5}
-                fill={'white'}
-              />
             </>
           );
         })

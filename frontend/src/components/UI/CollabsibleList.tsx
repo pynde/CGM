@@ -1,10 +1,6 @@
 import * as Accordion from "@radix-ui/react-accordion";
 import React, { useCallback, useContext, useEffect } from "react";
-import ItemDetails from "../UI/ItemDetails";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
-import { LookupContext, LookupContextType } from "@root/src/context/LookupContext";
-import { BlueprintContextType } from "@root/src/context/BlueprintContext";
-import { BlueprintType } from "@shared/types/types";
 
 
 /**
@@ -14,7 +10,7 @@ import { BlueprintType } from "@shared/types/types";
  * @property {ReactNode} [children] - The content to be shown/hidden inside the disclosure panel
  */
 interface CollapsibleListProps {
-    label: string | React.ReactNode,
+    label: string,
     children?: React.ReactNode
 }
 
@@ -29,10 +25,9 @@ interface CollapsibleListProps {
  * @returns A disclosure component with a button that toggles visibility of children content
  */
 const CollapsibleList: React.FC<CollapsibleListProps> = (props: CollapsibleListProps) => {    
-    const { updateSelected } = useContext(LookupContext);
 
     return (
-        <Accordion.Root type="single" collapsible>
+        <Accordion.Root type="single" collapsible defaultValue="item-1">
             <Accordion.Item value="item-1">
             <Accordion.Header>
                 <Accordion.Trigger className='my-2 group flex flex-row center items-center w-full h-8'>

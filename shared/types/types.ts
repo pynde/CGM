@@ -2,11 +2,11 @@ import {  DIRECTION_OF_FLOW_ENUM, FACE_VISIBLE_ENUM, RESOURCE_ENUM, MODE_ENUM, T
 
 // BASE TYPE
 
-export type BaseType = {
+export type BaseType<T = {}> = {
     type: string
     name: string,
     id: string,
-}
+} & T;
 
 
 // GAME STATE
@@ -14,7 +14,7 @@ export type BaseType = {
 export type GameState = {
     type: GAME_STATE_ENUM.GAME_STATE_TYPE,
     players: PlayerType[],
-    owners: OwnerArray<unknown>,
+    owners: OwnerArray,
     selectedComponents: SelectedArray,
     actions: ActionArray,
     activePlayer: PlayerType['id'],
@@ -38,7 +38,7 @@ export type BlueprintType = {
 // ACTIONS
 
 export type ActionType = BaseType & { 
-    type: ACTION_TYPE_ENUM,
+    type: TYPE_ENUM.ACTION,
     name: string,
     automatic: boolean,
     id: string,
@@ -46,7 +46,7 @@ export type ActionType = BaseType & {
     optional?: boolean,
     style?: Partial<VisualType>
     ownerId: string,
-    target?: Owner<unknown>
+    target?: Owner
     payload?: unknown
 };
 
@@ -84,10 +84,13 @@ export type GameComponentType<T = {}> = BaseType & {
 
 // RESOURCES
 
-export type ResourceType = & BaseType & (
-    | { type: RESOURCE_ENUM.MONEY; resource: Money }
-    | { type: RESOURCE_ENUM.CUSTOM; resource: CustomResource }
-) & { amount: number, allowNegativeAmount?: boolean, style?: VisualType }
+export type ResourceType = BaseType & {
+    value: MultipleValues | FixedValue;
+    type: TYPE_ENUM.RESOURCE, 
+    amount: number, 
+    allowNegativeAmount?: boolean, 
+    style?: VisualType 
+}
 
 export type Money = {
     value: MultipleValues | FixedValue;
@@ -127,22 +130,22 @@ export type SymbolType = {
 // OWNERS
 
 export type PlayerType = {
-    type: OWNER_TYPE_ENUM.PLAYER
+    type: TYPE_ENUM.PLAYER
     name: string,
     style?: VisualType
     actions: ActionType[],
     id: string
 }
 
-export type Owner<T> = BaseType & {
+export type Owner = BaseType & {
     id: string
-    type: OWNER_TYPE_ENUM,
+    type: TYPE_ENUM.OWNER,
     resources: ResourceType[],
     gameComponents: GameComponentType[],
-} & T
+} 
 
 export type BankType = {
-    type: OWNER_TYPE_ENUM.BANK,
+    type: TYPE_ENUM.BANK,
     id: string,
 }
 
@@ -193,7 +196,7 @@ export type GameComponentTypeMap = Map<GameComponentType['id'], GameComponentTyp
 export type SelectedArray = Array<[GameComponentType['id'], GameComponentType]>;
 export type ActionArray = ActionType[];
 export type ActionMap = Map<ActionType['id'], ActionType>;
-export type OwnerArray<T> = Array<[string, Owner<T>]>;
+export type OwnerArray = Array<[string, Owner]>;
 export type TupletArray<T> = Array<[string, T]> ;
 
 /** Type for multiple values for a resource. E.g. player has 5 coins which are all valued differently (e.g. one coin has 5 value, another coin has 3 value = 8 value) */ 

@@ -8,10 +8,10 @@ import { ActionType, BlueprintType, GameComponentType, isTypeOf } from '@shared/
 import { socket } from '@root/src/App';
 import { ACTION_TYPE_ENUM, SOCKET_RESPONSE } from '@shared/enums/enums';
 import ActionScene from './ActionScene';
-import GameView from '../UI/GameView/GameView';
+import GameView from '../UI/GameView';
 import { useSetBlueprint, useShallowBlueprint } from '@root/src/zustand/BlueprintStore';
 import Warning from '../UI/Warning';
-import { useSelection, setSelectionStore } from '@root/src/zustand/SelectionStore';
+import { useSelection, setSelectionItem } from '@root/src/zustand/SelectionStore';
 
 type TabContent = {
 	tabName: string,
@@ -52,7 +52,7 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 			socket.emit('getBlueprint', (bp, status) => {
 				if(status == SOCKET_RESPONSE.OK) {
 					updateBp(bp);
-					setSelectionStore(bp.gameComponents[0]?.[1]);
+					setSelectionItem(bp.gameComponents[0]?.[1]);
 				} 
 			});
 		}

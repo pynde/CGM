@@ -4,6 +4,7 @@ import Navigation from './components/Navigation/Navigation';
 import { ClientToServerEvents, ServerToClientEvents } from '@shared/interfaces/socketEvents';
 import { LOCALHOST_PORT } from '@shared/enums/enums';
 import { io, Socket } from 'socket.io-client';
+import "@pixi/layout";
 
 
 

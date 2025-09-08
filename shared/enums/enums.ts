@@ -5,6 +5,19 @@
  * @member BACK the cards are not visible
  * @member MIXED some of the cards are visible and some not. E.g. topmost card is visible and the rest are not.
  */
+
+export enum TYPE_ENUM { 
+    GAME_COMPONENT = "GAME_COMPONENT",
+    RESOURCE = "RESOURCE",
+    ACTION = "ACTION",
+    EFFECT = "EFFECT",
+    OWNER = "OWNER",
+    PLAYER = "PLAYER",
+    BANK = "BANK",
+    SELECTION = "SELECTION",
+    TRACK = "TRACK",
+    SYMBOL = "SYMBOL",
+}
 export enum FACE_VISIBLE_ENUM {
     FRONT,
     BACK,
@@ -29,12 +42,7 @@ export enum CARD_MIXTURE_ENUM {
     HOMO
 }
 
-export enum TYPE_ENUM { 
-    GAME_COMPONENT = "GAME_COMPONENT",
-    RESOURCE = "RESOURCE",
-    ACTION = "ACTION",
-    EFFECT = "EFFECT"
-}
+
 
 export enum GAME_COMPONENT_STATE_ENUM {
     IN_PLAY = 'IN_PLAY',

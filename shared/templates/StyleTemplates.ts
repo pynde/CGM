@@ -1,6 +1,8 @@
 import { VisualType } from "@shared/types/types";
 
 export const CARD_TEMPLATE: Partial<VisualType> = {
+    x: 0,
+    y: 0,
     width: 150,
     height: 200,
     fill: 'white',

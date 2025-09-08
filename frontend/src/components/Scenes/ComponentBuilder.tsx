@@ -4,81 +4,77 @@ import React, { useState, useEffect, useContext, RefObject } from 'react';
 import Carousel from '../UI/Carousel';
 import Visuals from '../Views/Visuals';
 import { useSetBlueprint, useShallowBlueprint, useUpdateBlueprintGameComponents } from '@root/src/zustand/BlueprintStore';
-import GameComponent from '../GameComponent/GameComponent';
-import { Layer, Stage, Transformer } from 'react-konva';
 import * as ContextMenu from '@radix-ui/react-context-menu';
-import BlueprintMenu from '../ContextMenu/BlueprintMenu';
-import { BoxSelection } from '../UI/BoxSelection';
-import { KonvaEventObject, NodeConfig } from 'konva/lib/Node';
-import Konva from 'konva';
+import BlueprintMenu from '../BlueprintMenu/BlueprintMenu';
 import SaveButton from '../UI/SaveButton';
-import { SelectionItem, setSelectionStore, useSelection } from '@root/src/zustand/SelectionStore';
-
+import { SelectionItem, setSelectionItem, useSelection } from '@root/src/zustand/SelectionStore';
+import { Graphics, Application, Ticker } from 'pixi.js';
+import "@pixi/layout";
+import { createPixiComponent, createPixiLabelFromBaseType, createTransformer, PIXI_COMPONENTS } from '../PixiComponents/PixiVanilla';
+import { destroyPixiApp, initPixiApp, setPixiApp, usePixiApp } from '@root/src/zustand/PixiStore';
 // Props interface for the ComponentBuilder
 interface ComponentBuilderProps {
     
 }
 
-
 // TODO Change BlueprintContext to use Zustand store
 export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
-
-    const stageDimensions = {
-        width: 800,
-        height: 600
-    }
-    const [itemIndex, setItemIndex] = useState<number>(0);
     const setBlueprint = useSetBlueprint; 
     const setGameComponent = useUpdateBlueprintGameComponents
     const bpStore = useShallowBlueprint();
     const selected = useSelection();
-    const [selectionRectStyle,setSelectionRectStyle] = useState<NodeConfig | undefined>(undefined);
-    const startingPoint = React.useRef<{ x: number; y: number } | null>(null);
-    const konvaRef = React.useRef<Konva.Group>(null);
-    const divRef = React.useRef<HTMLDivElement>(null);
-    const transformerRef = React.useRef<Konva.Transformer>(null);
+    const pixiRootDiv = React.useRef<HTMLDivElement>(null);
+    const pixiApp = usePixiApp();
     
-    // Ensure the transformer is attached to the selected node
     useEffect(() => {
-        const node = konvaRef.current;
-        node && transformerRef.current?.nodes([node]);
-    }, [selected])
-
-    const handleStageMouseDown = (event: KonvaEventObject<MouseEvent>) => {
-        const relativePointerPosition = event.currentTarget.getRelativePointerPosition();
-        // Logic to start box selection
-            if(!startingPoint.current && relativePointerPosition) {
-            startingPoint.current = relativePointerPosition
+        console.log('Pixi app changed', pixiApp);
+        // Init Pixi App and add to div container
+        (async () => {
+            if(pixiRootDiv.current) {
+                await initPixiApp(pixiRootDiv.current);
+                if(pixiApp) pixiRootDiv.current.appendChild(pixiApp.canvas);          
             }
-    };
-    
-    const handleStageMouseMove = (event: KonvaEventObject<MouseEvent>) => {
-        const relativePointerPosition = event.currentTarget.getRelativePointerPosition();
-        if (!startingPoint.current || !relativePointerPosition) return;
-        const { startX, startY } = { startX: startingPoint.current.x, startY: startingPoint.current.y };
-        const { minX, minY } = { 
-            minX: Math.min(relativePointerPosition.x, startX), 
-            minY: Math.min(relativePointerPosition.y, startY),
-        };
-        setSelectionRectStyle((prevStyle) => ({
-            ...prevStyle,
-            x: minX,
-            y: minY,
-            width: Math.abs(relativePointerPosition.x - startX),
-            height: Math.abs(relativePointerPosition.y - startY),
-        }));
-        
-    }
-    
-    const handleStageMouseUp = (event: KonvaEventObject<MouseEvent>) => {
-        startingPoint.current = null;
-        setSelectionRectStyle(undefined);
-    };
+        })();
+        return () => {
+            if(pixiApp && pixiRootDiv.current) destroyPixiApp(); console.log('Destroyed Pixi app');
+
+        }
+    }, [pixiApp]);
+
+    useEffect(() => {
+        const ticker = new Ticker();
+        // Add selected component to Pixi stage
+        if (isTypeOf<GameComponentType>(selected, TYPE_ENUM.GAME_COMPONENT)) {
+            if(!pixiApp) return;
+            const label = createPixiLabelFromBaseType(selected, PIXI_COMPONENTS.CONTAINER);
+            const oldPixiGameComponent = pixiApp.stage.getChildByLabel(label, false);
+            if(oldPixiGameComponent) oldPixiGameComponent.destroy();
+            
+            const newPixiGameComponent = createPixiComponent({
+                id: selected.id,
+                name: selected.name,
+                type: selected.type,
+                ...selected.style
+            });
+            pixiApp.renderer.layout.update(newPixiGameComponent.container);
+            ticker.addOnce(() => {
+              const pixiTransformer = createTransformer(newPixiGameComponent.container, pixiApp);  
+              pixiApp.stage.addChild(...pixiTransformer);
+            }).start();
+            pixiApp.stage.addChild(newPixiGameComponent.container);
+            
+        }
+        return () => {
+            pixiApp?.stage.removeChildren();
+            ticker.destroy();
+        }
+    }, [selected?.id])
+
 
 
     const setSelectedComponent = (index: number) => {
         if (bpStore.gameComponents[index]) {
-            setSelectionStore(bpStore.gameComponents[index][1]);
+            setSelectionItem(bpStore.gameComponents[index][1]);
         }
     }
 
@@ -138,7 +134,7 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
 }
 
     const updateSelectedComponent = (updatedComponent: SelectionItem) => {
-        setSelectionStore(updatedComponent);
+        setSelectionItem(updatedComponent);
     }
 
     const saveUpdate = () => {
@@ -152,76 +148,16 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
         setGameComponent(newGCArray);
     }
 
-    const handleTransformEnd = (e: Konva.KonvaEventObject<Event>) => {
-        if(!konvaRef || !konvaRef.current || !selected) return;
-        const node = konvaRef.current;
-        const scaleX = node.scaleX();
-        const scaleY = node.scaleY();
-        node.scaleX(1);
-        node.scaleY(1);
-
-        updateSelectedComponent({
-            ...selected,
-            style: {
-                ...selected.style,
-                x: node.x(),
-                y: node.y(),
-                width: Math.max(5, node.width() * scaleX),
-                height: Math.max(5, node.height() * scaleY)
-            }
-        })
-    }
-
-
     return (
-            <div className="component-builder flex flex-row mx-auto h-full space-x-2">
+            <div className="component-builder flex flex-row mx-auto h-full space-x-2" style={{width: '100%', height: '100%'}}>
                 <Carousel 
                     title={selected?.name} 
                     className='h-full' 
                     arrayLength={bpStore.gameComponents.length} 
                     onNextOrPrevious={(index) => setSelectedComponent(index)}>
                     <ContextMenu.Root modal={true}>
-                    <ContextMenu.Trigger>                    
-                        <Stage 
-                            style={{backgroundColor: 'chocolate'}}
-                            width={(selected?.style?.width || 0) + 10} height={(selected?.style?.height || 0) + 10} 
-                            onMouseDown={handleStageMouseDown} 
-                            onMouseMove={handleStageMouseMove} 
-                            onMouseUp={handleStageMouseUp}
-                            >
-                            <Layer>
-                            
-                            { selected && isTypeOf<GameComponentType>(selected, TYPE_ENUM.GAME_COMPONENT) &&
-                                <GameComponent
-                                    {...selected}
-                                    showTitle={true}
-                                    renderAs='konva'
-                                    ref={konvaRef}
-                                    handleTransformEnd={handleTransformEnd}
-                                    style={{
-                                        ...selected.style,
-                                        width: selected.style?.width,
-                                        height: selected.style?.height,
-                                        x: 0,
-                                        y: 0
-                                    }}
-                                    
-                                />
-                                
-                            }
-                            <Transformer ref={transformerRef} />
-                            <BoxSelection
-                                renderAs='konva'
-                                useBoxSelection={true}
-                                rectStyle={
-                                    {
-                                        ...selectionRectStyle
-                                    }
-                                }
-                                
-                            />
-                            </Layer>
-                        </Stage>                        
+                    <ContextMenu.Trigger>
+                        <div className='container w-[500px] h-[500px]' ref={pixiRootDiv}/>                   
                         <BlueprintMenu 
                             gameComponents={bpStore.gameComponents}
                         />

@@ -41,11 +41,11 @@ const BlueprintMenu: React.FC<BlueprintMenuProps> = (props: BlueprintMenuProps) 
                                                 <div>Game Components</div>
                                             <ChevronRightIcon className='w-5 h-5'/>
                                             </ContextMenu.SubTrigger>
-                                        {props.gameComponents.map(([, item]) => 
+                                        {props.gameComponents.map(([, item], index) => 
                                         <>
-                                            <ContextMenu.SubContent className='select-none py-2 min-w-[200px] bg-white text-black rounded-md shadow-intense flex flex-col gap-1'>
-                                                <ContextMenu.Item onClick={() => props.onGameComponentsClick && props.onGameComponentsClick(item)}>
-                                                    <div className='p-1 py-2 hover:bg-yellow-500 mx-4'>{item.name}</div>
+                                            <ContextMenu.SubContent key={`sub-${index}`} className='select-none py-2 min-w-[200px] bg-white text-black rounded-md shadow-intense flex flex-col gap-1'>
+                                                <ContextMenu.Item key={`item-${index}`} onClick={() => props.onGameComponentsClick && props.onGameComponentsClick(item)}>
+                                                    <div key={`name-${index}`} className='p-1 py-2 hover:bg-yellow-500 mx-4'>{item.name}</div>
                                                 </ContextMenu.Item>
                                             </ContextMenu.SubContent>
                                         </>

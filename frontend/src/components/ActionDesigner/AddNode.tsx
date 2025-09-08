@@ -1,7 +1,7 @@
 import React, { ReactElement, ReactNode, useEffect, useMemo, useRef } from 'react';
 import { ArrowDownCircleIcon, PlusCircleIcon } from '@heroicons/react/20/solid';
 import { SelectIcon, SelectValue, Trigger } from '@radix-ui/react-select';
-import RadixSelect, { RadixSelectProps } from '../UI/RadixSelect/RadixSelect';
+import RadixSelect, { RadixSelectProps } from '../UI/RadixSelect';
 import { generateId } from '@shared/logic/generateId';
 import useAnime from '@root/src/hooks/AnimeHooks';
 import clsx from 'clsx';
