@@ -1,36 +1,43 @@
-import React, { FC, ReactNode, useEffect, useState } from 'react';
+import React, { FC, ReactNode, useEffect } from 'react';
 import SceneNavigation from '../Scenes/SceneNavigation';
 import HierarchyView from '../HierarchyView/HierarchyView';
 import { BlueprintType } from '@shared/types/types';
 import { socket } from '@root/src/App';
-import { LookupContext, LookupProvider } from '@root/src/context/LookupContext';
 import { useBlueprint, useSetBlueprint } from '@root/src/zustand/BlueprintStore';
+import { SOCKET_RESPONSE } from '@shared/enums/enums';
+import { setSelectionItem } from '@root/src/zustand/SelectionStore';
+import PixiTesti from '@root/src/Testailua/PixiTesti';
 
 
 interface MainProps {
   children?: ReactNode
 }
 
+const updateBp = (partialBp: Partial<BlueprintType>) => {
+	useSetBlueprint(partialBp);
+}
+
 
 const Main : FC<MainProps> = ({ children }) => {
-  const bpStore = useBlueprint();
-  const setBlueprint = useSetBlueprint;
+  const bpStore = useBlueprint(); 
 
   useEffect(() => {
-    const update = (bp: BlueprintType) => { setBlueprint(bp) };
-    socket.on('blueprint', update);
-    return () => {
-        socket.off('blueprint', update);
-    }
+      if(bpStore) {
+        socket.emit('getBlueprint', (bp, status) => {
+          if(status == SOCKET_RESPONSE.OK) {
+            updateBp(bp);
+            setSelectionItem(bp.gameComponents[0]?.[1]);
+          } 
+        });
+      }
   }, []);
 
 
 
   return (
     <div className='w-full h-full'>
-        <div className='flex h-full'>
+        <div className='flex w-full h-full'>
           <SceneNavigation/>
-          <HierarchyView/>
         </div>
     </div>
     

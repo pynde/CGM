@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import * as Collapsible from "@radix-ui/react-collapsible";
 import { VisualType } from '@shared/types/types';
 
@@ -14,6 +14,10 @@ const Visuals: React.FC<VisualsProps> = ({ item, onUpdate }) => {
     const [width, setWidth] = useState(item.width || 0);
     const [height, setHeight] = useState(item.height || 0);
     const [opened, setOpened] = useState(true);
+
+    const setWidthCb = useCallback(() => {
+        setWidth(width);
+    }, [item.width]);
 
     useEffect(() => {
         setImgUrls(item.imgUrls || []);

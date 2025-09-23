@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { dir } = require('console');
 
 module.exports = {
     entry: './src/index.tsx',
@@ -23,6 +24,10 @@ module.exports = {
           {
             test: /\.(png|jp(e*)g|gif)$/,
             exclude: /node_modules/,
+            loader: 'file-loader',
+            options: {
+              name: '[path][name].[ext]',
+            },
             type: "asset/resource",
           },      {
             test: /\.svg$/i,
@@ -53,6 +58,9 @@ module.exports = {
         hot: true,
         open: false,
         liveReload: true,
+        static: {
+          directory: path.join(__dirname, 'public'),
+        },
         headers: {
           "Access-Control-Allow-Origin": "*",
         },

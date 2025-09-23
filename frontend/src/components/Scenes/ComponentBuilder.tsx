@@ -1,17 +1,18 @@
 import { ACTION_TYPE_ENUM, RESOURCE_ENUM, TYPE_ENUM } from '@shared/enums/enums';
-import { ActionType, BaseType, GameComponentType, isTypeOf, ResourceType, SelectionType, VisualType } from '@shared/types/types';
-import React, { useState, useEffect, useContext, RefObject } from 'react';
+import { ActionType, GameComponentType, isTypeOf, ResourceType, VisualType } from '@shared/types/types';
+import React, { useEffect } from 'react';
+import { useBlueprint, useSetBlueprint, useShallowBlueprint, useUpdateBlueprintGameComponents } from '@root/src/zustand/BlueprintStore';
+import { SelectionItem, setSelectionItem, useSelection } from '@root/src/zustand/SelectionStore';
+import { Container, Ticker } from 'pixi.js';
+import "@pixi/layout";
+import { createPixiComponent, createPixiLabelFromBaseType, PIXI_COMPONENTS } from '../PixiComponents/PixiVanilla';
+import { destroyPixiApp, initPixiApp, usePixiApp } from '@root/src/zustand/PixiStore';
 import Carousel from '../UI/Carousel';
-import Visuals from '../Views/Visuals';
-import { useSetBlueprint, useShallowBlueprint, useUpdateBlueprintGameComponents } from '@root/src/zustand/BlueprintStore';
 import * as ContextMenu from '@radix-ui/react-context-menu';
 import BlueprintMenu from '../BlueprintMenu/BlueprintMenu';
+import Visuals from '../Views/Visuals';
 import SaveButton from '../UI/SaveButton';
-import { SelectionItem, setSelectionItem, useSelection } from '@root/src/zustand/SelectionStore';
-import { Graphics, Application, Ticker } from 'pixi.js';
-import "@pixi/layout";
-import { createPixiComponent, createPixiLabelFromBaseType, createTransformer, PIXI_COMPONENTS } from '../PixiComponents/PixiVanilla';
-import { destroyPixiApp, initPixiApp, setPixiApp, usePixiApp } from '@root/src/zustand/PixiStore';
+import { createSizeHandler, createTransformer } from '../PixiComponents/PixiTransformer';
 // Props interface for the ComponentBuilder
 interface ComponentBuilderProps {
     
@@ -21,47 +22,57 @@ interface ComponentBuilderProps {
 export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
     const setBlueprint = useSetBlueprint; 
     const setGameComponent = useUpdateBlueprintGameComponents
-    const bpStore = useShallowBlueprint();
+    const bpStore = useBlueprint();
     const selected = useSelection();
     const pixiRootDiv = React.useRef<HTMLDivElement>(null);
-    const pixiApp = usePixiApp();
     
     useEffect(() => {
-        console.log('Pixi app changed', pixiApp);
         // Init Pixi App and add to div container
         (async () => {
             if(pixiRootDiv.current) {
-                await initPixiApp(pixiRootDiv.current);
-                if(pixiApp) pixiRootDiv.current.appendChild(pixiApp.canvas);          
+                const pixiApp = await initPixiApp(pixiRootDiv.current);
+                if(pixiApp) pixiRootDiv.current.appendChild(pixiApp.canvas);  
             }
         })();
         return () => {
+            const pixiApp = usePixiApp();
             if(pixiApp && pixiRootDiv.current) destroyPixiApp(); console.log('Destroyed Pixi app');
 
         }
-    }, [pixiApp]);
+    }, []);
 
     useEffect(() => {
+        console.log('');
+        const pixiApp = usePixiApp();
+        if(!pixiApp) return;
         const ticker = new Ticker();
         // Add selected component to Pixi stage
         if (isTypeOf<GameComponentType>(selected, TYPE_ENUM.GAME_COMPONENT)) {
-            if(!pixiApp) return;
             const label = createPixiLabelFromBaseType(selected, PIXI_COMPONENTS.CONTAINER);
             const oldPixiGameComponent = pixiApp.stage.getChildByLabel(label, false);
             if(oldPixiGameComponent) oldPixiGameComponent.destroy();
-            
             const newPixiGameComponent = createPixiComponent({
                 id: selected.id,
                 name: selected.name,
                 type: selected.type,
                 ...selected.style
             });
-            pixiApp.renderer.layout.update(newPixiGameComponent.container);
+            pixiApp.renderer.layout.update(newPixiGameComponent);
             ticker.addOnce(() => {
-              const pixiTransformer = createTransformer(newPixiGameComponent.container, pixiApp);  
-              pixiApp.stage.addChild(...pixiTransformer);
+              const pixiTransformer = createSizeHandler(newPixiGameComponent, pixiApp, () => {
+                setSelectionItem({
+                    ...selected,
+                    style: {
+                        width: newPixiGameComponent.layout?.computedLayout.width || selected.style?.width || 0,
+                        height: newPixiGameComponent.layout?.computedLayout.height || selected.style?.height || 0,
+                    }
+                })
+              });
+              // Add transformer handles to stage by converting object values to array and spreading them as children
+              pixiApp.stage.addChild(pixiTransformer);
             }).start();
-            pixiApp.stage.addChild(newPixiGameComponent.container);
+            
+            pixiApp.stage.addChild(newPixiGameComponent);
             
         }
         return () => {
@@ -149,7 +160,7 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
     }
 
     return (
-            <div className="component-builder flex flex-row mx-auto h-full space-x-2" style={{width: '100%', height: '100%'}}>
+            <div className="component-builder flex flex-row mx-auto h-full space-x-2" style={{width: '100%', height: '100%'}}>   
                 <Carousel 
                     title={selected?.name} 
                     className='h-full' 

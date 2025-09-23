@@ -1,6 +1,5 @@
 import { Application, Container } from 'pixi.js';
 import { createStore } from 'zustand/vanilla';
-import "@pixi/layout"
 
 export type StageEventContext = 'idle' | 'dragging' | 'selecting' | 'resize-width' | 'resize-height' | 'resize-size';
 
@@ -27,16 +26,16 @@ export const useStageEventContext = () => usePixiStore.getState().stageEventCont
 export const setPixiApp = (app: Application | null) => usePixiStore.setState({ app });
 export const setStageEventContext = (context: StageEventContext) => usePixiStore.setState({ stageEventContext: context });
 export const initPixiApp = async(resizeToElement: HTMLElement) => {
-    if(usePixiApp()) return;
     const app = new Application();
-    await app.init({ resizeTo: resizeToElement, backgroundColor: 'blue' });
+    await app.init({ resizeTo: resizeToElement, backgroundColor: 'blue', preference: 'webgpu' });
     app.stage.layout = {
-        width: resizeToElement.offsetWidth,
-        height: resizeToElement.offsetHeight,
+        width: resizeToElement.clientWidth,
+        height: resizeToElement.clientHeight,
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
     }
     setPixiApp(app);
+    return app
 };
 export const setSelectedPixiContainer = (container: Container | null) => usePixiStore.setState({ selectedPixiContainer: container });
 export const useSelectedPixiContainer = () => usePixiStore.getState().selectedPixiContainer;
