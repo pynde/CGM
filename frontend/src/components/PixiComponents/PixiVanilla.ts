@@ -1,6 +1,5 @@
 import { BaseType, VisualType } from "@shared/types/types";
 import { Text, Application, ContainerChild, Graphics, Container, Point, Color } from "pixi.js";
-import "@pixi/layout";
 
 
 export enum PIXI_COMPONENTS {
@@ -27,10 +26,11 @@ export const createPixiComponent = (baseNode: BaseType<VisualType>): Container =
         }
     });
     container.label = createPixiLabelFromBaseType(baseNode, PIXI_COMPONENTS.CONTAINER);
-    const bgColor = new Graphics({ layout: {
-        width: "100%",
-        height: "100%",
-    } }).fill(baseNode.fill || 'black');
+    const bgColor = new Graphics({layout: {
+            width: "100%",
+            height: "100%",
+        }
+    });
     bgColor.rect(
         0, 
         0,
@@ -58,12 +58,6 @@ const createPixiErrorContainer = (from?: string) => {
     }
     container.addChild(text);
     return container
-}
-
-export const initPixiApp = async(divContainer: HTMLDivElement) => {
-    const app = new Application();
-    await app.init({ resizeTo: divContainer || window, backgroundColor: 'blue' });
-    return app;
 }
 export const appendToPixiApp = (app: Application, element: ContainerChild) => {
     app.stage.addChild(element);

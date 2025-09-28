@@ -12,6 +12,7 @@ import GameView from '../UI/GameView';
 import { useSetBlueprint, useShallowBlueprint } from '@root/src/zustand/BlueprintStore';
 import Warning from '../UI/Warning';
 import { useSelection, setSelectionItem } from '@root/src/zustand/SelectionStore';
+import { usePixiApp, usePixiAppState } from '@root/src/zustand/PixiStore';
 
 type TabContent = {
 	tabName: string,
@@ -35,6 +36,7 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 	const [contentSize, setContentSize] = useState<{ width: number, height: number }>({ width: 400, height: 400 });
 	const selected = useSelection();
 	const bpStore = useShallowBlueprint();
+	const pixiAppState = usePixiAppState();
 
 
 
@@ -57,6 +59,10 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 			});
 		}
 	  }, []);
+
+	  useEffect(() => {
+		console.log('pixiAppState changed: ', pixiAppState);
+	  }, [pixiAppState])
 
 
 	  useLayoutEffect(() => {
@@ -93,7 +99,7 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 				className="shadow-inner h-full w-full"
 				ref={contentRef}
 			>
-				{scene.tabContent}
+				{ scene.tabContent}
 				<Warning open={false}/>
 			</Tabs.Content>
 		))}

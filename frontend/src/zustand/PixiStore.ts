@@ -1,48 +1,71 @@
-import { Application, Container } from 'pixi.js';
-import { createStore } from 'zustand/vanilla';
+import { Application, Container, Ticker } from 'pixi.js';
+import { create } from 'zustand/react';
+import "@pixi/layout";
 
-export type StageEventContext = 'idle' | 'dragging' | 'selecting' | 'resize-width' | 'resize-height' | 'resize-size';
+export type AppState = 'idle' | 'closed' | 'uninitialised' | 'running' | 'closing';
 
 interface PixiStoreState {
     app: Application | null;
-    setApp: (app: Application) => void;
-    stageEventContext: StageEventContext;
-    setStageEventContext: (context: StageEventContext) => void;
+    setApp: (app: Application | null) => void;
+    appState: AppState;
+    setAppState: (context: AppState) => void;
     selectedPixiContainer: Container | null;
     setSelectedPixiContainer: (container: Container | null) => void;
 }
 
-const usePixiStore = createStore<PixiStoreState>((set) => ({
+const usePixiStore = create<PixiStoreState>((set) => ({
     app: null,
     setApp: (app) => set({ app }),
-    stageEventContext: 'idle',
-    setStageEventContext: (context) => set({ stageEventContext: context }),
+    appState: 'uninitialised',
+    setAppState: (context) => set({ appState: context }),
     selectedPixiContainer: null,
     setSelectedPixiContainer: (newContainer) => set({ selectedPixiContainer: newContainer })
 }));
 
-export const usePixiApp = () => usePixiStore.getState().app;
-export const useStageEventContext = () => usePixiStore.getState().stageEventContext;
-export const setPixiApp = (app: Application | null) => usePixiStore.setState({ app });
-export const setStageEventContext = (context: StageEventContext) => usePixiStore.setState({ stageEventContext: context });
+export const usePixiApp = () => usePixiStore(state => state.app);
+export const useAppState = () => usePixiStore.getState().appState;
+export const setPixiApp = (app: Application | null) => usePixiStore.getState().setApp(app);
+export const setAppState = (context: AppState) => usePixiStore.setState({ appState: context });
+export const usePixiAppState = () => usePixiStore(state => state.appState);
 export const initPixiApp = async(resizeToElement: HTMLElement) => {
     const app = new Application();
-    await app.init({ resizeTo: resizeToElement, backgroundColor: 'blue', preference: 'webgpu' });
+    await app.init({ 
+        resizeTo: resizeToElement, 
+        backgroundColor: 'blue', 
+        preference: 'webgpu',
+        autoStart: false,
+        layout: {
+            layout: {
+                autoUpdate: false,
+                enableDebug: false,
+                debugModificationCount: 0,
+                throttle: 100
+            }
+        }
+    });
     app.stage.layout = {
         width: resizeToElement.clientWidth,
         height: resizeToElement.clientHeight,
         justifyContent: 'center',
         alignItems: 'center'
     }
-    setPixiApp(app);
+    setAppState('running');
     return app
 };
 export const setSelectedPixiContainer = (container: Container | null) => usePixiStore.setState({ selectedPixiContainer: container });
 export const useSelectedPixiContainer = () => usePixiStore.getState().selectedPixiContainer;
 export const destroyPixiApp = () => {
-    const app = usePixiApp();
+    const app = usePixiStore.getState().app;
+    console.log(app?.stage.didChange); 
     if(app) {
-        //app.stage.layout?.destroy();
+        // NOTE: If problems with destroying the app, try adding a small timeout here. 
+        // Pixi Layout didn't check if element existed and tried to call a method on a null object.
+        // Bug was fixed in pixi v3.2.0. 
+        setAppState('closing');
+        app.stop();
+        app.stage.destroy({children:true});
         app.destroy();
+        setAppState('closed');
+        setPixiApp(null);
     }
 }
