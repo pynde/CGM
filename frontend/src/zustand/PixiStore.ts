@@ -56,7 +56,6 @@ export const setSelectedPixiContainer = (container: Container | null) => usePixi
 export const useSelectedPixiContainer = () => usePixiStore.getState().selectedPixiContainer;
 export const destroyPixiApp = () => {
     const app = usePixiStore.getState().app;
-    console.log(app?.stage.didChange); 
     if(app) {
         // NOTE: If problems with destroying the app, try adding a small timeout here. 
         // Pixi Layout didn't check if element existed and tried to call a method on a null object.

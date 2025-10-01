@@ -50,31 +50,32 @@ const Visuals: React.FC<VisualsProps> = ({ item, onUpdate }) => {
             open={opened}
             onOpenChange={setOpened}
             >
-            <Collapsible.Trigger className="py-2">
+            <Collapsible.Trigger className="p-2 bg-darkbglighter">
             {opened ? 'Hide Visuals' : 'Show Visuals'}
             </Collapsible.Trigger>
             <Collapsible.Content className="text-gray-200">
             <div className="flex flex-col space-y-4">
                 {[0, 1].map((index) => (
-                <div key={index}>
-                    <label className="block text-sm font-medium">
-                    {index === 0 ? 'Front Image URL' : 'Back Image URL'}
-                    </label>
-                    <input
-                    type="text"
-                    value={imgUrls[index] || ''}
-                    onChange={(e) => handleImageUrlChange(index, e.target.value)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
-                    />
-                </div>
+                    <div key={index}>
+                        <label className="block text-sm font-medium my-2">
+                            {index === 0 ? 'Front Image URL' : 'Back Image URL'}
+                        </label>
+                        <input
+                            type="text"
+                            value={imgUrls[index] || ''}
+                            onChange={(e) => handleImageUrlChange(index, e.target.value)}
+                            
+                        />
+                    </div>
                 ))}
-                <div>
+                <label className="block text-sm font-medium">Upload image</label>
+                <input type='file' accept='image/*'/>
+            <div>
                 <label className="block text-sm font-medium">Width</label>
                 <input
                     type="number"
                     value={width || ''}
                     onChange={(e) => setWidth(e.target.value ? Number(e.target.value) : 0)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
                 />
                 </div>
                 <div>
@@ -83,7 +84,6 @@ const Visuals: React.FC<VisualsProps> = ({ item, onUpdate }) => {
                     type="number"
                     value={height || ''}
                     onChange={(e) => setHeight(e.target.value ? Number(e.target.value) : 0)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
                 />
                 </div>
                 <button

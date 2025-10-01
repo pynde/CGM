@@ -36,7 +36,7 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
                 if(app) pixiRootDiv.current.appendChild(app.canvas);
                 setPixiApp(app);
                 app.start();
-                console.log('app initialized and started', app);
+                console.log('app initialized and started', app, 'stage', app.stage);
             }
         })();
         return () => {
@@ -50,7 +50,7 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
         // Add selected component to Pixi stage
         if (isTypeOf<GameComponentType>(selected, TYPE_ENUM.GAME_COMPONENT)) {
             const label = createPixiLabelFromBaseType(selected, PIXI_COMPONENTS.CONTAINER);
-            if(!pixiApp.stage) return;
+            if(!pixiApp.stage) return () => { ticker.destroy(); };
             const oldPixiGameComponent = pixiApp.stage.getChildByLabel(label, false);
             if(oldPixiGameComponent) oldPixiGameComponent.destroy();
             const newPixiGameComponent = createPixiComponent({
@@ -67,6 +67,7 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
                 setSelectionItem({
                     ...selected,
                     style: {
+                        ...selected.style,
                         width: newPixiGameComponent.layout?.computedLayout.width || selected.style?.width || 0,
                         height: newPixiGameComponent.layout?.computedLayout.height || selected.style?.height || 0,
                     }

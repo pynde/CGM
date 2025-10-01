@@ -32,7 +32,10 @@ html, body, #root {
         @apply rounded-md border-none border-0;
     }
     input {
-        @apply rounded-md dark:bg-darkbglighter dark:text-gray-200 border-2 border-white border-solid p-2 text-darkbg;
+        @apply rounded-md dark:bg-darkbglighter dark:text-gray-200 border-2 border-white border-solid p-2 text-darkbg m-0 inline-block;
+    }
+    label {
+        @apply block text-sm font-medium;
     }
 }
 

@@ -79,6 +79,7 @@ export const createSizeHandler = (container: Container, app: Application, onPoin
     sizeHandler.interactive = true;
     app.stage.eventMode = 'static';
     app.stage.hitArea = app.screen;
+    const prevLayout = {...container.layout};
     sizeHandler.on('pointerdown', (event) => {
         sizeHandler.alpha = 0.8;
         app.stage.on('pointermove', (e) => {
@@ -87,7 +88,7 @@ export const createSizeHandler = (container: Container, app: Application, onPoin
             const newHeight = ((container.layout?.computedLayout.height || 0) + (container.layout?.computedLayout.top || 0)) - obsPoint.y;
             container.layout = {
                 width: newWidth,
-                height: newHeight
+                height: newHeight,
             };
             onPointerMove && onPointerMove();
         });
