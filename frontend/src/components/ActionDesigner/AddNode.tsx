@@ -13,14 +13,12 @@ type AddNodeProps = RadixSelectProps & {
 
 const AddNode: React.FC<AddNodeProps> = ({ addSVGIcon, iconSize=8, ...props }) => {
 
-
         const iconWithClassNames = React.Children.map(props.children, (child) => {
             if(React.isValidElement<ReactElement<React.SVGProps<SVGSVGElement>>>(child)) {
                return React.cloneElement(child as ReactElement, { className: clsx(props.className,`transition-[height] duration-400 ease-out opacity-20 hover:opacity-100 group-data-[state=open]:h-0 group-data-[state=closed]:h-full`) }) 
             }
             return null;
         })
-
 
     return (
         <RadixSelect options={props.options} onNameSelect={props.onNameSelect}>

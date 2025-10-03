@@ -39,20 +39,17 @@ export const ActionNode: React.FC<ActionNodeProps> = ({
 
     return (
         <div 
-        
             style={styleWithVariable()}
             className={
                 clsx(
                     active && 'z-10 text-yellow-500 scale-110 m-2',
                     !active && 'm-0',
-                    animateIn && 'animate-wide-out-jump-out',
+                    animateIn && 'animate-jump-in',
                     animateOut && 'animate-wide-out jump-out',
                     `min-h-[var(--minHeight)] h-fit max-h-[600px] transition-[transform,margin,opacity] scale-100 animate-fill-forwards action-node flex flex-col dark:bg-darkbglighter text-center flex-center relative`
                 )
             }
-            {...props}
         >   
-            
             <span onClick={e => (e)} className='min-w-[var(--minWidth)] overflow-hidden p-2'>{props.name}</span>
             <div className='flex-center-row'>
                 <span className='m-2'>You <i>may...</i></span>

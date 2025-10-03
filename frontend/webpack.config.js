@@ -69,6 +69,7 @@ module.exports = {
         extensions: ['.ts', '.js', '.jsx', '.tsx', '...'],
         alias: {
             '@root': path.resolve(__dirname, './'),
+            '@public': path.resolve(__dirname, './public'),
             '@shared': path.resolve(__dirname, '../shared')
             
         }

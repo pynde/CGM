@@ -29,7 +29,7 @@ export const useSelection = () => {
     return useSelectionStore((state) => state.selection);
 }
 /** Adds an item to the selection store. */
-export const setSelectionItem = (item: SelectionItem) => {
+export const setSelection = (item: SelectionItem) => {
     useSelectionStore.getState().setSelection(item);
     useSelectionStore.getState().setContext(item.type);
     
@@ -39,11 +39,11 @@ export const setSelectionItem = (item: SelectionItem) => {
 export const clearSelectionStore = () => {
     useSelectionStore.getState().clearSelection();
 }
-/** Returns only selected items of type GameComponentType. Return empty array if none found. */
-export const useSelectionTypeGuarded = <T>() => {
+/** Returns only selected items of wanted type. Return empty array if none found. */
+export const useSelectionTypeGuarded = <T>(type: TYPE_ENUM) => {
     return useSelectionStore((state) => {
         if(!state.selection) return null;
-        if(isTypeOf<T>(state.selection, state.selection.type)) return state.selection as T;
+        if(isTypeOf<T>(state.selection, type)) return state.selection as T;
         return null;
     });
 };

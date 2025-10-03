@@ -29,7 +29,10 @@ html, body, #root {
         @apply text-2xl font-medium;
     }
     button {
-        @apply rounded-md border-none border-0;
+        @apply rounded-md border-none border-0 bg-darkbglighter;
+    }
+    button:hover {
+        @apply bg-actioncolor;
     }
     input {
         @apply rounded-md dark:bg-darkbglighter dark:text-gray-200 border-2 border-white border-solid p-2 text-darkbg m-0 inline-block;

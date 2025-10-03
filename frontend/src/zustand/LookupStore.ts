@@ -1,26 +1,29 @@
 import { ActionType, GameComponentType, ResourceType } from "@shared/types/types";
 import { create } from "zustand";
 
-const useLookupStore = create<LookupContextType>((set) => ({
+const useLookupStore = create<LookupStoreType>((set) => ({
         gameComponentTypes: [],
         resourceTypes: [],
         actionTypes: [],
         actionNames: [],
-        selected: {
-            selectedComponent: undefined,
-            selectedAction: undefined,
-            selectedResource: undefined,
-            selectedOwner: undefined
-        },
         setGameComponentTypes: (gameComponents) => { return set({ gameComponentTypes: gameComponents.map(gc => gc.type) }) },
         setResourceTypes: (resources) => { return set({ resourceTypes: resources.map(r => r.type) }) },
         setActionTypes: (actions) => { return set({ actionTypes: actions.map(a => a.type) }) },
         })
     );
 
-export const useLookup = () => {
-    return useLookupStore((state) => state);
+// export const useLookup = () => {
+//     return useLookupStore((state) => state);
+// }
+
+export const useLookupActionNames = () => {
+    return useLookupStore((state) => state.actionNames);
 }
+
+export const useLookupActionTypes = () => {
+    return useLookupStore((state) => state.actionTypes);
+}
+
 export const getGameComponentTypes = () => {
     return useLookupStore((state) => state.gameComponentTypes);
 }
@@ -31,8 +34,7 @@ export const getActionTypes = () => {
     return useLookupStore((state) => state.actionTypes);
 }
 
-export type LookupContextType = {
-    unSavedChanges?: boolean;
+export type LookupStoreType = {
     gameComponentTypes: GameComponentType['type'][];
     resourceTypes: ResourceType['type'][];
     actionTypes: ActionType['type'][];

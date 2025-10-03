@@ -5,8 +5,7 @@ import { BlueprintType } from '@shared/types/types';
 import { socket } from '@root/src/App';
 import { useBlueprint, useSetBlueprint } from '@root/src/zustand/BlueprintStore';
 import { SOCKET_RESPONSE } from '@shared/enums/enums';
-import { setSelectionItem } from '@root/src/zustand/SelectionStore';
-import PixiTesti from '@root/src/Testailua/PixiTesti';
+import { setSelection } from '@root/src/zustand/SelectionStore';
 
 
 interface MainProps {
@@ -26,7 +25,7 @@ const Main : FC<MainProps> = ({ children }) => {
         socket.emit('getBlueprint', (bp, status) => {
           if(status == SOCKET_RESPONSE.OK) {
             updateBp(bp);
-            setSelectionItem(bp.gameComponents[0]?.[1]);
+            setSelection(bp.gameComponents[0]?.[1]);
           } 
         });
       }

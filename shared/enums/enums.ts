@@ -1,10 +1,5 @@
 
 
-/** Visible face on a deck. I.e. the card that can be seen. 
- * @member FRONT the cards are visible
- * @member BACK the cards are not visible
- * @member MIXED some of the cards are visible and some not. E.g. topmost card is visible and the rest are not.
- */
 
 export enum TYPE_ENUM { 
     GAME_COMPONENT = "GAME_COMPONENT",
@@ -18,6 +13,12 @@ export enum TYPE_ENUM {
     TRACK = "TRACK",
     SYMBOL = "SYMBOL",
 }
+
+/** Visible face on a deck. I.e. the card that can be seen. 
+ * @member FRONT the cards are visible
+ * @member BACK the cards are not visible
+ * @member MIXED some of the cards are visible and some not. E.g. topmost card is visible and the rest are not.
+ */
 export enum FACE_VISIBLE_ENUM {
     FRONT,
     BACK,

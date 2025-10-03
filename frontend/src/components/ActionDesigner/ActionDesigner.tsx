@@ -1,26 +1,32 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { ActionType, SubActionType } from '@shared/types/types';
-import { LookupContext } from '@root/src/context/LookupContext';
 import ActionNode from './ActionNode';
-import useHistory, { OperationType } from '@root/src/hooks/HistoryHooks';
+import { HistoryStore, OperationType, createHistoryStore } from '@root/src/hooks/HistoryHooks';
 import AddNode from './AddNode';
 import clsx from 'clsx';
-import { useBlueprint, useSetBlueprint } from '@root/src/zustand/BlueprintStore';
+import { useBlueprint, useBlueprintActions, useSetBlueprint } from '@root/src/zustand/BlueprintStore';
+import AddGroupNode from './AddGroupNode';
+import { moveNodeToActionNodeTreeGroup } from '@root/src/zustand/ActionNodeTreeStore';
 
 
 type ActionDesignerProps = React.HTMLAttributes<HTMLDivElement> & {
     selectedAction: ActionType,
 }
 
+const { useHistory, setHistory, clearHistory, useHistoryKeyboard } = createHistoryStore<ActionType | null>(null);
+
 const ActionDesigner: React.FC<ActionDesignerProps> = ({ selectedAction, ...props }) => {
-    const { actionNames } = useContext(LookupContext);
     const bpStore = useBlueprint();
-    const { historyState, setHistory, useHistoryKeyboard, clearHistory } = useHistory<ActionType>(selectedAction);
+    const historyInitialized = useRef<boolean>(false);
+    const actionNames = useBlueprintActions().map(([_, value]) => { return value.name });
+    const actionNodeHistory = useHistory();
     const [newNodeIndex, setNewNodeIndex] = useState<number | null>(null);
     const [deletedNodeIndex, setDeletedNodeIndex] = useState<number | null>(null);
     const [selectedNode, setSelectedNode] = useState<number | null>(null);
 
     useEffect(() => {
+        // TODO: 
+        console.log('selectedAction', selectedAction);
         clearHistory();
         setHistory(selectedAction);
     },[selectedAction]);
@@ -32,18 +38,27 @@ const ActionDesigner: React.FC<ActionDesignerProps> = ({ selectedAction, ...prop
         }
     },[useHistoryKeyboard]);
 
+    useEffect(() => { console.log('actionNodeHistory', actionNodeHistory.present); console.log('newIndex', newNodeIndex, 'deletedIndex', deletedNodeIndex); }, [actionNodeHistory.present]);
 
-    const addActionToPipe = (newActionName: string, index: number = 0) => {
-        const actionpipe = [...historyState.actionPipe];
+    /** Adds a new action to the action pipe.
+     * If index is provided, adds the action at the specified index.
+     * If index is not provided, adds the action at the end of the action pipe.
+     */
+    const addActionToPipe = (newActionName: string, index?: number) => {
+        if(!actionNodeHistory.present) return;
+        const present = actionNodeHistory.present;
+        const actionpipe = [...present.actionPipe];
         const bpAction = bpStore.actions.find(([,action]) => action.name === newActionName);
         if(!bpAction) return;
-        const newAction: SubActionType = { ...bpAction[1] };
+        const newAction: SubActionType = bpAction[1];
+        if(index === undefined) index = actionpipe.length;
         actionpipe.splice(index, 0, newAction);
         setNewNodeIndex(index);
-        setHistory({ ...historyState, actionPipe: actionpipe });
+        setHistory({ ...present, actionPipe: [...actionpipe] });
     };
 
     const addActionToGroup = (newActionName: string, subAction: SubActionType, index: number = 0) => {
+        if(!actionNodeHistory.present) return;
         if(subAction.group) {
             const bpAction = bpStore.actions.find(([,action]) => action.name === newActionName);
             if(!bpAction) return;
@@ -54,13 +69,15 @@ const ActionDesigner: React.FC<ActionDesignerProps> = ({ selectedAction, ...prop
             if(!bpAction) return;
             subAction.group = [bpAction[1]];
         }
-        setHistory({ ...historyState, actionPipe: [...historyState.actionPipe] });
+        setHistory({ ...actionNodeHistory.present, actionPipe: [...actionNodeHistory.present.actionPipe] });
         setNewNodeIndex(index)
     }
 
     const deleteActionFromPipe = (index: number) => {
-        const newArray = [...historyState.actionPipe]
-        const action: ActionType = { ...historyState, actionPipe: newArray};
+        if(!actionNodeHistory.present) return;
+        const present = actionNodeHistory.present;
+        const newArray = [...present.actionPipe]
+        const action: ActionType = { ...present, actionPipe: newArray};
         action.actionPipe.splice(index, 1);
         setHistory(action);
         setDeletedNodeIndex(null);
@@ -93,15 +110,15 @@ const ActionDesigner: React.FC<ActionDesignerProps> = ({ selectedAction, ...prop
 
     return (
         <div 
-            className='min-w-[95%] h-[95%] inline-flex items-start justify-start flex-row max-w-fit m-4 p-2 pt-8 bg-slate-700 overflow-x-scroll'
+            className='min-w-[95%] h-[95%] inline-flex items-start justify-start flex-row  max-w-fit m-4 p-2 pt-8 bg-slate-700 overflow-x-scroll'
             onWheel={zoomContainer} 
             {...props}
         >
             <div className='flex items-center justify-start'>
                 { 
-                (historyState.actionPipe.length > 0) 
+                (actionNodeHistory.present && actionNodeHistory.present.actionPipe.length > 0) 
                 ? 
-                historyState.actionPipe.map((item, index) => {
+                actionNodeHistory.present.actionPipe.map((item, index) => {
                     return (
                     <div className={clsx(item.group ? 'bg-cyan-900' : 'bg-darkbg',`rounded-md p-4 flex-center flex-col-reverse`)}>
                         {item.group && <span className='m-2'>Any of these actions</span>}
@@ -119,10 +136,8 @@ const ActionDesigner: React.FC<ActionDesignerProps> = ({ selectedAction, ...prop
                                 onNameSelect={name => addActionToPipe(name, index+1)}
                                 className='absolute right-0 flex-center w-0 h-0 outline-none'
                             />
-                            <AddNode 
-                                options={actionNames}
-                                onNameSelect={name => addActionToGroup(name, item, index+1)}
-                                className='absolute -top-4 flex-center w-0 outline-none'
+                            <AddGroupNode 
+                                onClick={() => moveNodeToActionNodeTreeGroup(item.id, 'group-'+index)}
                             />
                             </ActionNode>
                         { 

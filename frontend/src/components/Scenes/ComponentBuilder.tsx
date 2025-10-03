@@ -2,7 +2,7 @@ import { ACTION_TYPE_ENUM, RESOURCE_ENUM, TYPE_ENUM } from '@shared/enums/enums'
 import { ActionType, GameComponentType, isTypeOf, ResourceType, VisualType } from '@shared/types/types';
 import React, { useEffect } from 'react';
 import { useBlueprint, useSetBlueprint, useShallowBlueprint, useUpdateBlueprintGameComponents } from '@root/src/zustand/BlueprintStore';
-import { SelectionItem, setSelectionItem, useSelection } from '@root/src/zustand/SelectionStore';
+import { SelectionItem, setSelection, useSelection } from '@root/src/zustand/SelectionStore';
 import { createPixiComponent, createPixiLabelFromBaseType, PIXI_COMPONENTS } from '../PixiComponents/PixiVanilla';
 import { destroyPixiApp, initPixiApp, setPixiApp, usePixiApp, usePixiAppState } from '@root/src/zustand/PixiStore';
 import Carousel from '../UI/Carousel';
@@ -64,7 +64,7 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
             
         ticker.addOnce(() => {
               const pixiTransformer = createSizeHandler(newPixiGameComponent, pixiApp, () => {
-                setSelectionItem({
+                setSelection({
                     ...selected,
                     style: {
                         ...selected.style,
@@ -94,7 +94,7 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
 
     const setSelectedComponent = (index: number) => {
         if (bpStore.gameComponents[index]) {
-            setSelectionItem(bpStore.gameComponents[index][1]);
+            setSelection(bpStore.gameComponents[index][1]);
         }
     }
 
@@ -154,7 +154,7 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
 }
 
     const updateSelectedComponent = (updatedComponent: SelectionItem) => {
-        setSelectionItem(updatedComponent);
+        setSelection(updatedComponent);
     }
 
     const saveUpdate = () => {

@@ -1,18 +1,16 @@
-import React, { FC, ReactNode, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import  * as Tabs from '@radix-ui/react-tabs'
 import CardScene from './CardScene';
-import Overview from './Overview';
 import ComponentBuilder from './ComponentBuilder';
-import { GameStateProvider } from '@root/src/context/GameStateContext';
-import { ActionType, BlueprintType, GameComponentType, isTypeOf } from '@shared/types/types';
+import { BlueprintType } from '@shared/types/types';
 import { socket } from '@root/src/App';
-import { ACTION_TYPE_ENUM, SOCKET_RESPONSE } from '@shared/enums/enums';
+import {  SOCKET_RESPONSE } from '@shared/enums/enums';
 import ActionScene from './ActionScene';
 import GameView from '../UI/GameView';
 import { useSetBlueprint, useShallowBlueprint } from '@root/src/zustand/BlueprintStore';
 import Warning from '../UI/Warning';
-import { useSelection, setSelectionItem } from '@root/src/zustand/SelectionStore';
-import { usePixiApp, usePixiAppState } from '@root/src/zustand/PixiStore';
+import { setSelection } from '@root/src/zustand/SelectionStore';
+import { usePixiAppState } from '@root/src/zustand/PixiStore';
 
 type TabContent = {
 	tabName: string,
@@ -28,20 +26,18 @@ const updateBp = (partialBp: Partial<BlueprintType>) => {
 }
 
 const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps) => {
-	const INITIAL_TAB = 'ComponentBuilder';	
+	const INITIAL_TAB = 'Actions';	
 	const tabContent = 'tabContent';
 	const contentRef = useRef<HTMLDivElement>(null);
 	const [selectedTab, setSelectedTab] = useState(INITIAL_TAB);
-	const [selectedAction, setSelectedAction] = useState<ActionType>();
 	const [contentSize, setContentSize] = useState<{ width: number, height: number }>({ width: 400, height: 400 });
-	const selected = useSelection();
 	const bpStore = useShallowBlueprint();
 	const pixiAppState = usePixiAppState();
 
 
 
 	const sceneList: TabContent[] = [
-		{tabName: 'Overview', tabContent: <GameStateProvider><Overview key={tabContent+0}/></GameStateProvider>}, 
+		{tabName: 'Overview', tabContent: <div>Overview placeholder. Replace with Overview component.</div> }, 
 		{tabName: 'Cards', tabContent: <CardScene key={tabContent+1}/>}, 
 		{tabName: 'GameBoard', tabContent: <div key={tabContent+2}>Game Board placeholder</div>},
 		{tabName: 'ComponentBuilder', tabContent: <ComponentBuilder key={tabContent+3}/> },
@@ -54,15 +50,11 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 			socket.emit('getBlueprint', (bp, status) => {
 				if(status == SOCKET_RESPONSE.OK) {
 					updateBp(bp);
-					setSelectionItem(bp.gameComponents[0]?.[1]);
+					setSelection(bp.gameComponents[0]?.[1]);
 				} 
 			});
 		}
 	  }, []);
-
-	  useEffect(() => {
-		console.log('pixiAppState changed: ', pixiAppState);
-	  }, [pixiAppState])
 
 
 	  useLayoutEffect(() => {

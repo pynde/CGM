@@ -1,89 +1,86 @@
-import { useState, useCallback, useEffect } from 'react';
+import { create } from 'zustand';
 
 export type OperationType = { operationType: 'create' | 'update' | 'delete' | 'init' };
 
-type HistoryState<T> = {
-    past: T[];
-    present: T;
-    future: T[];
-};
 
-function useHistory<T>(initialPresent: T) {
-    const [historyState, setState] = useState<HistoryState<T>>({
+export type HistoryStore<T> = {
+    past: T[],
+    present: T,
+    future: T[],
+    setHistory: (newPresent: T) => void;
+    undo: () => void;
+    redo: () => void;
+    clearHistory: () => void;
+};
+export const createHistoryStore = <T,>(initialPresent: T) => {
+   const useHistoryStore = create<HistoryStore<T>>((set) => ({
         past: [],
         present: initialPresent,
         future: [],
-    });
-
-    useEffect(() => {
-        console.log('historyState', historyState);
-    }, [historyState]);
-
-    const setHistory = useCallback((newPresent: T) => {
-        setState((currentState) => {
-            return {
-                past: [...currentState.past, currentState.present],
+        setHistory: (newPresent: T) => {
+            set((state) => ({
+                past: [...state.past, state.present],
                 present: newPresent,
-                future: [], 
-            }
-        });
-    }, []);
-
-    const undo = useCallback(() => {
-        setState((currentState) => {
-            const { past, present, future } = currentState;
-            if (past.length === 0) return currentState;
-
-            const previous = past[past.length - 1];
-            const newPast = past.slice(0, past.length - 1);
-            
-            return {
-            past: newPast, // Keep only the last 49 items to ensure a maximum of 50 undos
-            present: previous,
-            future: [present, ...future],
-            };
-        });
-    }, []);
-
-    const redo = useCallback(() => {
-        setState((currentState) => {
-            const { past, present, future } = currentState;
-            if (future.length === 0) return currentState;
-
-            const next = future[0];
-            const newFuture = future.slice(1);
-
-            return {
-                past: [...past, present],
-                present: next,
-                future: newFuture,
-            };
-        });
-    }, []);
-
-    const clearHistory = useCallback(() => {
-        setState((currentState) => {
-            return {
-                past: [],
-                present: initialPresent,
                 future: [],
-            };
-        });
-    }, []);
+            }));
+        },
+        undo: () => {
+            set((state) => {
+                if (state.past.length === 0) return state;
+                const previous = state.past[state.past.length - 1];
+                const newPast = state.past.slice(0, state.past.length - 1);
+                return {
+                    past: newPast,
+                    present: previous,
+                    future: [state.present, ...state.future],
 
-    const useHistoryKeyboard = useCallback((event: KeyboardEvent) => {
+                };
+            });
+        },
+        redo: () => {
+            set((state) => {
+                if (state.future.length === 0)return state;
+                const next = state.future[0];
+                const newFuture = state.future.slice(1);
+                return {
+                        past: [...state.past, state.present],
+                        present: next,
+                        future: newFuture,
+
+                };
+            });
+        },
+        clearHistory: () => {
+            set(() => ({
+                    past: [],
+                    present: initialPresent,
+                    future: [],
+                
+            }));
+        }
+    }));
+    
+    const useHistory = () => useHistoryStore((state) => state);
+    const setHistory = (newPresent: T) => useHistoryStore.getState().setHistory(newPresent);
+    const clearHistory = () => useHistoryStore.getState().clearHistory();
+    /** Keyboard event handler for undo/redo actions. 
+     * cmd/ctrl + z for undo 
+     * cmd/ctrl + y for redo */
+    const useHistoryKeyboard = (event: KeyboardEvent) => {
         if(event.target instanceof HTMLInputElement) return;
         if ((event.metaKey || event.ctrlKey) && event.key === 'z') {
             event.preventDefault();
-            undo();
+            useHistoryStore.getState().undo();
         }
         if ((event.metaKey || event.ctrlKey) && event.key === 'y') {
             event.preventDefault();
-            redo();
+            useHistoryStore.getState().redo();
         }
-    },[undo, redo]);
+    }
 
-    return { historyState: historyState.present, setHistory, undo, redo, useHistoryKeyboard, clearHistory };
+    return { useHistory, setHistory, clearHistory, useHistoryKeyboard };
+
 }
 
-export default useHistory;
+
+
