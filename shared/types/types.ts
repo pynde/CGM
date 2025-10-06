@@ -1,4 +1,4 @@
-import {  DIRECTION_OF_FLOW_ENUM, FACE_VISIBLE_ENUM, RESOURCE_ENUM, MODE_ENUM, TURN_MODE_ENUM, ACTION_TYPE_ENUM, GAME_STATE_ENUM, ERROR_CODE_ENUM, OWNER_TYPE_ENUM, SELECTION_TYPE_ENUM, SPACE_TYPE_ENUM, GAME_COMPONENT_STATE_ENUM, TRACK_TYPE_ENUM, EFFECT_TYPE_ENUM, SYMBOL_TYPE_ENUM, TYPE_ENUM } from "../enums/enums"
+import {  DIRECTION_OF_FLOW_ENUM, FACE_VISIBLE_ENUM, GAME_STATE_ENUM, ERROR_CODE_ENUM, SELECTION_TYPE_ENUM, SPACE_TYPE_ENUM, GAME_COMPONENT_STATE_ENUM, TRACK_TYPE_ENUM, EFFECT_TYPE_ENUM, SYMBOL_TYPE_ENUM, TYPE_ENUM } from "../enums/enums"
 
 // BASE TYPE
 
@@ -85,19 +85,11 @@ export type GameComponentType<T = {}> = BaseType & {
 // RESOURCES
 
 export type ResourceType = BaseType & {
-    value: MultipleValues | FixedValue;
-    type: TYPE_ENUM.RESOURCE, 
-    amount: number, 
+    value: number | string;
+    type: TYPE_ENUM.RESOURCE,
+    amount: number,
     allowNegativeAmount?: boolean, 
-    style?: VisualType 
-}
-
-export type Money = {
-    value: MultipleValues | FixedValue;
-}
-
-export type CustomResource = {
-    [key: string]: string | number
+    style?: VisualType
 }
 
 // TRACK
@@ -199,8 +191,8 @@ export type ActionMap = Map<ActionType['id'], ActionType>;
 export type OwnerArray = Array<[string, Owner]>;
 export type TupletArray<T> = Array<[string, T]> ;
 
-/** Type for multiple values for a resource. E.g. player has 5 coins which are all valued differently (e.g. one coin has 5 value, another coin has 3 value = 8 value) */ 
-export type MultipleValues = number[];
+/** Type for multiple values for a resource. E.g. player has 2 coins which are both valued differently (e.g. one coin has 5 value, another coin has 3 value = 8 value) */ 
+export type VariableValue = number[];
 
 /** Type for fixed value for a resource. E.g. player has 5 coins and they are of equal value (= value 5). */
 export type FixedValue = number;

@@ -1,21 +1,21 @@
-import { ACTION_TYPE_ENUM, GAME_COMPONENT_ENUM, GAME_STATE_ENUM, OWNER_TYPE_ENUM, RESOURCE_ENUM } from "@shared/enums/enums";
-import { ActionType, CardType, GameComponent, GameState, OwnerArray, PlayerType, ResourceType } from "@shared/types/types";
+import { ACTION_TYPE_ENUM, TYPE_ENUM, GAME_STATE_ENUM, OWNER_TYPE_ENUM, RESOURCE_ENUM } from "@shared/enums/enums";
+import { ActionType, CardType, GameComponentType, GameState, OwnerArray, PlayerType, ResourceType } from "@shared/types/types";
 
 type GameStateKey = keyof GameState
 
 
-const resource: ResourceType = { type: RESOURCE_ENUM.MONEY, resource: { value: 1 }, amount: 10, id: '22asd' }
-const action: ActionType = { type: ACTION_TYPE_ENUM.PAY_RESOURCE, automatic: false, id: '', ownerId: '' }
+const resource: ResourceType = { type: TYPE_ENUM.RESOURCE, value: 1, amount: 10, id: '22asd', name: 'Money' }
+const action: ActionType = { type: TYPE_ENUM.ACTION, automatic: false, id: '', ownerId: '', name: 'Pay Resource', actionPipe: [] }
 const players: PlayerType[] = [{ 
   name: "Joe",
   actions: [],
   id: 'INIT ID',
-  type: OWNER_TYPE_ENUM.PLAYER
+  type: TYPE_ENUM.PLAYER
 }];
 
-const components : GameComponent<CardType>[] = [
+const components : GameComponentType<CardType>[] = [
   { 
-      type: GAME_COMPONENT_ENUM.CARD, 
+      type: TYPE_ENUM.GAME_COMPONENT, 
       name: 'TESTIKORTTI', 
       id: 'asd', 
       price: [resource], 
@@ -28,8 +28,8 @@ const components : GameComponent<CardType>[] = [
     } 
 ];
 
-const owners: OwnerArray<PlayerType> = [
-  [players[0].id, { resources: [resource], gameComponents: components, ...players[0] }]
+const owners: OwnerArray = [
+  [players[0].id, { resources: [resource], gameComponents: components, ...players[0], type: TYPE_ENUM.OWNER }]
 ];
 
 
@@ -38,7 +38,7 @@ const _GameState : GameState = {
         name: 'Testipelaaja',
         actions: [],
         id: '',
-        type: OWNER_TYPE_ENUM.PLAYER
+        type: TYPE_ENUM.PLAYER
     }],
     owners: owners,
     selectedComponents: [],
