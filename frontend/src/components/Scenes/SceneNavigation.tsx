@@ -1,7 +1,7 @@
 import React, { FC, ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import  * as Tabs from '@radix-ui/react-tabs'
 import CardScene from './CardScene';
-import ComponentBuilder from './ComponentBuilder';
+import ComponentDesigner from './ComponentDesigner';
 import { BlueprintType } from '@shared/types/types';
 import { socket } from '@root/src/App';
 import {  SOCKET_RESPONSE } from '@shared/enums/enums';
@@ -11,6 +11,7 @@ import { useSetBlueprint, useShallowBlueprint } from '@root/src/zustand/Blueprin
 import Warning from '../UI/Warning';
 import { setSelection } from '@root/src/zustand/SelectionStore';
 import { usePixiAppState } from '@root/src/zustand/PixiStore';
+import Overview from './Overview';
 
 type TabContent = {
 	tabName: string,
@@ -26,7 +27,7 @@ const updateBp = (partialBp: Partial<BlueprintType>) => {
 }
 
 const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps) => {
-	const INITIAL_TAB = 'Actions';	
+	const INITIAL_TAB = 'GameView';	
 	const tabContent = 'tabContent';
 	const contentRef = useRef<HTMLDivElement>(null);
 	const [selectedTab, setSelectedTab] = useState(INITIAL_TAB);
@@ -40,9 +41,9 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 		{tabName: 'Overview', tabContent: <div>Overview placeholder. Replace with Overview component.</div> }, 
 		{tabName: 'Cards', tabContent: <CardScene key={tabContent+1}/>}, 
 		{tabName: 'GameBoard', tabContent: <div key={tabContent+2}>Game Board placeholder</div>},
-		{tabName: 'ComponentBuilder', tabContent: <ComponentBuilder key={tabContent+3}/> },
+		{tabName: 'ComponentDesigner', tabContent: <ComponentDesigner key={tabContent+3}/> },
 		{tabName: 'Actions', tabContent: <ActionScene key={tabContent+4}/>},
-		{tabName: 'GameView', tabContent: <GameView key={tabContent+5} blueprint={bpStore}/>},
+		{tabName: 'GameView', tabContent: <Overview key={tabContent+5}/>},
 	];
 
 	useEffect(() => {

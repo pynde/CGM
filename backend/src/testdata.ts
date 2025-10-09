@@ -1,4 +1,4 @@
-import { Owner, BankType, ResourceType, ActionType, GameComponentType, CardType, MeepleType, PlayerType, OwnerArray, BlueprintType } from '@shared/types/types';
+import { Owner, BankType, ResourceType, ActionType, GameComponentType, CardType, MeepleType, PlayerType, OwnerArray, BlueprintType, PlayAreaType } from '@shared/types/types';
 import { OWNER_TYPE_ENUM, RESOURCE_ENUM, ACTION_TYPE_ENUM, TYPE_ENUM } from '@shared/enums/enums';
 import { generateId } from '@shared/logic/generateId';
 import { CARD_TEMPLATE, GAMEBOARD_TEMPLATE, MEEPLE_TEMPLATE } from '@shared/templates/StyleTemplates';
@@ -18,6 +18,7 @@ const actionId_3 = generateId();
 
 const bank: Owner = { type: TYPE_ENUM.OWNER, id: '', gameComponents: [], resources: [], name: 'Bank' };
 const resource: ResourceType = { type: TYPE_ENUM.RESOURCE, value: 1, amount: 10, id: resourceId, style: { fill: 'yellow', width: 200, height: 200 }, name: 'Money' }
+const drawcomponent_action: ActionType = { type: TYPE_ENUM.ACTION, automatic: false, id: generateId(), ownerId: '', name: 'Draw Card', actionPipe: [] };
 /** HUOM NÄMÄ ACTIONIEN OWNER ID PITÄNEE POISTAA. RISTIRIIDASSA BLUEPRINTIN KANSSA. KÄYTTÄJÄN PITÄÄ PYSTYÄ LUOMAAN OMISTAMATON ACTION */
 const finish_action: ActionType = { type: TYPE_ENUM.ACTION, automatic: false, id: actionId_0, ownerId: card_id, name: 'Finish', actionPipe: [] }
 const transfer_action: ActionType = { type: TYPE_ENUM.ACTION, automatic: false, id: actionId_1, ownerId: card_id, name: 'Transfer resources', actionPipe: [] }
@@ -58,6 +59,27 @@ export const players: PlayerType[] = [{
     type: TYPE_ENUM.PLAYER
 }];
 
+export const testcards: GameComponentType[] = [
+  { 
+      type: TYPE_ENUM.GAME_COMPONENT, 
+      name: 'CARD 1', 
+      id: generateId(),
+      price: [resource], 
+      actions: [card_action],
+      ownerId: players[0].id,
+      style: CARD_TEMPLATE
+    },
+    {
+      type: TYPE_ENUM.GAME_COMPONENT,
+      name: 'CARD 2',
+      id: generateId(),
+      price: [resource],
+      actions: [card_action],
+      ownerId: players[0].id,
+      style: CARD_TEMPLATE
+    }
+  ]
+
 export const components : GameComponentType[] = [
   { 
       type: TYPE_ENUM.GAME_COMPONENT, 
@@ -90,6 +112,33 @@ export const components : GameComponentType[] = [
     }
 ];
 
+export const playAreas: PlayAreaType[] = [
+  {
+    type: TYPE_ENUM.PLAY_AREA,
+    id: generateId(),
+    name: "Player Hand",
+    style: {
+        x: 200,
+        y: 200,
+        width: 300,
+        height: 200,
+        fill: 'yellow' 
+      }
+  },
+  {
+    type: TYPE_ENUM.PLAY_AREA,
+    id: generateId(),
+    name: "Target Area",
+    style: {
+        x: 100,
+        y: 100,
+        width: 600,
+        height: 400,
+        fill: 'green' 
+      }
+  }
+]
+
 export const owners: OwnerArray = [
   [players[0].id, { resources: [resource], gameComponents: components, type: TYPE_ENUM.OWNER, name: players[0].name, id: players[0].id }],
 ];
@@ -99,19 +148,11 @@ export const owners: OwnerArray = [
 // ]
 
 export const blueprint: BlueprintType = {
-    gameComponents: components.map(c => [c.id, c]),
+    gameComponents: testcards.map(c => [c.id, c]),
     resources: [[resource.id, resource]],
     actions: [
-        [card_action.id, card_action], [meeple_action.id, meeple_action], [finish_action.id, finish_action], [transfer_action.id, transfer_action],
-        [collect_resource_action.id, collect_resource_action], [play_component_action.id, play_component_action], [start_turn_action.id, start_turn_action],
-        [confirm_turn_action.id, confirm_turn_action], [pass_turn_action.id, pass_turn_action], [shuffle_action.id, shuffle_action],
-        [trade_resource_action.id, trade_resource_action], [upgrade_component_action.id, upgrade_component_action], [downgrade_component_action.id, downgrade_component_action],
-        [move_component_action.id, move_component_action], [attack_player_action.id, attack_player_action], [defend_player_action.id, defend_player_action],
-        [build_player_action.id, build_player_action], [destroy_player_action.id, destroy_player_action], [trade_player_action.id, trade_player_action],
-        [explore_player_action.id, explore_player_action], [research_player_action.id, research_player_action], [upgrade_player_action.id, upgrade_player_action],
-        [downgrade_player_action.id, downgrade_player_action], [move_player_action.id, move_player_action], [attack_component_action.id, attack_component_action],
-        [defend_component_action.id, defend_component_action], [build_component_action.id, build_component_action], [destroy_component_action.id, destroy_component_action],
-        [trade_component_action.id, trade_component_action], [explore_component_action.id, explore_component_action], [research_component_action.id, research_component_action]
+        [drawcomponent_action.id, drawcomponent_action]
     ],
-    effects:[]
+    effects:[],
+    playAreas: playAreas.map(p => [p.id, p])
 };

@@ -12,13 +12,13 @@ import Visuals from '../Views/Visuals';
 import SaveButton from '../UI/SaveButton';
 import { createSizeHandler, createTransformer } from '../PixiComponents/PixiTransformer';
 import { Ticker } from 'pixi.js';
-// Props interface for the ComponentBuilder
-interface ComponentBuilderProps {
+// Props interface for the ComponentDesigner
+interface ComponentDesignerProps {
     
 }
 
 // TODO Change BlueprintContext to use Zustand store
-export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
+export const ComponentDesigner: React.FC<ComponentDesignerProps> = () => {
     const setBlueprint = useSetBlueprint; 
     const setGameComponent = useUpdateBlueprintGameComponents
     const bpStore = useBlueprint();
@@ -192,4 +192,4 @@ export const ComponentBuilder: React.FC<ComponentBuilderProps> = () => {
     );
 };
 
-export default ComponentBuilder;
+export default ComponentDesigner;

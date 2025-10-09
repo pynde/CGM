@@ -1,4 +1,4 @@
-import { BaseType, VisualType } from "@shared/types/types";
+import { BaseType, PlayAreaType, VisualType } from "@shared/types/types";
 import { Text, Application, ContainerChild, Graphics, Container, Point, Color } from "pixi.js";
 
 
@@ -40,7 +40,29 @@ export const createPixiComponent = (baseNode: BaseType<VisualType>): Container =
     return container;
 };
 
-
+export const createPlayArea = (playArea: PlayAreaType) => {
+    const container = new Container ({ 
+        layout: {
+                width: playArea.style?.width || 0, 
+                height: playArea?.style?.height || 0,
+                top: playArea.style?.y || 0,
+                left: playArea.style?.x || 0,
+                } 
+        })
+    if(playArea.style?.fill) {
+        const bgGraphics = new Graphics();
+        bgGraphics.rect(0, 0, playArea.style?.width || 0, playArea.style?.height || 0).fill(playArea.style.fill);
+        bgGraphics.layout = {
+            width: "100%",
+            height: "100%",
+            position: 'absolute',
+            display: 'flex',
+        }
+        bgGraphics.interactive = false;
+        container.addChild(bgGraphics);
+    }
+     return container
+}
 
 const createPixiErrorContainer = (from?: string) => {
     const container = new Container({layout: {

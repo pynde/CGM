@@ -1,4 +1,4 @@
-import { ActionType, BlueprintType, EffectType, GameComponentType, ResourceType } from "@shared/types/types";
+import { ActionType, BlueprintType, EffectType, GameComponentType, PlayAreaType, ResourceType } from "@shared/types/types";
 import { create } from "zustand";
 import { useShallow } from "zustand/shallow";
 
@@ -10,7 +10,8 @@ type BlueprintStoreType = {
     setActions: (actions: [string, ActionType][]) => void;
     setGameComponents: (gameComponents: [string, GameComponentType][]) => void;
     setResources: (resources: [string, ResourceType][]) => void;
-    setEffects: (effects: [string, EffectType][]) => void; // Adjust type as needed
+    setEffects: (effects: [string, EffectType][]) => void;
+    setPlayAreas: (playAreas: [string, PlayAreaType][]) => void;
     setBlueprint: (blueprint: Partial<BlueprintType>) => void;
 } & BlueprintType;
 
@@ -19,6 +20,7 @@ const useBlueprintStore = create<BlueprintStoreType>((set) => ({
     resources: [],
     actions: [],
     effects: [],
+    playAreas: [],
     addGameComponent: (gameComponent) =>
         set((state) => ({
             gameComponents: [...state.gameComponents, [gameComponent.id, gameComponent]],
@@ -35,6 +37,7 @@ const useBlueprintStore = create<BlueprintStoreType>((set) => ({
     setGameComponents: (gameComponents) => set({ gameComponents }),
     setResources: (resources) => set({ resources }),
     setEffects: (effects) => set({ effects }),
+    setPlayAreas: (playAreas) => set({ playAreas }),
     setBlueprint: (blueprint) =>
         set((state) => ({
             ...state,
@@ -64,6 +67,10 @@ export const useBlueprintResources = () => {
 
 export const useBlueprintActions = () => {
     return useBlueprintStore((state) => state.actions);
+};
+
+export const useBlueprintPlayAreas = () => {
+    return useBlueprintStore((state) => state.playAreas);
 };
 
 export const useSetBlueprint = (partial: Partial<BlueprintStoreType>) => {

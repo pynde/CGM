@@ -11,28 +11,14 @@ export type BaseType<T = {}> = {
 
 // GAME STATE
 
-export type GameState = {
-    type: GAME_STATE_ENUM.GAME_STATE_TYPE,
-    players: PlayerType[],
-    owners: OwnerArray,
-    selectedComponents: SelectedArray,
-    actions: ActionArray,
-    activePlayer: PlayerType['id'],
-    errors: ErrorType[]
-}
-
-export const isGameStateType = (x: any): x is GameState => {
-    if(x.type === GAME_STATE_ENUM.GAME_STATE_TYPE) return true;
-    else return false;
-}
-
 // BLUEPRINT
 
 export type BlueprintType = {
     gameComponents: Array<[GameComponentType['id'], GameComponentType]>,
     resources: Array<[ResourceType['id'], ResourceType]>,
-    actions: Array<[ActionType['id'], ActionType]>
+    actions: Array<[ActionType['id'], ActionType]>,
     effects: Array<[EffectType['id'], EffectType]>,
+    playAreas: Array<[PlayAreaType['id'], PlayAreaType]>,
 }
 
 // ACTIONS
@@ -143,8 +129,8 @@ export type BankType = {
 
 // SPACES
 
-export type SpaceType = {
-    type: SPACE_TYPE_ENUM,
+export type PlayAreaType = BaseType & {
+    type: TYPE_ENUM.PLAY_AREA,
     style?: VisualType
 }
 
@@ -211,17 +197,6 @@ export const isTypeOf = <T>(objectToTest: any, type: string | object): objectToT
         return Object.values(type).includes(objectToTest.type);
     }
 }
-
-export const isGameStateProperty = <T extends keyof GameState>(
-    value: object
-  ): value is Partial<Record<T, GameState[T]>> => {
-    const gameStateKeys: (keyof GameState)[] = [
-        'type', 'players', 'owners', 'selectedComponents', 'actions', 
-        'activePlayer', 'errors'
-    ];
-    return Object.keys(value).every((key) => gameStateKeys.includes(key as keyof GameState));
-  }
-
 export const isTypeOfTuplet = <T>(x: any, type: object): x is T  => {
     // Expected type is Array<[string, Object]>
     if(Array.isArray(x)) {
