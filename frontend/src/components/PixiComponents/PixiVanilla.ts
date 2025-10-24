@@ -1,5 +1,5 @@
-import { BaseType, PlayAreaType, VisualType } from "@shared/types/types";
-import { Text, Application, ContainerChild, Graphics, Container, Point, Color } from "pixi.js";
+import { BaseType, BlueprintType, PlayAreaType, VisualType } from "@shared/types/types";
+import { Text, Application, ContainerChild, Graphics, Container, Point, Color, FederatedPointerEvent, GraphicsContext } from "pixi.js";
 
 
 export enum PIXI_COMPONENTS {
@@ -19,26 +19,42 @@ export const createPixiLabelFromBaseType = (basetype: BaseType, componentType: P
 
 
 
-export const createPixiComponent = (baseNode: BaseType<VisualType>): Container => {
+export const createPixiComponent = (baseNode: BaseType & VisualType): Container => {
     const container = new Container({layout: {
             width: baseNode.width || 100,
             height: baseNode.height || 100,
         }
     });
     container.label = createPixiLabelFromBaseType(baseNode, PIXI_COMPONENTS.CONTAINER);
-    const bgColor = new Graphics({layout: {
+    if(baseNode) {
+        console.log('baseNode', baseNode);
+        const bgColorContext = new GraphicsContext();    
+        bgColorContext.rect(
+            0, 
+            0,
+            baseNode.width || 100, 
+            baseNode.height || 100).fill(baseNode.fill || 'black').stroke({width: 2, color: 'darkred', alignment: 1, pixelLine: true});
+        const bgColor = new Graphics(bgColorContext);
+        bgColor.layout = {
             width: "100%",
             height: "100%",
+            position: 'absolute',
         }
-    });
-    bgColor.rect(
-        0, 
-        0,
-        baseNode.width || 100, 
-        baseNode.height || 100).fill(baseNode.fill || 'black').stroke({width: 2, color: 'darkred', alignment: 1, pixelLine: true});
-    container.addChild(bgColor);
+        container.addChild(bgColor);
+    }
+
     return container;
 };
+
+
+
+export const toggleGraphics = (graphics: Graphics, toggle: boolean, componentStyle?: VisualType) => {
+        const bounds = graphics.getLocalBounds();
+        const stroke = graphics.strokeStyle;
+        console.log('bounds', bounds);
+        const newContext = new GraphicsContext().rect(bounds.x, bounds.y, bounds.width, bounds.height).fill(toggle ? 'red': componentStyle?.fill).stroke(stroke);
+        graphics.context = newContext;
+}
 
 export const createPlayArea = (playArea: PlayAreaType) => {
     const container = new Container ({ 
@@ -64,47 +80,11 @@ export const createPlayArea = (playArea: PlayAreaType) => {
      return container
 }
 
-const createPixiErrorContainer = (from?: string) => {
-    const container = new Container({layout: {
-            width: 100,
-            height: 100,
-        }
-    });
-    console.warn('created error container from: ', from );
-    const text = new Text('Error loading component', { fill: 'red', fontSize: 14 });
-    text.layout = {
-        width: "100%",
-        height: "100%",
-        justifyContent: 'center',
-        alignItems: 'center',
-    }
-    container.addChild(text);
-    return container
-}
-export const appendToPixiApp = (app: Application, element: ContainerChild) => {
-    app.stage.addChild(element);
-}
-
-const initStageEvents = (stage: Container) => {
-    let dragging = false;
-    stage.on('pointerdown', (event) => {
-        dragging = true;
-    });
-}
-
-// Transform methods
-
- 
-const resizePixiComponent = (container: Container, globalPointer: Point, newWidth: number, newHeight: number) => {
-    container.height = newHeight;
-    container.width = newWidth;
-};
-
-const movePixiComponent = (container: Container, newX: number, newY: number) => {
-    container.x = newX;
-    container.y = newY;
-}
-
-const setWidth = (container: Container, newWidth: number) => {
+export const initPixiGameUI = (app: Application, blueprint: BlueprintType) => {
+    // Create playAreas
+    const playAreas = blueprint.playAreas.map(([,playArea]) =>  createPlayArea(playArea));
+    // Create game components
+    const gameComponents = blueprint.gameComponents.map(([,gameComponent]) => createPixiComponent(gameComponent));
+    
 
 }

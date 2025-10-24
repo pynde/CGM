@@ -5,25 +5,25 @@ import { VisualType } from '@shared/types/types';
 
 
 type VisualsProps = {
-    item: Partial<VisualType>;
-    onUpdate: (item: Partial<VisualType>) => void;
+    visuals: Partial<VisualType>;
+    onUpdate: (visuals: Partial<VisualType>) => void;
 };
 
-const Visuals: React.FC<VisualsProps> = ({ item, onUpdate }) => {
-    const [imgUrls, setImgUrls] = useState<string[]>(item.imgUrls || []);
-    const [width, setWidth] = useState(item.width || 0);
-    const [height, setHeight] = useState(item.height || 0);
+const Visuals: React.FC<VisualsProps> = ({ visuals, onUpdate }) => {
+    const [imgUrls, setImgUrls] = useState<string[]>(visuals.imgUrls || []);
+    const [width, setWidth] = useState(visuals.width || 0);
+    const [height, setHeight] = useState(visuals.height || 0);
     const [opened, setOpened] = useState(true);
 
     const setWidthCb = useCallback(() => {
         setWidth(width);
-    }, [item.width]);
+    }, [visuals.width]);
 
     useEffect(() => {
-        setImgUrls(item.imgUrls || []);
-        setWidth(item.width || 0);
-        setHeight(item.height || 0);
-    }, [item]);
+        setImgUrls(visuals.imgUrls || []);
+        setWidth(visuals.width || 0);
+        setHeight(visuals.height || 0);
+    }, [visuals]);
 
     const handleImageUrlChange = (index: number, value: string) => {
         const newImgUrls = [...imgUrls];
@@ -37,7 +37,7 @@ const Visuals: React.FC<VisualsProps> = ({ item, onUpdate }) => {
 
     const handleUpdate = () => {
         const updatedItem = {
-            ...item,
+            ...visuals,
             ...(imgUrls.length > 0 && { imgUrls }),
             ...(width > 0 && { width }),
             ...(height > 0 && { height }),

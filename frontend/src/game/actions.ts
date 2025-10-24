@@ -1,11 +1,46 @@
 import { GAME_COMPONENT_STATE_ENUM, TYPE_ENUM } from "@shared/enums/enums";
-import { BlueprintType, PlayAreaType } from "@shared/types/types";
+import { BlueprintType, ConfigType, GameComponentType, OwnerType, PlayAreaType } from "@shared/types/types";
+import { Game } from "boardgame.io";
 
 interface DrawCardAction {
     (G: BlueprintType, ctx: any, deckId: string): BlueprintType;
 }
 interface PlayCardAction {
     (G: BlueprintType, ctx: any, cardId: string, targetArea: PlayAreaType): BlueprintType;
+}
+
+
+export const createComponentPlayAreaLinks = (gameComponents: GameComponentType[], playAreas: PlayAreaType[], config?: ConfigType): Map<PlayAreaType['id'], GameComponentType> => {
+    const componentArray = [...gameComponents];
+    const playAreaMap: Map<PlayAreaType['id'], GameComponentType> = new Map();
+    playAreas.forEach((playArea, index) => {
+        if(typeof config?.pickAction === 'number') {
+            playAreaMap.set(playArea.id, componentArray[config.pickAction]);
+        }
+        if (config?.pickAction === 'last') {
+            playAreaMap.set(playArea.id, componentArray.pop()!);
+        }
+        if (config?.pickAction === 'first') {
+            playAreaMap.set(playArea.id, componentArray[0]);
+        }
+        if (config?.pickAction === 'random') {
+            const randomIndex = Math.floor(Math.random() * componentArray.length);
+            playAreaMap.set(playArea.id, componentArray[randomIndex]);
+        }
+        playAreaMap.set(playArea.id, componentArray[0]);
+    });
+
+    return playAreaMap;
+}
+
+export const createComponentOwner = (gameComponent: GameComponentType, newOwner: OwnerType): Map<OwnerType['id'], GameComponentType> => {
+    const ownerMap = new Map<OwnerType['id'], GameComponentType>();
+    ownerMap.set(newOwner.id, gameComponent);
+    return ownerMap;
+}
+
+export const populatePlayAreasWithGameComponents = (gameComponents: GameComponentType[], playAreas: PlayAreaType[], config?: ConfigType) => {
+    
 }
 
 // Boardgame.io moves

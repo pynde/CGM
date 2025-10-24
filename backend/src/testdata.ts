@@ -1,4 +1,4 @@
-import { Owner, BankType, ResourceType, ActionType, GameComponentType, CardType, MeepleType, PlayerType, OwnerArray, BlueprintType, PlayAreaType } from '@shared/types/types';
+import { OwnerType, BankType, ResourceType, ActionType, GameComponentType, PlayerType, OwnerArray, BlueprintType, PlayAreaType } from '@shared/types/types';
 import { OWNER_TYPE_ENUM, RESOURCE_ENUM, ACTION_TYPE_ENUM, TYPE_ENUM } from '@shared/enums/enums';
 import { generateId } from '@shared/logic/generateId';
 import { CARD_TEMPLATE, GAMEBOARD_TEMPLATE, MEEPLE_TEMPLATE } from '@shared/templates/StyleTemplates';
@@ -16,7 +16,7 @@ const actionId_1 = generateId();
 const actionId_2 = generateId();
 const actionId_3 = generateId();
 
-const bank: Owner = { type: TYPE_ENUM.OWNER, id: '', gameComponents: [], resources: [], name: 'Bank' };
+const bank: OwnerType = { type: TYPE_ENUM.BANK, id: generateId(), name: 'Bank' };
 const resource: ResourceType = { type: TYPE_ENUM.RESOURCE, value: 1, amount: 10, id: resourceId, style: { fill: 'yellow', width: 200, height: 200 }, name: 'Money' }
 const drawcomponent_action: ActionType = { type: TYPE_ENUM.ACTION, automatic: false, id: generateId(), ownerId: '', name: 'Draw Card', actionPipe: [] };
 /** HUOM NÄMÄ ACTIONIEN OWNER ID PITÄNEE POISTAA. RISTIRIIDASSA BLUEPRINTIN KANSSA. KÄYTTÄJÄN PITÄÄ PYSTYÄ LUOMAAN OMISTAMATON ACTION */
@@ -54,7 +54,6 @@ const research_component_action: ActionType = { type: TYPE_ENUM.ACTION, automati
 
 export const players: PlayerType[] = [{ 
     name: "Joe",
-    actions: [],
     id: 'socketista_testi123',
     type: TYPE_ENUM.PLAYER
 }];
@@ -66,7 +65,6 @@ export const testcards: GameComponentType[] = [
       id: generateId(),
       price: [resource], 
       actions: [card_action],
-      ownerId: players[0].id,
       style: CARD_TEMPLATE
     },
     {
@@ -75,7 +73,6 @@ export const testcards: GameComponentType[] = [
       id: generateId(),
       price: [resource],
       actions: [card_action],
-      ownerId: players[0].id,
       style: CARD_TEMPLATE
     }
   ]
@@ -87,7 +84,6 @@ export const components : GameComponentType[] = [
       id: card_id, 
       price: [resource], 
       actions: [card_action],
-      ownerId: players[0].id,
       style: CARD_TEMPLATE
     },
     { 
@@ -96,7 +92,6 @@ export const components : GameComponentType[] = [
       id: meeple_id,
       price: [],
       actions: [meeple_action],
-      ownerId: players[0].id,
       style: MEEPLE_TEMPLATE
 
     },
@@ -106,7 +101,6 @@ export const components : GameComponentType[] = [
       id: board_id,
       price: [],
       actions: [meeple_action],
-      ownerId: players[0].id,
       style: GAMEBOARD_TEMPLATE
       
     }
@@ -117,11 +111,12 @@ export const playAreas: PlayAreaType[] = [
     type: TYPE_ENUM.PLAY_AREA,
     id: generateId(),
     name: "Player Hand",
+    contentIds: [],
     style: {
-        x: 200,
-        y: 200,
-        width: 300,
-        height: 200,
+        x: 50,
+        y: 100,
+        width: 400,
+        height: 300,
         fill: 'yellow' 
       }
   },
@@ -129,6 +124,7 @@ export const playAreas: PlayAreaType[] = [
     type: TYPE_ENUM.PLAY_AREA,
     id: generateId(),
     name: "Target Area",
+    contentIds: [],
     style: {
         x: 100,
         y: 100,
@@ -140,7 +136,7 @@ export const playAreas: PlayAreaType[] = [
 ]
 
 export const owners: OwnerArray = [
-  [players[0].id, { resources: [resource], gameComponents: components, type: TYPE_ENUM.OWNER, name: players[0].name, id: players[0].id }],
+  [players[0].id, { type: TYPE_ENUM.PLAYER, name: players[0].name, id: players[0].id }],
 ];
 
 // const owners_b: OwnerArray<GameComponent> = [
@@ -156,3 +152,13 @@ export const blueprint: BlueprintType = {
     effects:[],
     playAreas: playAreas.map(p => [p.id, p])
 };
+
+const gameSetup = {
+    players: players,
+    playAreas: [
+      playAreas[0],
+      { ...playAreas[1],
+        contentIds: [components[0].id]
+       }
+    ],
+}

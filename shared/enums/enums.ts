@@ -12,7 +12,7 @@ export enum TYPE_ENUM {
     SELECTION = "SELECTION",
     TRACK = "TRACK",
     SYMBOL = "SYMBOL",
-    PLAY_AREA = "PLAY_AREA"
+    PLAY_AREA = "PLAY_AREA",
 }
 
 /** Visible face on a deck. I.e. the card that can be seen. 

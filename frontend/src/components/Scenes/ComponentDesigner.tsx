@@ -20,15 +20,16 @@ interface ComponentDesignerProps {
 // TODO Change BlueprintContext to use Zustand store
 export const ComponentDesigner: React.FC<ComponentDesignerProps> = () => {
     const setBlueprint = useSetBlueprint; 
-    const setGameComponent = useUpdateBlueprintGameComponents
+    const setGameComponents = useUpdateBlueprintGameComponents
     const bpStore = useBlueprint();
-    const selected = useSelection();
+    const selected = useSelection().values().next().value;
     const pixiRootDiv = React.useRef<HTMLDivElement>(null);
     const pixiApp = usePixiApp();
     const pixiAppState = usePixiAppState();
     
     
     useEffect(() => {
+        console.log('selected changed', selected);
         // Init Pixi App and add to div container
         (async () => {
             if(pixiRootDiv.current && pixiAppState !== 'closing') {
@@ -85,10 +86,6 @@ export const ComponentDesigner: React.FC<ComponentDesignerProps> = () => {
             ticker.destroy();
         }
     }, [selected?.id, pixiApp]);
-
-    useEffect(() => {
-        console.log('pixiApp changed', pixiApp);
-    }, [pixiApp])
 
 
 
@@ -160,18 +157,16 @@ export const ComponentDesigner: React.FC<ComponentDesignerProps> = () => {
     const saveUpdate = () => {
         if(!selected) return;
         const newGCArray = bpStore.gameComponents.map(([key, value]) => {
-            if(value.id === selected?.id) {
-                return [key, selected] as [string, GameComponentType];
-            }
+            if(selected.id == key) return [key, selected] as [string, GameComponentType];
             return [key, value] as [string, GameComponentType];
         });
-        setGameComponent(newGCArray);
+        setGameComponents(newGCArray);
     }
 
     return (
             <div className="component-builder flex flex-row mx-auto h-full space-x-2" style={{width: '100%', height: '100%'}}>   
                 <Carousel 
-                    title={selected?.name} 
+                    title={selected?.name || 'No component selected'} 
                     className='h-full' 
                     arrayLength={bpStore.gameComponents.length} 
                     onNextOrPrevious={(index) => setSelectedComponent(index)}>
@@ -186,7 +181,7 @@ export const ComponentDesigner: React.FC<ComponentDesignerProps> = () => {
                         </ContextMenu.Trigger>
                     </ContextMenu.Root>
                 </Carousel>
-                {selected?.style && <Visuals item={selected.style} onUpdate={updateVisuals} />}
+                {selected?.style && <Visuals visuals={selected.style} onUpdate={updateVisuals} />}
                 <SaveButton onClick={saveUpdate}/>
             </div>
     );

@@ -1,7 +1,6 @@
 import { create } from 'zustand';
-import { BlueprintType } from '../../../shared/types/types';
-import { TYPE_ENUM, GAME_COMPONENT_STATE_ENUM } from '../../../shared/enums/enums';
-import { drawCard, playCard } from '../game/GameActions';
+import { BlueprintType } from '@shared/types/types';
+import { drawCard, playCard } from '../game/actions';
 
 // Initial blueprint state
 const createInitialBlueprint = (): BlueprintType => ({
@@ -42,5 +41,9 @@ export const useGameStateStore = create<GameStateStore>()(() => ({
         playCard
     }
 }));
+
+const populatePlayAreas = () => {
+    const playAreas = useGameStateStore.getState().G.playAreas;
+}
 
 export default useGameStateStore;

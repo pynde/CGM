@@ -7,7 +7,6 @@ const resource: ResourceType = { type: TYPE_ENUM.RESOURCE, value: 1, amount: 10,
 const action: ActionType = { type: TYPE_ENUM.ACTION, automatic: false, id: '', ownerId: '', name: 'Pay Resource', actionPipe: [] }
 const players: PlayerType[] = [{ 
   name: "Joe",
-  actions: [],
   id: 'INIT ID',
   type: TYPE_ENUM.PLAYER
 }];

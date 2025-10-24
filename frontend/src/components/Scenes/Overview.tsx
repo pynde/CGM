@@ -1,9 +1,9 @@
 import { destroyPixiApp, initPixiApp, setPixiApp, usePixiApp, usePixiAppState } from '@root/src/zustand/PixiStore';
 import React, { useEffect } from 'react';
-import { Ticker } from 'pixi.js';
+import { Graphics, Ticker } from 'pixi.js';
 import { GameComponentType, isTypeOf } from '@shared/types/types';
-import { createPixiComponent, createPixiLabelFromBaseType, createPlayArea, PIXI_COMPONENTS } from '../PixiComponents/PixiVanilla';
-import { setSelection, useSelection } from '@root/src/zustand/SelectionStore';
+import { createPixiComponent, createPixiLabelFromBaseType, createPlayArea, toggleGraphics, PIXI_COMPONENTS } from '../PixiComponents/PixiVanilla';
+import { clearSelectionStore, getCurrentSelection, setSelection, setSelectionContext, useSelection } from '@root/src/zustand/SelectionStore';
 import { TYPE_ENUM } from '@shared/enums/enums';
 import { createSizeHandler } from '../PixiComponents/PixiTransformer';
 import { useBlueprint, useBlueprintGameComponents, useBlueprintPlayAreas } from '@root/src/zustand/BlueprintStore';
@@ -35,14 +35,26 @@ const Overview: React.FC = () => {
     }, []);
 
         useEffect(() => {
-            if(!(pixiApp && bpComponents.length && bpPlayAreas.length)) return;
-            console.log('bpComponents', bpComponents, 'bpPlayAreas', bpPlayAreas);
+            if(!(pixiApp && bpComponents.length && bpPlayAreas.length && pixiApp.stage)) return;
             // Add selected component to Pixi stage
-                const pixiComponents = bpComponents.map(([,component]) => createPixiComponent(component));
+                const pixiComponents = bpComponents.map(([,component]) => {
+                    const c = createPixiComponent({
+                        id: component.id,
+                        name: component.name,
+                        type: component.type,
+                        ...component.style
+                    }).on('pointerdown', (event) => { 
+                        const s = getCurrentSelection();
+                        s.get(component.id) ? clearSelectionStore() : setSelection(component, 'play');
+                        toggleGraphics(event.currentTarget.getChildAt<Graphics>(0), s.get(component.id) !== undefined, component.style);  
+                        });
+                    c.interactive = true;
+                    return c;
+                } 
+            );
                 const playArea = createPlayArea(bpPlayAreas[0][1]);
                 playArea.addChild(...pixiComponents);
                 pixiApp.stage.addChild(playArea);   
-                pixiApp.renderer.layout.update(pixiApp.stage);
             return () => {
                 if(pixiApp?.stage) pixiApp?.stage.removeChildren();
             }

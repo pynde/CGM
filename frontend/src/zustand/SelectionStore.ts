@@ -4,11 +4,16 @@ import { create } from 'zustand';
 
 export type SelectionItem = GameComponentType | ActionType | ResourceType;
 
+type SelectionContext = 'edit' | 'play' | 'view' | TYPE_ENUM | null;
+type SelectionRange = 'single' | 'multiple' | 'none';
+
 interface SelectionStore {
-    readonly context: TYPE_ENUM | null;
-    selection: SelectionItem | null;
-    setContext: (context: TYPE_ENUM | null) => void;
-    setSelection: (item: SelectionItem) => void;
+    readonly context: SelectionContext;
+    range: SelectionRange;
+    selection: Map<SelectionItem['id'], SelectionItem>;
+    setRange: (range: SelectionRange) => void;
+    setContext: (context: SelectionContext) => void;
+    setSelection: (item: Map<SelectionItem['id'], SelectionItem>) => void;
     clearSelection: () => void;
 }
 /**
@@ -18,26 +23,50 @@ interface SelectionStore {
  */
 const useSelectionStore = create<SelectionStore>((set) => ({
     context: null,
-    selection: null,
+    selection: new Map(),
+    range: 'none',
+    setRange: (range) => set({ range }),
     setSelection: (items) => set({ selection: items }),
     setContext: (context) => set({ context }),
-    clearSelection: () => set({ selection: null }),
+    clearSelection: () => set({ selection: new Map() }),
 }));
 
 /** Gets the current selection from the selection store. */
 export const useSelection = () => {
     return useSelectionStore((state) => state.selection);
 }
-/** Adds an item to the selection store. */
-export const setSelection = (item: SelectionItem) => {
-    useSelectionStore.getState().setSelection(item);
-    useSelectionStore.getState().setContext(item.type);
+
+/** Adds an item to the selection store.
+ * @param item The item to add to the selection.
+ * @param context Optional context of edit, play or view to set for the selection. If not provided, the item's type will be used.
+ * @param range Optional range of selection (single, multiple, none). Defaults to 'single'.
+ */
+export const setSelection = (item: SelectionItem, context?: SelectionContext, range: SelectionRange = 'single') => {
     
+    if(range === 'single') {
+        const newMap = new Map([[item.id, item]]);
+    }
+    else if(range === 'multiple') {
+        const s = useSelectionStore.getState().selection;
+        s.set(item.id, item);
+        useSelectionStore.getState().setSelection(s);
+    }
+    useSelectionStore.getState().setContext(context || item.type);
+    useSelectionStore.getState().setRange(range);
+}
+
+export const setSelectionContext = (context: SelectionContext) => {
+    useSelectionStore.getState().setContext(context);
+}
+
+export const getCurrentSelection = () => {
+    return useSelectionStore.getState().selection;
 }
 
 /** Removes an item from the selection store. */
 export const clearSelectionStore = () => {
     useSelectionStore.getState().clearSelection();
+    useSelectionStore.getState().setContext(null);
 }
 /** Returns only selected items of wanted type. Return empty array if none found. */
 export const useSelectionTypeGuarded = <T>(type: TYPE_ENUM) => {
