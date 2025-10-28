@@ -1,0 +1,101 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import * as Collapsible from "@radix-ui/react-collapsible";
+import { VisualType } from '@shared/types/types';
+
+
+
+type VisualsProps = {
+    visuals: Partial<VisualType>;
+    onUpdate: (visuals: Partial<VisualType>) => void;
+};
+
+const Visuals: React.FC<VisualsProps> = ({ visuals, onUpdate }) => {
+    const [imgUrls, setImgUrls] = useState<string[]>(visuals.imgUrls || []);
+    const [width, setWidth] = useState(visuals.width || 0);
+    const [height, setHeight] = useState(visuals.height || 0);
+    const [opened, setOpened] = useState(true);
+
+    const setWidthCb = useCallback(() => {
+        setWidth(width);
+    }, [visuals.width]);
+
+    useEffect(() => {
+        setImgUrls(visuals.imgUrls || []);
+        setWidth(visuals.width || 0);
+        setHeight(visuals.height || 0);
+    }, [visuals]);
+
+    const handleImageUrlChange = (index: number, value: string) => {
+        const newImgUrls = [...imgUrls];
+        if (index === newImgUrls.length) {
+            newImgUrls.push(value);
+        } else {
+            newImgUrls[index] = value;
+        }
+        setImgUrls(newImgUrls);
+    };
+
+    const handleUpdate = () => {
+        const updatedItem = {
+            ...visuals,
+            ...(imgUrls.length > 0 && { imgUrls }),
+            ...(width > 0 && { width }),
+            ...(height > 0 && { height }),
+        };
+        onUpdate(updatedItem);
+    };
+
+    return (
+        <Collapsible.Root
+            open={opened}
+            onOpenChange={setOpened}
+            >
+            <Collapsible.Trigger className="p-2 bg-darkbglighter">
+            {opened ? 'Hide Visuals' : 'Show Visuals'}
+            </Collapsible.Trigger>
+            <Collapsible.Content className="text-gray-200">
+            <div className="flex flex-col space-y-4">
+                {[0, 1].map((index) => (
+                    <div key={index}>
+                        <label className="block text-sm font-medium my-2">
+                            {index === 0 ? 'Front Image URL' : 'Back Image URL'}
+                        </label>
+                        <input
+                            type="text"
+                            value={imgUrls[index] || ''}
+                            onChange={(e) => handleImageUrlChange(index, e.target.value)}
+                            
+                        />
+                    </div>
+                ))}
+                <label className="block text-sm font-medium">Upload image</label>
+                <input type='file' accept='image/*'/>
+            <div>
+                <label className="block text-sm font-medium">Width</label>
+                <input
+                    type="number"
+                    value={width || ''}
+                    onChange={(e) => setWidth(e.target.value ? Number(e.target.value) : 0)}
+                />
+                </div>
+                <div>
+                <label className="block text-sm font-medium">Height</label>
+                <input
+                    type="number"
+                    value={height || ''}
+                    onChange={(e) => setHeight(e.target.value ? Number(e.target.value) : 0)}
+                />
+                </div>
+                <button
+                onClick={handleUpdate}
+                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+                >
+                Update
+                </button>
+            </div>
+            </Collapsible.Content>
+        </Collapsible.Root>
+    );
+};
+
+export default Visuals;
