@@ -1,15 +1,59 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@reference "tailwindcss"
 
-body {
-  @apply m-0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+html, body, #root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+/** Applied to Radix UI Select Content to align width with trigger button.  */
+.SelectContent {
+    width: var(--radix-select-trigger-width);
+}
+
+
+@layer base {
+    #root {
+        @apply dark:text-white dark:bg-darkbg text-darkbg;
+    }
+    h1 {
+        @apply text-4xl font-bold;
+    }
+    h2 {
+        @apply text-3xl font-semibold;
+    }
+    h3 {
+        @apply text-2xl font-medium;
+    }
+    button {
+        @apply rounded-md border-none border-0 bg-darkbglighter;
+    }
+    button:hover {
+        @apply bg-actioncolor;
+    }
+    input {
+        @apply rounded-md dark:bg-darkbglighter dark:text-gray-200 border-2 border-white border-solid p-2 text-darkbg m-0 inline-block;
+    }
+    label {
+        @apply block text-sm font-medium;
+    }
+}
+
+@layer components {
+    .flex-center {
+        @apply flex justify-center items-center;
+    }
+    .flex-center-row {
+        @apply flex justify-center items-center flex-row;
+    }
+    .flex-center-col {
+        @apply flex justify-center items-center flex-col;
+    }
+    .interactivebutton {
+        @apply flex-center w-[100px] h-[60px] bg-darkbglighter hover:bg-actioncolor;
+    }
 }
