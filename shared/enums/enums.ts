@@ -1,0 +1,172 @@
+
+
+
+export enum TYPE_ENUM { 
+    GAME_COMPONENT = "GAME_COMPONENT",
+    RESOURCE = "RESOURCE",
+    ACTION = "ACTION",
+    EFFECT = "EFFECT",
+    OWNER = "OWNER",
+    PLAYER = "PLAYER",
+    BANK = "BANK",
+    SELECTION = "SELECTION",
+    TRACK = "TRACK",
+    SYMBOL = "SYMBOL",
+    PLAY_AREA = "PLAY_AREA",
+}
+
+/** Visible face on a deck. I.e. the card that can be seen. 
+ * @member FRONT the cards are visible
+ * @member BACK the cards are not visible
+ * @member MIXED some of the cards are visible and some not. E.g. topmost card is visible and the rest are not.
+ */
+export enum FACE_VISIBLE_ENUM {
+    FRONT,
+    BACK,
+    MIXED
+}
+
+/** Direction of which the card is  */
+export enum DIRECTION_OF_FLOW_ENUM {
+    DISCARD,
+    THRASH,
+    DRAW,
+    TRANSFER,
+    MIXED
+}
+
+/** Defines the mixture of cards in a deck.
+ * @member HETERO atleast two types of cards in a deck.
+ * @member HOMO only one type of cards in a deck.
+ */
+export enum CARD_MIXTURE_ENUM {
+    HETERO,
+    HOMO
+}
+
+
+
+export enum GAME_COMPONENT_STATE_ENUM {
+    IN_PLAY = 'IN_PLAY',
+    IN_HAND = 'IN_HAND',
+    IN_TRASH = 'IN_TRASH',
+    NON_PLAYABLE = 'NON_PLAYABLE',
+}
+
+export enum WARNINGS {
+    UNSAVED_CHANGES = 'UNSAVED_CHANGES',
+    INVALID_SELECTION = 'INVALID_SELECTION',
+    COMPONENT_NOT_FOUND = 'COMPONENT_NOT_FOUND',
+}
+
+export enum RESOURCE_ENUM {
+    MONEY = "MONEY",
+    CUSTOM = "CUSTOM"
+}
+
+export enum ACTION_INDEX {
+    ACTIONINDEX = "ACTIONINDEX"
+}
+
+export enum SOCKET_RESPONSE {
+    OK = 'OK',
+    ERROR = 'ERROR'
+}
+
+export enum LOCALHOST_PORT { BACKEND = 3000 };
+
+export enum ACTION_TYPE_ENUM {
+    COLLECT_RESOUCE = 'COLLET_RESOURCE',
+    PAY_RESOURCE = 'PAY_RESOURCE',
+    DRAW_COMPONENT = 'DRAW_COMPONENT',
+    PLAY_COMPONENT = 'PLAY_COMPONENT',
+    NONE = 'NONE',
+    START_TURN = 'START_TURN',
+    CONFIRM_TURN = 'CONFIRM_TURN',
+    PASS_TURN = 'PASS_TURN',
+    SHUFFLE = 'SHUFFLE',
+    FINISH_ACTION = 'FINISH',
+    TRANSFER_ACTION = 'TRANSFER',
+    TRADE_RESOURCE = 'TRADE_RESOURCE',
+    UPGRADE_COMPONENT = 'UPGRADE_COMPONENT',
+    DOWNGRADE_COMPONENT = 'DOWNGRADE_COMPONENT',
+    MOVE_COMPONENT = 'MOVE_COMPONENT',
+    ATTACK_PLAYER = 'ATTACK_PLAYER',
+    DEFEND_PLAYER = 'DEFEND_PLAYER',
+    BUILD_PLAYER = 'BUILD_PLAYER',
+    DESTROY_PLAYER = 'DESTROY_PLAYER',
+    TRADE_PLAYER = 'TRADE_PLAYER',
+    EXPLORE_PLAYER = 'EXPLORE_PLAYER',
+    RESEARCH_PLAYER = 'RESEARCH_PLAYER',
+    UPGRADE_PLAYER = 'UPGRADE_PLAYER',
+    DOWNGRADE_PLAYER = 'DOWNGRADE_PLAYER',
+    MOVE_PLAYER = 'MOVE_PLAYER',
+    ATTACK_COMPONENT = 'ATTACK_COMPONENT',
+    DEFEND_COMPONENT = 'DEFEND_COMPONENT',
+    BUILD_COMPONENT = 'BUILD_COMPONENT',
+    DESTROY_COMPONENT = 'DESTROY_COMPONENT',
+    TRADE_COMPONENT = 'TRADE_COMPONENT',
+    EXPLORE_COMPONENT = 'EXPLORE_COMPONENT',
+    RESEARCH_COMPONENT = 'RESEARCH_COMPONENT',
+}
+
+export enum TURN_MODE_ENUM {
+    SYNC = 'SYNC',
+    ASYNC = 'ASYNC'
+}
+
+export enum MODE_ENUM {
+    DEMO = 'DEMO',
+    PROD = 'PROD'
+}
+
+export enum GAME_STATE_ENUM {
+    GAME_STATE_TYPE= 'GAME_STATE_TYPE'
+}
+
+export enum ERROR_CODE_ENUM {
+    NO_RESOURCE_FOUND = 'NO_RESOURCE_FOUND',
+    NOT_ENOUGH_RESOURCES = 'NOT_ENOUGH_RESOURCES',
+    NO_COMPONENT_FOUND = 'NO_COMPONENT_FOUND',
+    PLAYER_DISCONNECTED = 'PLAYER_DISCONNECTED',
+    LOGICAL_ERROR = 'LOGICAL_ERRROR',
+}
+
+export enum OWNER_TYPE_ENUM {
+    OWNER = 'OWNER',
+    PLAYER = 'PLAYER',
+    BANK = 'BANK',
+    COMPONENT = 'COMPONENT'
+}
+
+export enum SPACE_TYPE_ENUM {
+    OWNER_GAME_BOARD = 'OWNER_GAME_BOARD'
+}
+
+export enum SELECTION_TYPE_ENUM {
+    SELECTION = 'SELECTION',
+}
+
+export enum TRACK_TYPE_ENUM {
+    TRACK = 'TRACK',
+}
+
+export enum EFFECT_TYPE_ENUM {
+    EFFECT = 'EFFECT',
+}
+
+export enum SYMBOL_TYPE_ENUM {
+    SYMBOL = 'SYMBOL',
+}
+
+export enum TARGET_ENUM {
+    SELECTED_PLAYER = OWNER_TYPE_ENUM.PLAYER,
+    SELECTED_COMPONENT = OWNER_TYPE_ENUM.COMPONENT,
+    BANK = OWNER_TYPE_ENUM.BANK,
+    DYNAMIC = 'DYNAMIC',
+    RANDOM = 'RANDOM',
+    NEXT_PLAYER = 'NEXT_PLAYER',
+    PREV_PLAYER = 'PREV_PLAYER',
+    ALL_PLAYERS = 'ALL_PLAYERS',
+    PLAYER_INDEX = 'PLAYER_INDEX',
+}

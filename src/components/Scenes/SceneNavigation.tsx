@@ -1,16 +1,15 @@
-import React, { FC, ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import  * as Tabs from '@radix-ui/react-tabs'
+import { useSetBlueprint, useShallowBlueprint } from '@root/src/zustand/BlueprintStore';
+import { usePixiAppState } from '@root/src/zustand/PixiStore';
+import { setSelection } from '@root/src/zustand/SelectionStore';
+import {  SOCKET_RESPONSE } from '@shared/enums/enums';
+import { BlueprintType } from '@shared/types/types';
+import React, { FC, ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import GameView from '../UI/GameView';
+import Warning from '../UI/Warning';
+import ActionScene from './ActionScene';
 import CardScene from './CardScene';
 import ComponentDesigner from './ComponentDesigner';
-import { BlueprintType } from '@shared/types/types';
-import { socket } from '@root/src/App';
-import {  SOCKET_RESPONSE } from '@shared/enums/enums';
-import ActionScene from './ActionScene';
-import GameView from '../UI/GameView';
-import { useSetBlueprint, useShallowBlueprint } from '@root/src/zustand/BlueprintStore';
-import Warning from '../UI/Warning';
-import { setSelection } from '@root/src/zustand/SelectionStore';
-import { usePixiAppState } from '@root/src/zustand/PixiStore';
 import Overview from './Overview';
 
 type TabContent = {
@@ -18,15 +17,11 @@ type TabContent = {
 	tabContent: ReactNode
 }
 
-interface SceneNavigationProps {
-
-}
-
 const updateBp = (partialBp: Partial<BlueprintType>) => {
 	useSetBlueprint(partialBp);
 }
 
-const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps) => {
+const SceneNavigation : FC = (props) => {
 	const INITIAL_TAB = 'GameView';	
 	const tabContent = 'tabContent';
 	const contentRef = useRef<HTMLDivElement>(null);
@@ -47,14 +42,7 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 	];
 
 	useEffect(() => {
-		if(bpStore) {
-			socket.emit('getBlueprint', (bp, status) => {
-				if(status == SOCKET_RESPONSE.OK) {
-					updateBp(bp);
-					setSelection(bp.gameComponents[0]?.[1]);
-				} 
-			});
-		}
+
 	  }, []);
 
 
@@ -78,16 +66,16 @@ const SceneNavigation : FC<SceneNavigationProps> = (props: SceneNavigationProps)
 		value={selectedTab}
 	>
 	  <Tabs.List className="flex space-x-1 shrink-0">
-		{sceneList.map((scene, index) => (
-		<Tabs.Trigger key={'tab' + index} value={scene.tabName} className={
+		{sceneList.map((scene) => (
+		<Tabs.Trigger key={`tab-${scene.tabName}`} value={scene.tabName} className={
 		  `p-2.5 text-sm font-medium transition-all duration-100 bg-darkbglighter data-[state=active]:bg-actioncolor`}>
 		  { scene.tabName }
 		</Tabs.Trigger>
 		))}
 	  </Tabs.List>
-		{sceneList.map((scene, index) => (
+		{sceneList.map((scene) => (
 			<Tabs.Content 
-				key={'tabContent' + index} 
+				key={`tabContent-${scene.tabName}`} 
 				value={scene.tabName} 
 				className="shadow-inner h-full w-full"
 				ref={contentRef}
