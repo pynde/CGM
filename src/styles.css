@@ -15,9 +15,9 @@ html, body, #root {
     width: var(--radix-select-trigger-width);
 }
 
-@layer base {
+/* @layer base {
     #root {
-        /* @apply dark:text-white dark:bg-darkbg text-darkbg; */
+        @apply dark:text-white dark:bg-darkbg text-darkbg;
     }
     h1 {
         @apply text-4xl font-bold;
@@ -29,13 +29,13 @@ html, body, #root {
         @apply text-2xl font-medium;
     }
     button {
-        /* @apply rounded-md border-none border-0 bg-darkbglighter; */
+        @apply rounded-md border-none border-0 bg-darkbglighter;
     }
     button:hover {
-        /* @apply bg-actioncolor; */
+        @apply bg-actioncolor;
     }
     input {
-        /* @apply rounded-md dark:bg-darkbglighter dark:text-gray-200 border-2 border-white border-solid p-2 text-darkbg m-0 inline-block; */
+        @apply rounded-md dark:bg-darkbglighter dark:text-gray-200 border-2 border-white border-solid p-2 text-darkbg m-0 inline-block;
     }
     label {
         @apply block text-sm font-medium;
@@ -53,6 +53,6 @@ html, body, #root {
         @apply flex justify-center items-center flex-col;
     }
     .interactivebutton {
-        /* @apply flex-center w-[100px] h-[60px] bg-darkbglighter hover:bg-actioncolor; */
+        @apply flex-center w-[100px] h-[60px] bg-darkbglighter hover:bg-actioncolor;
     }
-}
+} */
