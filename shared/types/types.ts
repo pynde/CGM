@@ -1,9 +1,9 @@
-import {  DIRECTION_OF_FLOW_ENUM, FACE_VISIBLE_ENUM, GAME_STATE_ENUM, ERROR_CODE_ENUM, SELECTION_TYPE_ENUM, SPACE_TYPE_ENUM, GAME_COMPONENT_STATE_ENUM, TRACK_TYPE_ENUM, EFFECT_TYPE_ENUM, SYMBOL_TYPE_ENUM, TYPE_ENUM } from "../enums/enums"
+import {  DIRECTION_OF_FLOW_ENUM, ERROR_CODE_ENUM, SELECTION_TYPE_ENUM, TRACK_TYPE_ENUM, EFFECT_TYPE_ENUM, SYMBOL_TYPE_ENUM, TYPES_AS_STRING } from "../enums/enums"
 
 // BASE TYPE
 
 export type BaseType = {
-    type: TYPE_ENUM
+    type: keyof typeof TYPES_AS_STRING
     name: string,
     id: string,
 };
@@ -41,7 +41,7 @@ export type BlueprintType = {
 // ACTIONS
 
 export type ActionType = BaseType & { 
-    type: TYPE_ENUM.ACTION,
+    type: typeof TYPES_AS_STRING.ACTION,
     name: string,
     automatic: boolean,
     id: string,
@@ -63,7 +63,7 @@ export type DeckType = BaseType & {
 }
 
 export type GameComponentType = BaseType & {
-    type: TYPE_ENUM.GAME_COMPONENT,
+    type: typeof TYPES_AS_STRING.GAME_COMPONENT,
     actions: ActionType[],
     price: ResourceType[],
     symbols?: SymbolType[],
@@ -77,7 +77,7 @@ export type GameComponentType = BaseType & {
 
 export type ResourceType = BaseType & {
     value: number | string;
-    type: TYPE_ENUM.RESOURCE,
+    type: typeof TYPES_AS_STRING.RESOURCE,
     amount: number,
     allowNegativeAmount?: boolean, 
     style?: VisualType
@@ -112,22 +112,14 @@ export type SymbolType = {
 
 // OWNERS
 
-export type PlayerType = OwnerType & {
-    type: TYPE_ENUM.PLAYER
-}
 
 export type OwnerType = BaseType & {
-    type: TYPE_ENUM.PLAYER | TYPE_ENUM.BANK
+    type: typeof TYPES_AS_STRING.PLAYER | typeof TYPES_AS_STRING.BANK
 }
-
-export type BankType = OwnerType & {
-    type: TYPE_ENUM.BANK,
-}
-
 // PLAY AREAS
 
 export type PlayAreaType = BaseType & {
-    type: TYPE_ENUM.PLAY_AREA,
+    type: typeof TYPES_AS_STRING.PLAY_AREA,
     contentIds: string[],
     style?: VisualType
 }

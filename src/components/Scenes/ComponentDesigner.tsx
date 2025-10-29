@@ -1,20 +1,21 @@
-import { ACTION_TYPE_ENUM, RESOURCE_ENUM, TYPE_ENUM } from '@shared/enums/enums';
-import { ActionType, GameComponentType, isTypeOf, ResourceType, VisualType } from '@shared/types/types';
-import React, { useEffect } from 'react';
-import { useBlueprint, useSetBlueprint, useShallowBlueprint, useUpdateBlueprintGameComponents } from '@root/src/zustand/BlueprintStore';
-import { SelectionItem, setSelection, useSelection } from '@root/src/zustand/SelectionStore';
-import { createPixiComponent, createPixiLabelFromBaseType, PIXI_COMPONENTS } from '../PixiComponents/PixiVanilla';
-import { destroyPixiApp, initPixiApp, setPixiApp, usePixiApp, usePixiAppState } from '@root/src/zustand/PixiStore';
-import Carousel from '../UI/Carousel';
 import * as ContextMenu from '@radix-ui/react-context-menu';
-import BlueprintMenu from '../BlueprintMenu/BlueprintMenu';
-import Visuals from '../Views/Visuals';
-import SaveButton from '../UI/SaveButton';
-import { createSizeHandler, createTransformer } from '../PixiComponents/PixiTransformer';
+import { useBlueprint, useSetBlueprint, useShallowBlueprint, useUpdateBlueprintGameComponents } from '@root/src/zustand/BlueprintStore';
+import { destroyPixiApp, initPixiApp, setPixiApp, usePixiApp, usePixiAppState } from '@root/src/zustand/PixiStore';
+import { SelectionItem, setSelection, useSelection } from '@root/src/zustand/SelectionStore';
+import { ACTION_TYPE_ENUM, RESOURCE_ENUM, TYPES_AS_STRING } from '@shared/enums/enums';
+import { ActionType, GameComponentType, isTypeOf, ResourceType, VisualType } from '@shared/types/types';
 import { Ticker } from 'pixi.js';
+import React, { useEffect } from 'react';
+import BlueprintMenu from '../BlueprintMenu/BlueprintMenu';
+import { createSizeHandler, createTransformer } from '../PixiComponents/PixiTransformer';
+import { createPixiComponent, createPixiLabelFromBaseType, PIXI_COMPONENTS } from '../PixiComponents/PixiVanilla';
+import Carousel from '../UI/Carousel';
+import SaveButton from '../UI/SaveButton';
+import Visuals from '../Views/Visuals';
+
 // Props interface for the ComponentDesigner
 interface ComponentDesignerProps {
-    
+    propOne?: string;
 }
 
 // TODO Change BlueprintContext to use Zustand store
@@ -29,7 +30,6 @@ export const ComponentDesigner: React.FC<ComponentDesignerProps> = () => {
     
     
     useEffect(() => {
-        console.log('selected changed', selected);
         // Init Pixi App and add to div container
         (async () => {
             if(pixiRootDiv.current && pixiAppState !== 'closing') {
@@ -43,13 +43,13 @@ export const ComponentDesigner: React.FC<ComponentDesignerProps> = () => {
         return () => {
             destroyPixiApp();
         }
-    }, []);
+    }, [pixiAppState]);
 
     useEffect(() => {
         if(!pixiApp) return;
         const ticker = new Ticker();
         // Add selected component to Pixi stage
-        if (isTypeOf<GameComponentType>(selected, TYPE_ENUM.GAME_COMPONENT)) {
+        if (isTypeOf<GameComponentType>(selected, TYPES_AS_STRING.GAME_COMPONENT)) {
             const label = createPixiLabelFromBaseType(selected, PIXI_COMPONENTS.CONTAINER);
             if(!pixiApp.stage) return () => { ticker.destroy(); };
             const oldPixiGameComponent = pixiApp.stage.getChildByLabel(label, false);
@@ -85,7 +85,7 @@ export const ComponentDesigner: React.FC<ComponentDesignerProps> = () => {
             if(pixiApp?.stage) pixiApp?.stage.removeChildren();
             ticker.destroy();
         }
-    }, [selected?.id, pixiApp]);
+    }, [selected?.id, selected?.style, pixiApp]);
 
 
 
@@ -96,7 +96,7 @@ export const ComponentDesigner: React.FC<ComponentDesignerProps> = () => {
     }
 
     const updateVisuals = (updatedItem: Partial<VisualType>) => {
-        if(isTypeOf<GameComponentType>(selected, TYPE_ENUM.GAME_COMPONENT)) {
+        if(isTypeOf<GameComponentType>(selected, TYPES_AS_STRING.GAME_COMPONENT)) {
             if(!selected.style) return;
             const updatedComponent = {
             ...selected,

@@ -1,19 +1,30 @@
+export const TYPES_AS_STRING = { 
+    GAME_COMPONENT: "GAME_COMPONENT",
+    RESOURCE: "RESOURCE",
+    ACTION: "ACTION",
+    EFFECT: "EFFECT",
+    OWNER: "OWNER",
+    PLAYER: "PLAYER",
+    BANK: "BANK",
+    SELECTION: "SELECTION",
+    TRACK: "TRACK",
+    SYMBOL: "SYMBOL",
+    PLAY_AREA: "PLAY_AREA",
+} as const;
 
-
-
-export enum TYPE_ENUM { 
-    GAME_COMPONENT = "GAME_COMPONENT",
-    RESOURCE = "RESOURCE",
-    ACTION = "ACTION",
-    EFFECT = "EFFECT",
-    OWNER = "OWNER",
-    PLAYER = "PLAYER",
-    BANK = "BANK",
-    SELECTION = "SELECTION",
-    TRACK = "TRACK",
-    SYMBOL = "SYMBOL",
-    PLAY_AREA = "PLAY_AREA",
-}
+// export enum TYPE_ENUM { 
+//     GAME_COMPONENT = "GAME_COMPONENT",
+//     RESOURCE = "RESOURCE",
+//     ACTION = "ACTION",
+//     EFFECT = "EFFECT",
+//     OWNER = "OWNER",
+//     PLAYER = "PLAYER",
+//     BANK = "BANK",
+//     SELECTION = "SELECTION",
+//     TRACK = "TRACK",
+//     SYMBOL = "SYMBOL",
+//     PLAY_AREA = "PLAY_AREA",
+// }
 
 /** Visible face on a deck. I.e. the card that can be seen. 
  * @member FRONT the cards are visible

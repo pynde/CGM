@@ -1,0 +1,193 @@
+{
+  "gameComponents": [
+    [
+      "mhc6tq0ll6md17e7rg",
+      {
+        "type": "GAME_COMPONENT",
+        "name": "CARD 1",
+        "id": "mhc6tq0ll6md17e7rg",
+        "price": [
+          {
+            "type": "RESOURCE",
+            "value": 1,
+            "amount": 10,
+            "id": "resource-test-id",
+            "style": {
+              "fill": "yellow",
+              "width": 200,
+              "height": 200
+            },
+            "name": "Money"
+          }
+        ],
+        "actions": [
+          {
+            "type": "ACTION",
+            "automatic": false,
+            "id": "action-test-id-2",
+            "ownerId": "card-test-id",
+            "payload": "Raha payload",
+            "target": {
+              "type": "BANK",
+              "id": "mhc6tq0lvdvkq2u4ys",
+              "name": "Bank"
+            },
+            "actionPipe": [
+              {
+                "type": "ACTION",
+                "automatic": false,
+                "id": "action-test-id-1",
+                "ownerId": "card-test-id",
+                "name": "Transfer resources",
+                "actionPipe": []
+              },
+              {
+                "type": "ACTION",
+                "automatic": false,
+                "id": "action-test-id-0",
+                "ownerId": "card-test-id",
+                "name": "Finish",
+                "actionPipe": []
+              }
+            ],
+            "name": "Pay resource"
+          }
+        ],
+        "style": {
+          "x": 0,
+          "y": 0,
+          "width": 150,
+          "height": 200,
+          "fill": "white"
+        }
+      }
+    ],
+    [
+      "mhc6tq0luipcwezhw0i",
+      {
+        "type": "GAME_COMPONENT",
+        "name": "CARD 2",
+        "id": "mhc6tq0luipcwezhw0i",
+        "price": [
+          {
+            "type": "RESOURCE",
+            "value": 1,
+            "amount": 10,
+            "id": "resource-test-id",
+            "style": {
+              "fill": "yellow",
+              "width": 200,
+              "height": 200
+            },
+            "name": "Money"
+          }
+        ],
+        "actions": [
+          {
+            "type": "ACTION",
+            "automatic": false,
+            "id": "action-test-id-2",
+            "ownerId": "card-test-id",
+            "payload": "Raha payload",
+            "target": {
+              "type": "BANK",
+              "id": "mhc6tq0lvdvkq2u4ys",
+              "name": "Bank"
+            },
+            "actionPipe": [
+              {
+                "type": "ACTION",
+                "automatic": false,
+                "id": "action-test-id-1",
+                "ownerId": "card-test-id",
+                "name": "Transfer resources",
+                "actionPipe": []
+              },
+              {
+                "type": "ACTION",
+                "automatic": false,
+                "id": "action-test-id-0",
+                "ownerId": "card-test-id",
+                "name": "Finish",
+                "actionPipe": []
+              }
+            ],
+            "name": "Pay resource"
+          }
+        ],
+        "style": {
+          "x": 0,
+          "y": 0,
+          "width": 150,
+          "height": 200,
+          "fill": "white"
+        }
+      }
+    ]
+  ],
+  "resources": [
+    [
+      "resource-test-id",
+      {
+        "type": "RESOURCE",
+        "value": 1,
+        "amount": 10,
+        "id": "resource-test-id",
+        "style": {
+          "fill": "yellow",
+          "width": 200,
+          "height": 200
+        },
+        "name": "Money"
+      }
+    ]
+  ],
+  "actions": [
+    [
+      "mhc6tq0l7z474t9u8yp",
+      {
+        "type": "ACTION",
+        "automatic": false,
+        "id": "mhc6tq0l7z474t9u8yp",
+        "ownerId": "",
+        "name": "Draw Card",
+        "actionPipe": []
+      }
+    ]
+  ],
+  "effects": [],
+  "playAreas": [
+    [
+      "mhc6tq0lrquejq76k1",
+      {
+        "type": "PLAY_AREA",
+        "id": "mhc6tq0lrquejq76k1",
+        "name": "Player Hand",
+        "contentIds": [],
+        "style": {
+          "x": 50,
+          "y": 100,
+          "width": 400,
+          "height": 300,
+          "fill": "yellow"
+        }
+      }
+    ],
+    [
+      "mhc6tq0lci8ls3x6tm",
+      {
+        "type": "PLAY_AREA",
+        "id": "mhc6tq0lci8ls3x6tm",
+        "name": "Target Area",
+        "contentIds": [],
+        "style": {
+          "x": 100,
+          "y": 100,
+          "width": 600,
+          "height": 400,
+          "fill": "green"
+        }
+      }
+    ]
+  ]
+}
