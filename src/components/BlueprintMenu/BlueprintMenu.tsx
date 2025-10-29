@@ -37,7 +37,7 @@ const BlueprintMenu: React.FC<BlueprintMenuProps> = (props: BlueprintMenuProps) 
                     <ContextMenu.Content className='select-none rounded-md shadow-intense py-4 text-black bg-white flex flex-col gap-1 min-w-[200px]'>
                             { props.gameComponents && 
                                     <ContextMenu.Sub key={'game-components'}>
-                                            <ContextMenu.SubTrigger className='group relative flex h-[25px] justify-between select-none items-center pl-[25px] pr-[5px] leading-none text-black outline-none data-[disabled]:pointer-events-none data-[state=open]:bg-yellow-100 data-[disabled]:text-slate-400 data-[state=open]:text-red-400'>
+                                            <ContextMenu.SubTrigger className='group relative flex h-[25px] justify-between select-none items-center pl-[25px] pr-[5px] leading-none text-black outline-none data-disabled:pointer-events-none data-[state=open]:bg-yellow-100 data-disabled:text-slate-400 data-[state=open]:text-red-400'>
                                                 <div>Game Components</div>
                                             <ChevronRightIcon className='w-5 h-5'/>
                                             </ContextMenu.SubTrigger>
@@ -54,7 +54,7 @@ const BlueprintMenu: React.FC<BlueprintMenuProps> = (props: BlueprintMenuProps) 
                             }
                             { props.effects && 
                                     <ContextMenu.Sub key={'effects-sub'}>
-                                            <ContextMenu.SubTrigger className='group relative flex h-[25px] justify-between select-none items-center pl-[25px] pr-[5px] leading-none text-black outline-none data-[disabled]:pointer-events-none data-[state=open]:bg-yellow-100 data-[disabled]:text-slate-400 data-[state=open]:text-red-400'>
+                                            <ContextMenu.SubTrigger className='group relative flex h-[25px] justify-between select-none items-center pl-[25px] pr-[5px] leading-none text-black outline-none data-disabled:pointer-events-none data-[state=open]:bg-yellow-100 data-disabled:text-slate-400 data-[state=open]:text-red-400'>
                                                 <div>Effects</div>
                                             <ChevronRightIcon className='w-5 h-5'/>
                                             </ContextMenu.SubTrigger>
@@ -69,7 +69,7 @@ const BlueprintMenu: React.FC<BlueprintMenuProps> = (props: BlueprintMenuProps) 
                             }
                             { props.resources && 
                                     <ContextMenu.Sub key={'resources-sub'}>
-                                            <ContextMenu.SubTrigger className='group relative flex h-[25px] justify-between select-none items-center pl-[25px] pr-[5px] leading-none text-black outline-none data-[disabled]:pointer-events-none data-[state=open]:bg-yellow-100 data-[disabled]:text-slate-400 data-[state=open]:text-red-400'>
+                                            <ContextMenu.SubTrigger className='group relative flex h-[25px] justify-between select-none items-center pl-[25px] pr-[5px] leading-none text-black outline-none data-disabled:pointer-events-none data-[state=open]:bg-yellow-100 data-disabled:text-slate-400 data-[state=open]:text-red-400'>
                                                 <div>Resources</div>
                                             <ChevronRightIcon className='w-5 h-5'/>
                                             </ContextMenu.SubTrigger>

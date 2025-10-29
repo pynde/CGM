@@ -40,7 +40,7 @@ const RadixSelect: React.FC<RadixSelectProps> & { CustomTrigger: React.FC<Select
                         <Select.Item
                             key={option}
                             value={option}
-                            className="relative flex items-center justify-start h-[25px] select-none border-none p-4 text-[13px] leading-none  data-[highlighted]:bg-g data-[highlighted]:text-yellow-500"
+                            className="relative flex items-center justify-start h-[25px] select-none border-none p-4 text-[13px] leading-none  data-[highlighted]:bg-g data-highlighted:text-yellow-500"
                         >
                             <Select.ItemText className='border-none border-0'>{option}</Select.ItemText>
                         </Select.Item>
@@ -60,7 +60,7 @@ const CustomTrigger: React.FC<Select.SelectTriggerProps> = ({ children, ...props
         <Select.Trigger
             className={
                 props.className  ||
-                'inline-flex w-60 h-[35px] items-center justify-center rounded-md bg-darkbglighter text-[13px] leading-none hover:bg-darkbg data-[placeholder]:text-yellow-500'
+                'inline-flex w-60 h-[35px] items-center justify-center rounded-md bg-darkbglighter text-[13px] leading-none hover:bg-darkbg data-placeholder:text-yellow-500'
             }
             aria-label="Actions"
         >   

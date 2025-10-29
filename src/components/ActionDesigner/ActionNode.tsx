@@ -46,11 +46,11 @@ export const ActionNode: React.FC<ActionNodeProps> = ({
                     !active && 'm-0',
                     animateIn && 'animate-jump-in',
                     animateOut && 'animate-wide-out jump-out',
-                    `min-h-[var(--minHeight)] h-fit max-h-[600px] transition-[transform,margin,opacity] scale-100 animate-fill-forwards action-node flex flex-col dark:bg-darkbglighter text-center flex-center relative`
+                    `min-h-(--minHeight) h-fit max-h-[600px] transition-[transform,margin,opacity] scale-100 animate-fill-forwards action-node flex flex-col dark:bg-darkbglighter text-center flex-center relative`
                 )
             }
         >   
-            <span onClick={e => (e)} className='min-w-[var(--minWidth)] overflow-hidden p-2'>{props.name}</span>
+            <span onClick={e => (e)} className='min-w-(--minWidth) overflow-hidden p-2'>{props.name}</span>
             <div className='flex-center-row'>
                 <span className='m-2'>You <i>may...</i></span>
                 <Toggle aria-label="Toggle italic" className='group p-1 bg-darkbg rounded-sm h-4 w-4'>

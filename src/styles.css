@@ -1,7 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@reference tailwindcss;
+@import 'tailwindcss';
 
 html, body, #root {
     width: 100%;
@@ -13,6 +10,19 @@ html, body, #root {
 /** Applied to Radix UI Select Content to align width with trigger button.  */
 .SelectContent {
     width: var(--radix-select-trigger-width);
+}
+
+@theme {
+  --color-darkbg: #1b1b1b;
+  --color-darkbglighter: #272727;
+  --color-actioncolor: #FFC107;
+  --color-darktext: white;
+}
+
+@layer base {
+    #root {
+      background-color: var(--color-darkbg)
+    }
 }
 
 /* @layer base {
