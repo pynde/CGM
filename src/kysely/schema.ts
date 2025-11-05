@@ -4,18 +4,12 @@ import { VisualType } from '../shared/types/types';
 
 interface GameComponentTable {
   id: Generated<string>;
-  type: typeof TYPES_AS_STRING.GAME_COMPONENT;
   name: string;
-  price: string; // JSON string of ResourceType[]
-  symbols: string | null; // JSON string of SymbolType[]
-  effects: string | null; // JSON string of EffectType[]
   style: string | null; // JSON string of VisualType
-  twoSided: boolean | null;
 }
 
 interface ResourceTable {
   id: Generated<string>;
-  type: typeof TYPES_AS_STRING.RESOURCE;
   name: string;
   value: string | number;
   amount: number;
@@ -25,7 +19,6 @@ interface ResourceTable {
 
 interface ActionTable {
   id: Generated<string>;
-  type: typeof TYPES_AS_STRING.ACTION;
   name: string;
   automatic: boolean;
   optional: boolean | null;
@@ -42,7 +35,6 @@ interface ActionPipeTable {
 
 interface PlayAreaTable {
   id: Generated<string>;
-  type: typeof TYPES_AS_STRING.PLAY_AREA;
   name: string;
   contentIds: string; // JSON string of string[]
   style: string | null; // JSON string of VisualType

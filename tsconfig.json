@@ -26,7 +26,8 @@
       "@/*": ["./src/*"],
       "@root/*": ["./*"],
       "@shared/*": ["./src/shared/*"],
-      "@kysely/*": ["./src/kysely/*"]
+      "@kysely/*": ["./src/kysely/*"],
+      "@utils/*": ["./src/utils/*"]
     }
   }
 }
