@@ -1,24 +1,12 @@
-import  * as Tabs from '@radix-ui/react-tabs'
-import { useSetBlueprint, useShallowBlueprint } from '@root/src/zustand/BlueprintStore';
-import { usePixiAppState } from '@root/src/zustand/PixiStore';
-import { setSelection } from '@root/src/zustand/SelectionStore';
-import {  SOCKET_RESPONSE } from '@shared/enums/enums';
-import { BlueprintType } from '@shared/types/types';
-import React, { FC, ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import GameView from '../UI/GameView';
-import Warning from '../UI/Warning';
+import  * as NavigationMenu from '@radix-ui/react-navigation-menu'
+import { Link, type LinkComponentProps } from '@tanstack/react-router';
+import { FC, useLayoutEffect, useRef, useState } from 'react';
 import ActionScene from './ActionScene';
-import CardScene from './CardScene';
-import ComponentDesigner from './ComponentDesigner';
 import Overview from './Overview';
 
 type TabContent = {
 	tabName: string,
-	tabContent: ReactNode
-}
-
-const updateBp = (partialBp: Partial<BlueprintType>) => {
-	useSetBlueprint(partialBp);
+	tabContent: LinkComponentProps;
 }
 
 const SceneNavigation : FC = (props) => {
@@ -27,24 +15,13 @@ const SceneNavigation : FC = (props) => {
 	const contentRef = useRef<HTMLDivElement>(null);
 	const [selectedTab, setSelectedTab] = useState(INITIAL_TAB);
 	const [contentSize, setContentSize] = useState<{ width: number, height: number }>({ width: 400, height: 400 });
-	const bpStore = useShallowBlueprint();
-	const pixiAppState = usePixiAppState();
-
-
 
 	const sceneList: TabContent[] = [
-		{tabName: 'Overview', tabContent: <div>Overview placeholder. Replace with Overview component.</div> }, 
-		{tabName: 'Cards', tabContent: <CardScene key={tabContent+1}/>}, 
-		{tabName: 'GameBoard', tabContent: <div key={tabContent+2}>Game Board placeholder</div>},
-		{tabName: 'ComponentDesigner', tabContent: <ComponentDesigner key={tabContent+3}/> },
-		{tabName: 'Actions', tabContent: <ActionScene key={tabContent+4}/>},
-		{tabName: 'GameView', tabContent: <Overview key={tabContent+5}/>},
+		{ tabName: 'Overview', tabContent: <Link to="/designer">Overview</Link> }, 
+		{ tabName: 'ComponentDesigner', tabContent: <Link to="/designer/components">Component Designer</Link> },
+		{ tabName: 'Actions', tabContent: <Link to="/designer/actions">Actions</Link> },
+		// { tabName: 'GameView', tabContent: <Link to="/designer/game">Game View</Link> },
 	];
-
-	useEffect(() => {
-
-	  }, []);
-
 
 	  useLayoutEffect(() => {
 		const width_ = contentRef.current?.offsetWidth || 0;
@@ -59,32 +36,22 @@ const SceneNavigation : FC = (props) => {
 	};
 
 	return (
-	<Tabs.Root 
-		className={'h-full flex flex-col grow'} 
-		defaultValue={sceneList[5].tabName} 
-		onValueChange={handleTabChange} 
-		value={selectedTab}
-	>
-	  <Tabs.List className="flex space-x-1 shrink-0">
-		{sceneList.map((scene) => (
-		<Tabs.Trigger key={`tab-${scene.tabName}`} value={scene.tabName} className={
-		  `p-2.5 text-sm font-medium transition-all duration-100 bg-darkbglighter data-[state=active]:bg-actioncolor`}>
-		  { scene.tabName }
-		</Tabs.Trigger>
-		))}
-	  </Tabs.List>
-		{sceneList.map((scene) => (
-			<Tabs.Content 
-				key={`tabContent-${scene.tabName}`} 
-				value={scene.tabName} 
-				className="shadow-inner h-full w-full"
-				ref={contentRef}
-			>
-				{ scene.tabContent}
-				<Warning open={false}/>
-			</Tabs.Content>
-		))}
-	</Tabs.Root>
+	<NavigationMenu.Root className="h-full flex flex-col grow">
+		<NavigationMenu.List className="flex space-x-1 shrink-0">
+			{sceneList.map((scene) => (
+				<NavigationMenu.Item key={`nav-${scene.tabName}`}>
+					<NavigationMenu.Trigger
+						className={`p-2.5 text-sm font-medium transition-all duration-100 bg-darkbglighter ${
+							selectedTab === scene.tabName ? 'bg-actioncolor' : ''
+						}`}
+						onClick={() => handleTabChange(scene.tabName)}
+					>
+						{scene.tabName}
+					</NavigationMenu.Trigger>
+				</NavigationMenu.Item>
+			))}
+		</NavigationMenu.List>
+	</NavigationMenu.Root>
 	);
 };
 

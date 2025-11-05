@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
-import { ActionType, SubActionType } from '@shared/types/types';
-import ActionNode from './ActionNode';
-import { HistoryStore, OperationType, createHistoryStore } from '@root/src/hooks/HistoryHooks';
-import AddNode from './AddNode';
-import clsx from 'clsx';
-import { useBlueprint, useBlueprintActions, useSetBlueprint } from '@root/src/zustand/BlueprintStore';
-import AddGroupNode from './AddGroupNode';
+import { createHistoryStore, HistoryStore, OperationType } from '@root/src/hooks/HistoryHooks';
 import { moveNodeToActionNodeTreeGroup } from '@root/src/zustand/ActionNodeTreeStore';
+import { useBlueprint, useBlueprintActions, useSetBlueprint } from '@root/src/zustand/BlueprintStore';
+import { ActionType, SubActionType } from '@shared/types/types';
+import clsx from 'clsx';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import ActionNode from './ActionNode';
+import AddGroupNode from './AddGroupNode';
+import AddNode from './AddNode';
 
 
 type ActionDesignerProps = React.HTMLAttributes<HTMLDivElement> & {
@@ -83,10 +83,6 @@ const ActionDesigner: React.FC<ActionDesignerProps> = ({ selectedAction, ...prop
         setDeletedNodeIndex(null);
     };
 
-    const addActionToBlueprint = (actionToAdd: ActionType) => {
-        const newActions = bpStore.actions.splice(-1, 0, [actionToAdd.id, actionToAdd])
-        useSetBlueprint({ ...bpStore, actions: newActions })
-    }
 
     const zoomContainer = (e: React.WheelEvent<HTMLDivElement>) => {
         if(e.deltaX !== 0) return;

@@ -10,11 +10,21 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DesignerIndexRouteImport } from './routes/designer/index'
 import { Route as TestsJsonizeRouteImport } from './routes/tests/jsonize'
+import { Route as DesignerComponentsIndexRouteImport } from './routes/designer/components/index'
+import { Route as DesignerActionsIndexRouteImport } from './routes/designer/actions/index'
+import { Route as DesignerComponentsComponentIdRouteImport } from './routes/designer/components/$componentId'
+import { Route as DesignerActionsActionIdRouteImport } from './routes/designer/actions/$actionId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DesignerIndexRoute = DesignerIndexRouteImport.update({
+  id: '/designer/',
+  path: '/designer/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TestsJsonizeRoute = TestsJsonizeRouteImport.update({
@@ -22,31 +32,94 @@ const TestsJsonizeRoute = TestsJsonizeRouteImport.update({
   path: '/tests/jsonize',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DesignerComponentsIndexRoute = DesignerComponentsIndexRouteImport.update({
+  id: '/designer/components/',
+  path: '/designer/components/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DesignerActionsIndexRoute = DesignerActionsIndexRouteImport.update({
+  id: '/designer/actions/',
+  path: '/designer/actions/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DesignerComponentsComponentIdRoute =
+  DesignerComponentsComponentIdRouteImport.update({
+    id: '/designer/components/$componentId',
+    path: '/designer/components/$componentId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DesignerActionsActionIdRoute = DesignerActionsActionIdRouteImport.update({
+  id: '/designer/actions/$actionId',
+  path: '/designer/actions/$actionId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/tests/jsonize': typeof TestsJsonizeRoute
+  '/designer': typeof DesignerIndexRoute
+  '/designer/actions/$actionId': typeof DesignerActionsActionIdRoute
+  '/designer/components/$componentId': typeof DesignerComponentsComponentIdRoute
+  '/designer/actions': typeof DesignerActionsIndexRoute
+  '/designer/components': typeof DesignerComponentsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/tests/jsonize': typeof TestsJsonizeRoute
+  '/designer': typeof DesignerIndexRoute
+  '/designer/actions/$actionId': typeof DesignerActionsActionIdRoute
+  '/designer/components/$componentId': typeof DesignerComponentsComponentIdRoute
+  '/designer/actions': typeof DesignerActionsIndexRoute
+  '/designer/components': typeof DesignerComponentsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/tests/jsonize': typeof TestsJsonizeRoute
+  '/designer/': typeof DesignerIndexRoute
+  '/designer/actions/$actionId': typeof DesignerActionsActionIdRoute
+  '/designer/components/$componentId': typeof DesignerComponentsComponentIdRoute
+  '/designer/actions/': typeof DesignerActionsIndexRoute
+  '/designer/components/': typeof DesignerComponentsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/tests/jsonize'
+  fullPaths:
+    | '/'
+    | '/tests/jsonize'
+    | '/designer'
+    | '/designer/actions/$actionId'
+    | '/designer/components/$componentId'
+    | '/designer/actions'
+    | '/designer/components'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/tests/jsonize'
-  id: '__root__' | '/' | '/tests/jsonize'
+  to:
+    | '/'
+    | '/tests/jsonize'
+    | '/designer'
+    | '/designer/actions/$actionId'
+    | '/designer/components/$componentId'
+    | '/designer/actions'
+    | '/designer/components'
+  id:
+    | '__root__'
+    | '/'
+    | '/tests/jsonize'
+    | '/designer/'
+    | '/designer/actions/$actionId'
+    | '/designer/components/$componentId'
+    | '/designer/actions/'
+    | '/designer/components/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   TestsJsonizeRoute: typeof TestsJsonizeRoute
+  DesignerIndexRoute: typeof DesignerIndexRoute
+  DesignerActionsActionIdRoute: typeof DesignerActionsActionIdRoute
+  DesignerComponentsComponentIdRoute: typeof DesignerComponentsComponentIdRoute
+  DesignerActionsIndexRoute: typeof DesignerActionsIndexRoute
+  DesignerComponentsIndexRoute: typeof DesignerComponentsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,11 +131,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/designer/': {
+      id: '/designer/'
+      path: '/designer'
+      fullPath: '/designer'
+      preLoaderRoute: typeof DesignerIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tests/jsonize': {
       id: '/tests/jsonize'
       path: '/tests/jsonize'
       fullPath: '/tests/jsonize'
       preLoaderRoute: typeof TestsJsonizeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/designer/components/': {
+      id: '/designer/components/'
+      path: '/designer/components'
+      fullPath: '/designer/components'
+      preLoaderRoute: typeof DesignerComponentsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/designer/actions/': {
+      id: '/designer/actions/'
+      path: '/designer/actions'
+      fullPath: '/designer/actions'
+      preLoaderRoute: typeof DesignerActionsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/designer/components/$componentId': {
+      id: '/designer/components/$componentId'
+      path: '/designer/components/$componentId'
+      fullPath: '/designer/components/$componentId'
+      preLoaderRoute: typeof DesignerComponentsComponentIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/designer/actions/$actionId': {
+      id: '/designer/actions/$actionId'
+      path: '/designer/actions/$actionId'
+      fullPath: '/designer/actions/$actionId'
+      preLoaderRoute: typeof DesignerActionsActionIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -71,6 +179,11 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   TestsJsonizeRoute: TestsJsonizeRoute,
+  DesignerIndexRoute: DesignerIndexRoute,
+  DesignerActionsActionIdRoute: DesignerActionsActionIdRoute,
+  DesignerComponentsComponentIdRoute: DesignerComponentsComponentIdRoute,
+  DesignerActionsIndexRoute: DesignerActionsIndexRoute,
+  DesignerComponentsIndexRoute: DesignerComponentsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

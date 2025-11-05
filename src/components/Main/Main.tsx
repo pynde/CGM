@@ -1,9 +1,4 @@
-import { useBlueprint, useSetBlueprint } from '@root/src/zustand/BlueprintStore';
-import { setSelection } from '@root/src/zustand/SelectionStore';
-import { SOCKET_RESPONSE } from '@shared/enums/enums';
-import { BlueprintType } from '@shared/types/types';
-import React, { FC, ReactNode, useEffect } from 'react';
-import HierarchyView from '../HierarchyView/HierarchyView';
+import { FC, ReactNode, useEffect } from 'react';
 import SceneNavigation from '../Scenes/SceneNavigation';
 
 

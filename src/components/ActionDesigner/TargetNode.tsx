@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
 import * as Select from '@radix-ui/react-select';
-import { ActionType, isTypeOf, Owner } from '@shared/types/types';
 import { OWNER_TYPE_ENUM, TARGET_ENUM } from '@shared/enums/enums';
+import { ActionType, isTypeOf } from '@shared/types/types';
+import React, { useState } from 'react';
 
 type TargetNodeProps = {
     onTargetChange: (target: TARGET_ENUM) => void;

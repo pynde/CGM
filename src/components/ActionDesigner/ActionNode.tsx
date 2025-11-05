@@ -1,8 +1,8 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { ActionType, Owner } from '@shared/types/types';
-import { Toggle } from '@radix-ui/react-toggle';
 import { CheckIcon } from '@heroicons/react/20/solid';
+import { Toggle } from '@radix-ui/react-toggle';
+import { ActionType } from '@shared/types/types';
 import clsx from 'clsx';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import TargetNode from './TargetNode';
 
 
@@ -50,7 +50,7 @@ export const ActionNode: React.FC<ActionNodeProps> = ({
                 )
             }
         >   
-            <span onClick={e => (e)} className='min-w-(--minWidth) overflow-hidden p-2'>{props.name}</span>
+            <button type='button' onClick={e => (e)} className='min-w-(--minWidth) overflow-hidden p-2'>{props.name}</button>
             <div className='flex-center-row'>
                 <span className='m-2'>You <i>may...</i></span>
                 <Toggle aria-label="Toggle italic" className='group p-1 bg-darkbg rounded-sm h-4 w-4'>
@@ -62,7 +62,7 @@ export const ActionNode: React.FC<ActionNodeProps> = ({
                 <TargetNode onTargetChange={() => {  }} />
             }
  
-            <button onClick={() => onDeleteActionFromPipe(index)} className='m-2 p-2 absolute top-0 right-0 bg-red-400'>X</button>
+            <button type='button' onClick={() => onDeleteActionFromPipe(index)} className='m-2 p-2 absolute top-0 right-0 bg-red-400'>X</button>
             { children }
         </div>
     );

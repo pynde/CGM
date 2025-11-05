@@ -1,13 +1,13 @@
 import * as ContextMenu from '@radix-ui/react-context-menu';
-import { useBlueprint, useSetBlueprint, useShallowBlueprint, useUpdateBlueprintGameComponents } from '@root/src/zustand/BlueprintStore';
+import { useBlueprint, useSetBlueprint, useUpdateBlueprintGameComponents } from '@root/src/zustand/BlueprintStore';
 import { destroyPixiApp, initPixiApp, setPixiApp, usePixiApp, usePixiAppState } from '@root/src/zustand/PixiStore';
-import { SelectionItem, setSelection, useSelection } from '@root/src/zustand/SelectionStore';
+import { setSelection, useSelection } from '@root/src/zustand/SelectionStore';
 import { ACTION_TYPE_ENUM, RESOURCE_ENUM, TYPES_AS_STRING } from '@shared/enums/enums';
-import { ActionType, GameComponentType, isTypeOf, ResourceType, VisualType } from '@shared/types/types';
+import  { type ActionType, type GameComponentType, isTypeOf, type ResourceType, type VisualType } from '@shared/types/types';
 import { Ticker } from 'pixi.js';
 import React, { useEffect } from 'react';
 import BlueprintMenu from '../BlueprintMenu/BlueprintMenu';
-import { createSizeHandler, createTransformer } from '../PixiComponents/PixiTransformer';
+import { createSizeHandler } from '../PixiComponents/PixiTransformer';
 import { createPixiComponent, createPixiLabelFromBaseType, PIXI_COMPONENTS } from '../PixiComponents/PixiVanilla';
 import Carousel from '../UI/Carousel';
 import SaveButton from '../UI/SaveButton';
@@ -45,6 +45,7 @@ export const ComponentDesigner: React.FC<ComponentDesignerProps> = () => {
         }
     }, [pixiAppState]);
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: hotfix
     useEffect(() => {
         if(!pixiApp) return;
         const ticker = new Ticker();
@@ -150,14 +151,10 @@ export const ComponentDesigner: React.FC<ComponentDesignerProps> = () => {
         }
 }
 
-    const updateSelectedComponent = (updatedComponent: SelectionItem) => {
-        setSelection(updatedComponent);
-    }
-
     const saveUpdate = () => {
         if(!selected) return;
         const newGCArray = bpStore.gameComponents.map(([key, value]) => {
-            if(selected.id == key) return [key, selected] as [string, GameComponentType];
+            if(selected.id === key) return [key, selected] as [string, GameComponentType];
             return [key, value] as [string, GameComponentType];
         });
         setGameComponents(newGCArray);

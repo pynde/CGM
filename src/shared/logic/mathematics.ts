@@ -1,9 +1,5 @@
-import { ResourceType, MultipleValues, FixedValue } from "../types/types";
+import { FixedValue, ResourceType } from "@shared/types/types";
 
-// Utility function to sum multiple values
-export const sumMultipleValues = (values: MultipleValues): number => {
-    return values.reduce((acc, val) => acc + val, 0);
-};
 
 // Utility function to multiply fixed value
 export const multiplyFixedValue = (value: FixedValue, multiplier: number): number => {

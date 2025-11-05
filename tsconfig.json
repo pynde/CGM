@@ -1,5 +1,5 @@
 {
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "src/routes/designer/components/.$componentId.tsx"],
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "react-jsx",
@@ -25,7 +25,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "@root/*": ["./*"],
-      "@shared/*": ["./shared/*"]
+      "@shared/*": ["./src/shared/*"],
+      "@kysely/*": ["./src/kysely/*"]
     }
   }
 }

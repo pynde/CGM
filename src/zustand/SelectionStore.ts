@@ -1,10 +1,10 @@
-import { SELECTION_TYPE_ENUM, TYPE_ENUM } from '@shared/enums/enums';
+import { SELECTION_TYPE_ENUM, TYPES_AS_STRING } from '@shared/enums/enums';
 import { ActionType, BaseType, GameComponentType, isTypeOf, ResourceType } from '@shared/types/types';
 import { create } from 'zustand';
 
 export type SelectionItem = GameComponentType | ActionType | ResourceType;
 
-type SelectionContext = 'edit' | 'play' | 'view' | TYPE_ENUM | null;
+type SelectionContext = 'edit' | 'play' | 'view' | keyof typeof TYPES_AS_STRING | null;
 type SelectionRange = 'single' | 'multiple' | 'none';
 
 interface SelectionStore {
@@ -69,7 +69,7 @@ export const clearSelectionStore = () => {
     useSelectionStore.getState().setContext(null);
 }
 /** Returns only selected items of wanted type. Return empty array if none found. */
-export const useSelectionTypeGuarded = <T>(type: TYPE_ENUM) => {
+export const useSelectionTypeGuarded = <T>(type: keyof typeof TYPES_AS_STRING) => {
     return useSelectionStore((state) => {
         if(!state.selection) return null;
         if(isTypeOf<T>(state.selection, type)) return state.selection as T;

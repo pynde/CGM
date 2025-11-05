@@ -1,11 +1,9 @@
 import { useBlueprint } from '@root/src/zustand/BlueprintStore';
-import { useLookupActionTypes } from '@root/src/zustand/LookupStore';
 import { setSelection, useSelectionTypeGuarded } from '@root/src/zustand/SelectionStore';
 import { TYPES_AS_STRING } from '@shared/enums/enums';
-import { ActionType } from '@shared/types/types';
-import React from 'react';
+import type { ActionType } from '@shared/types/types';
+import type React from 'react';
 import ActionDesigner from '../ActionDesigner/ActionDesigner';
-import Button from '../UI/Button';
 import ComBox from '../UI/ComBox';
 
 

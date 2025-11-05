@@ -1,7 +1,6 @@
-import { writeFileSync } from 'node:fs';
-import { TYPES_AS_STRING } from '../shared/enums/enums';
-import { generateId } from '../shared/logic/generateId';
-import type { ActionType, BlueprintType, GameComponentType, OwnerArray, OwnerType, PlayAreaType, ResourceType, VisualType } from '../shared/types/types';
+import { TYPES_AS_STRING } from '@shared/enums/enums';
+import { generateId } from '@shared/logic/generateId';
+import type { ActionType, BlueprintType, GameComponentType, OwnerArray, OwnerType, PlayAreaType, ResourceType, VisualType } from '@shared/types/types';
 
 const CARD_TEMPLATE: Partial<VisualType> = {
     x: 0,
@@ -149,13 +148,16 @@ export const blueprint: BlueprintType = {
 };
 
 export const blueprintToJsonFile = () => {
-    try {
-      return JSON.stringify(blueprint, null, 2);
-    } catch (error) {
-        console.error("Error writing blueprint.json:", error);
-    }
+  try {
+    return JSON.stringify(blueprint, null, 2);
+  } catch (error) {
+      console.error("Error writing blueprint.json:", error);
+  }
 }
 
+export const getComponentsAsJson = () => {
+
+}
 
 
 const gameSetup = {

@@ -1,0 +1,19 @@
+{
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "boardgamemaker",
+	"compatibility_date": "2025-09-02",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"main": "@tanstack/react-start/server-entry",
+	"observability": {
+		"enabled": true
+	},
+	"d1_databases": [
+		{
+			"binding": "bgm_db",
+			"database_name": "bgm_db",
+			"database_id": "5d5320aa-39f6-43be-9610-bf66920b9003"
+		}
+	],
+}
